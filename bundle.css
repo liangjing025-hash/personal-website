@@ -3369,3 +3369,6 @@
   }
 }
 
+
+/* === Image fade-in (global) === */
+img{opacity:0;transition:opacity 0.4s ease}img.loaded{opacity:1}img[src=""],img[src="#"]{opacity:0!important}

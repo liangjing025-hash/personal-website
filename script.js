@@ -1621,3 +1621,30 @@
   }
 
 })();
+
+// === Image fade-in on load ===
+(function() {
+  function markLoaded(img) {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('loaded');
+    }
+  }
+  // Mark already-loaded images
+  document.querySelectorAll('img[src]').forEach(markLoaded);
+  // Observe dynamically added images
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(m) {
+      m.addedNodes.forEach(function(node) {
+        if (node.tagName === 'IMG') markLoaded(node);
+        if (node.querySelectorAll) {
+          node.querySelectorAll('img[src]').forEach(markLoaded);
+        }
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  // Also listen for load events on images
+  document.addEventListener('load', function(e) {
+    if (e.target.tagName === 'IMG') markLoaded(e.target);
+  }, true);
+})();

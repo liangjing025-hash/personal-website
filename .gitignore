@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+
+# Uploads & temp
+.uploads/
+tmp_style.txt
+
+# System files
+Thumbs.db
+Desktop.ini
+
+# AI / Agent config
+.claude/
+agent/
+.codex/
+.cursor/
+*.prompt.md

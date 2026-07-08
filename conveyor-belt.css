@@ -1,0 +1,121 @@
+﻿/* ============================================
+   Conveyor Belt — Photo showcase
+   Full-width • fade-out edges • pause-on-hover • sharp zoom
+   Strategy: render large (420x315), display small (scale 0.667)
+   ============================================ */
+
+.cb-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  --cb-fadeColor: var(--bg, #ffffff);
+}
+
+/* Fade-out edges (LogoLoop style) */
+.cb-container::before,
+.cb-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(32px, 8%, 160px);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cb-container::before {
+  left: 0;
+  background: linear-gradient(to right, var(--cb-fadeColor) 0%, transparent 100%);
+}
+
+.cb-container::after {
+  right: 0;
+  background: linear-gradient(to left, var(--cb-fadeColor) 0%, transparent 100%);
+}
+
+/* Scrolling track */
+.cb-track {
+  display: flex;
+  align-items: center;
+  will-change: transform;
+  position: relative;
+  z-index: 0;
+}
+
+/* Photo card — rendered at 420×315, default scale 0.667 (displays at 280×210) */
+.cb-card {
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: visible;
+  position: relative;
+  background: var(--bg-subtle);
+  z-index: 1;
+  transform: scale(0.667);
+  transform-origin: center center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cb-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  -webkit-user-drag: none;
+}
+
+/* Hover: restore to native 1:1 = sharp 420×315 display */
+.cb-card:hover {
+  transform: scale(1);
+  z-index: 60;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Backdrop overlay */
+.cb-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.cb-container.cb-paused .cb-backdrop {
+  display: block;
+}
+
+/* Optional label */
+.cb-card-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 10px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.45));
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 0 0 10px 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cb-card:hover .cb-card-label {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .cb-card {
+    transform: scale(0.5);
+  }
+  .cb-card:hover {
+    transform: scale(0.85);
+  }
+}

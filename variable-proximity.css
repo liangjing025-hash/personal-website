@@ -1,0 +1,16 @@
+/* ============================================
+   VariableProximity — 封面文字样式
+   ============================================ */
+
+/* Each letter span */
+.vp-letter {
+  display: inline-block;
+  transition: none; /* rAF handles smooth updates */
+  will-change: font-variation-settings;
+}
+
+/* Space between words */
+.vp-space {
+  display: inline-block;
+  width: 0.3em;
+}

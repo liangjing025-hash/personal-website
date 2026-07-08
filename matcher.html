@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI岗位匹配器</title>
+<style>
+/* ===== Reset & Variables ===== */
+:root {
+  --bg: #ffffff;
+  --bg2: #f7f7f7;
+  --ink: #1a1a1a;
+  --muted: #888888;
+  --accent: #4f46e5;
+  --accent-light: #818cf8;
+  --border: #e5e5e5;
+  --radius: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 36px 24px;
+}
+
+/* ── Header ── */
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.header h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.header .sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ── Input ── */
+textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 14px 16px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  line-height: 1.7;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: var(--bg);
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+textarea::placeholder { color: #bbb; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+
+button {
+  padding: 11px 32px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-secondary {
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--ink); }
+
+/* ── Status ── */
+#loading {
+  display: none;
+  text-align: center;
+  padding: 28px 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+#loading.active { display: block; }
+
+.spinner {
+  display: inline-block;
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#error {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  color: #b91c1c;
+  font-size: 0.88rem;
+}
+#error.active { display: block; }
+
+#info {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius);
+  color: #1e40af;
+  font-size: 0.85rem;
+}
+#info.active { display: block; }
+
+/* ── Supplement Panel ── */
+#questions-panel {
+  display: none;
+  margin-top: 20px;
+  padding: 20px 22px;
+  background: #f5f3ff;
+  border: 1px solid rgba(79,70,229,0.12);
+  border-radius: 10px;
+}
+#questions-panel.active { display: block; }
+
+#questions-panel h4 {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+#questions-panel ol {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  color: var(--ink);
+  line-height: 1.8;
+  font-size: 0.88rem;
+}
+#questions-panel li { margin-bottom: 8px; }
+#questions-panel .reason {
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+}
+#supplement {
+  min-height: 80px;
+  font-size: 0.88rem;
+}
+#round-info {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* ── API Status ── */
+.api-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.api-badge.on { background: #dcfce7; color: #166534; }
+.api-badge.off { background: #fef3c7; color: #92400e; }
+
+/* ── Result ── */
+#result {
+  display: none;
+  margin-top: 24px;
+}
+
+.result-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px 28px;
+}
+
+.result-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+/* Score */
+.score-section {
+  text-align: center;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.score-circle {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.score-circle .lbl {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.quality-badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 12px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.quality-badge.good { background: #dcfce7; color: #166534; }
+.quality-badge.warn { background: #fef3c7; color: #92400e; }
+.quality-badge.bad  { background: #fee2e2; color: #991b1b; }
+
+/* Dimensions */
+.dim-section { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+
+.dim-row {
+  margin-bottom: 14px;
+}
+.dim-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.dim-label {
+  flex-shrink: 0;
+  min-width: 120px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.dim-basis {
+  font-size: 0.74rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+  margin-left: 130px;
+}
+.dim-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dim-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.dim-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dim-fill.high   { background: var(--accent); }
+.dim-fill.medium { background: var(--accent-light); }
+.dim-fill.low    { background: #c7d2fe; }
+.dim-value {
+  flex-shrink: 0;
+  width: 42px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* Summary */
+.summary-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.summary-section p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: #555;
+}
+
+/* Evidence */
+.evidence-section { margin-bottom: 12px; }
+.evidence-section strong {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.evidence-section ul {
+  list-style: none;
+  padding: 0;
+}
+.evidence-section li {
+  padding: 3px 0 3px 14px;
+  position: relative;
+  font-size: 0.82rem;
+  color: #555;
+  line-height: 1.6;
+}
+.evidence-section li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: #bbb;
+}
+
+/* Warning */
+.warning-banner {
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-left: 3px solid #f59e0b;
+  border-radius: 6px;
+  font-size: 0.84rem;
+  color: #92400e;
+}
+
+/* ── Mock indicator ── */
+.mock-indicator {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>
+      AI岗位匹配器
+      <span class="api-badge" id="apiStatus">检测中…</span>
+    </h1>
+    <p class="sub">粘贴岗位JD，AI将分析岗位需求并与候选人经历进行匹配评分</p>
+  </div>
+
+  <textarea id="jd" placeholder="请粘贴岗位JD描述（例如：岗位职责、任职要求等）..."></textarea>
+  <div class="btn-row">
+    <button class="btn-primary" id="btn" onclick="startMatch()">生成匹配报告</button>
+  </div>
+
+  <div id="loading"><span class="spinner"></span>AI分析中，请稍候…</div>
+
+  <!-- JD不足时的补充面板 -->
+  <div id="questions-panel">
+    <h4>📋 JD 信息不足，请补充以下信息以提升匹配准确性</h4>
+    <ol id="q-list"></ol>
+    <textarea id="supplement" placeholder="请在此回答以上问题，补充岗位相关信息..."></textarea>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-resubmit" onclick="resubmitWithSupplement()">补充信息并重新匹配</button>
+      <button class="btn-secondary" onclick="forceMatch()">跳过补充，直接匹配</button>
+    </div>
+    <p id="round-info"></p>
+  </div>
+
+  <div id="info"></div>
+  <div id="error"></div>
+  <div id="result"></div>
+
+</div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+var SCORE = { '优秀': 90, '良好': 70, '一般': 50, '待确认': 30 };
+var MAX_ROUNDS = 3;
+var API_BASE = 'http://127.0.0.1:8765';
+var apiAvailable = false;
+
+var session = {
+  originalJd: '',
+  supplements: [],
+  round: 0
+};
+
+// ============================================================
+// API Health Check
+// ============================================================
+function checkAPI() {
+  fetch(API_BASE + '/api/health', { method: 'GET', signal: AbortSignal.timeout(2000) })
+    .then(function (r) { return r.ok; })
+    .then(function (ok) {
+      apiAvailable = ok;
+      updateApiBadge();
+    })
+    .catch(function () {
+      apiAvailable = false;
+      updateApiBadge();
+    });
+}
+
+function updateApiBadge() {
+  var badge = document.getElementById('apiStatus');
+  if (apiAvailable) {
+    badge.textContent = '🟢 后端已连接';
+    badge.className = 'api-badge on';
+  } else {
+    badge.textContent = '🟡 Demo模式';
+    badge.className = 'api-badge off';
+  }
+}
+
+// ============================================================
+// Matching Flow
+// ============================================================
+function startMatch() {
+  var jd = document.getElementById('jd').value.trim();
+  if (jd.length < 10) return showErr('JD内容过短，请至少输入10个字符');
+  session.originalJd = jd;
+  session.supplements = [];
+  session.round = 1;
+  doMatch(jd, '', 1);
+}
+
+function resubmitWithSupplement() {
+  var s = document.getElementById('supplement').value.trim();
+  if (s.length < 5) return showErr('补充内容过短，请至少写一句话');
+  hide('error');
+  session.supplements.push(s);
+  session.round++;
+  var fullSupplement = session.supplements.join('\n');
+  doMatch(session.originalJd, fullSupplement, session.round);
+}
+
+function forceMatch() {
+  hide('error');
+  session.round = MAX_ROUNDS;
+  var fullSupplement = session.supplements.length > 0 ? session.supplements.join('\n') : '';
+  doMatch(session.originalJd, fullSupplement, MAX_ROUNDS);
+}
+
+function doMatch(jd, supplement, round) {
+  var btn = document.getElementById('btn');
+  btn.disabled = true; btn.textContent = '分析中…';
+  show('loading'); hide('result'); hide('error'); hide('info'); hide('questions-panel');
+
+  // Try real API first, fall back to mock
+  if (apiAvailable) {
+    callRealAPI(jd, supplement, round);
+  } else {
+    // Simulate a short delay then do mock matching
+    setTimeout(function () {
+      hide('loading');
+      var result = performMockMatching(jd);
+      render(result);
+      btn.disabled = false; btn.textContent = '生成匹配报告';
+    }, 800 + Math.random() * 600);
+  }
+}
+
+function callRealAPI(jd, supplement, round) {
+  var body = { jd: jd, round: round };
+  if (supplement) body.supplement = supplement;
+
+  fetch(API_BASE + '/api/match', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(60000)
+  })
+    .then(function (r) {
+      return r.ok ? r.json() : r.json().then(function (e) { throw new Error(e.error || '请求失败'); });
+    })
+    .then(function (data) {
+      hide('loading');
+      document.getElementById('btn').disabled = false;
+      document.getElementById('btn').textContent = '生成匹配报告';
+
+      if (data.status === 'complete') {
+        render(data);
+      } else if (data.status === 'need_more_info') {
+        showQuestions(data);
+      } else if (data.status === 'error') {
+        showErr(data.error || '服务器返回错误');
+      } else {
+        showErr('服务器返回了未知格式的响应');
+      }
+    })
+    .catch(function (e) {
+      hide('loading');
+      document.getElementById('btn').disabled = false;
+      document.getElementById('btn').textContent = '生成匹配报告';
+      // Fall back to mock on API failure
+      if (e.name === 'TimeoutError' || e.name === 'AbortError') {
+        showInfo('后端连接超时，已切换至Demo模式。以下结果为模拟匹配。');
+      } else {
+        showInfo('后端不可用（' + esc(e.message) + '），已切换至Demo模式。以下结果为模拟匹配。');
+      }
+      var result = performMockMatching(jd);
+      render(result);
+    });
+}
+
+// ============================================================
+// Mock Matching Engine
+// ============================================================
+function performMockMatching(jd) {
+  var jdLower = jd.toLowerCase();
+  var jdLen = jd.length;
+
+  // Detect keywords from JD
+  function kwHit(kwds) {
+    for (var i = 0; i < kwds.length; i++) {
+      if (jdLower.indexOf(kwds[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  // ── Determine candidate persona based on JD keywords ──
+  var hasMarketing = kwHit(['运营', '营销', '市场', '推广', '新媒体', '自媒体', '抖音', 'tiktok', '品牌', '内容', '文案', '策划']);
+  var hasTech = kwHit(['开发', '编程', '代码', '软件', '前端', '后端', 'python', 'java', '算法', '数据', 'ai', '机器学习']);
+  var hasService = kwHit(['客服', '服务', '热线', '售后', '投诉', '商家', '用户', '客户']);
+  var hasAnalysis = kwHit(['分析', '数据', 'excel', '统计', '报表', 'spss']);
+  var hasDesign = kwHit(['设计', 'ui', 'ux', '视觉', '平面', 'cad', 'ps', 'ai']);
+
+  var dimensions = [];
+
+  // Dimension 1: 经验相关性
+  if (hasMarketing) {
+    dimensions.push({
+      label: '经验相关性', score: 82, weight: 30,
+      evidence: [
+        '负责TikTok海外博主商业广告全流程，从需求对接到创意策划、文案撰写、视频剪辑全链路执行',
+        '独立运营个人自媒体（小红书），单篇笔记最高曝光10w+、赞藏1.3w+，建立高粘性粉丝2000+',
+        '对接10+品牌方PR，从用户需求出发平衡品牌方需求，品牌复投意愿超50%'
+      ],
+      jd_basis: '岗位要求具备内容策划、平台运营及外部协同经验'
+    });
+  } else if (hasService) {
+    dimensions.push({
+      label: '经验相关性', score: 78, weight: 30,
+      evidence: [
+        '途家网商服热线运营，高效处理商家咨询、纠纷及运营问题，好评率达91%',
+        '多渠道对接商家，快速拆解复杂诉求，提供针对性解决方案，主动跟进至问题闭环',
+        '定期复盘工单类型与处理时长，识别高频问题并优化话术流程，1个月内将平均通话时长压缩至2分钟'
+      ],
+      jd_basis: '岗位要求具备客户服务和沟通协调能力'
+    });
+  } else if (hasTech) {
+    dimensions.push({
+      label: '经验相关性', score: 65, weight: 30,
+      evidence: [
+        '独立开发个人作品集网站，使用纯原生HTML/CSS/JS架构，集成8+种交互动效',
+        '借助AI工具快速攻克GSAP动画、CSS 3D等技术难点，具备自学和快速上手新技术的能力',
+        '使用AI辅助完成1000+零部件参数清洗与公式建模，具备数据处理和编程思维'
+      ],
+      jd_basis: '岗位要求具备技术开发和问题解决能力'
+    });
+  } else {
+    dimensions.push({
+      label: '经验相关性', score: 75, weight: 30,
+      evidence: [
+        '多段跨领域实习经历，具备快速适应不同业务场景的能力',
+        '独立完成从需求分析到项目交付的全流程闭环',
+        '与10+外部合作方对接经验，具备跨团队沟通协调能力'
+      ],
+      jd_basis: '岗位需要综合性经验和跨领域能力'
+    });
+  }
+
+  // Dimension 2: 逻辑思维与问题解决
+  var logicScore = hasAnalysis ? 82 : hasTech ? 78 : 70;
+  dimensions.push({
+    label: '逻辑思维与问题解决', score: logicScore, weight: 25,
+    evidence: [
+      '基于投放数据（互动率、转化率）与用户评论拆解调整内容方向，优化创意策略，使转化率提升15%以上',
+      '定期复盘工单类型与处理时长，识别高频问题并优化话术流程，1个月内将平均通话时长压缩至2分钟',
+      '完成1000+零部件参数清洗与公式建模，搭建Excel参数计算体系，成绩超越85%同专业同学'
+    ],
+    jd_basis: '岗位需要数据分析、逻辑推理和流程优化能力'
+  });
+
+  // Dimension 3: 主动性/自驱力
+  var driveScore = jdLen > 200 ? 82 : jdLen > 100 ? 75 : 68;
+  dimensions.push({
+    label: '主动性/自驱力', score: driveScore, weight: 25,
+    evidence: [
+      '面对高风险用户，主动协调内部多方资源，成功将差评倾向转为中立/满意，避免用户流失',
+      '零基础自学CAD，主动联系行业网友获取插件与经验，提前30天完成课程设计，成绩超越85%同专业同学',
+      '参考Awwwards等顶尖设计站点，自主从零开发个人作品集网站，对标获奖级作品质量'
+    ],
+    jd_basis: '岗位需要自驱力和主动解决问题的能力'
+  });
+
+  // Dimension 4: 学习能力与成长潜力
+  var learnScore = hasTech ? 80 : hasDesign ? 78 : 75;
+  dimensions.push({
+    label: '学习能力与成长潜力', score: learnScore, weight: 20,
+    evidence: [
+      '通过AI快速生成PPT初稿，提升团队协作效率，助力项目获三等奖',
+      '使用Gemini等多AI模型分析市场趋势与客户需求，制作可视化图像，提炼选题核心方向',
+      '在无CAD、无化工设备知识背景下，自主查阅书籍与视频学习，快速掌握CAD绘图技巧'
+    ],
+    jd_basis: '岗位重视快速学习和适应新技术/新工具的能力'
+  });
+
+  // Calculate weighted total
+  var tw = 0, ts = 0;
+  dimensions.forEach(function (d) {
+    tw += d.weight;
+    ts += d.score * d.weight;
+    d.level = d.score >= 80 ? 'high' : d.score >= 50 ? 'medium' : 'low';
+  });
+  var total = tw > 0 ? Math.round(ts / tw) : 0;
+
+  var summary;
+  if (total >= 80) {
+    summary = '综合评估显示，候选人与该岗位高度匹配。候选人的过往经历覆盖了岗位的核心职责领域，在' + dimensions.filter(function (d) { return d.score >= 80; }).map(function (d) { return d.label; }).join('、') + '等维度表现突出。建议优先安排面试，重点考察候选人的项目落地经验和团队协作能力。';
+  } else if (total >= 65) {
+    summary = '候选人与该岗位具有一定匹配度。在' + dimensions.filter(function (d) { return d.score >= 75; }).map(function (d) { return d.label; }).join('、') + '方面表现良好，核心能力基本满足要求。建议面试中进一步考察候选人在特定领域的深度和实践经验，同时关注其学习能力和成长潜力。';
+  } else {
+    summary = '候选人与该岗位匹配度一般。部分能力可迁移至该岗位方向，但在核心技能方面可能仍需成长。建议关注候选人的学习能力和自驱力，这些特质有助于候选人快速补齐短板。同时，JD信息可能不够充分，补充更多岗位细节可获得更准确的匹配结果。';
+  }
+
+  var jdQuality = jdLen > 200 ? '充足' : jdLen > 80 ? '一般' : '不足';
+
+  return {
+    total: total,
+    dimensions: dimensions,
+    jdQuality: jdQuality,
+    summary: summary
+  };
+}
+
+// ============================================================
+// Render
+// ============================================================
+function showQuestions(data) {
+  var panel = document.getElementById('questions-panel');
+  var list = document.getElementById('q-list');
+  var questions = data.questions || [];
+  var round = data.round || session.round;
+
+  list.innerHTML = '';
+  questions.forEach(function (q) {
+    list.innerHTML += '<li><strong>' + esc(q.question) + '</strong><br><span class="reason">💡 ' + esc(q.reason) + '</span></li>';
+  });
+
+  document.getElementById('supplement').value = '';
+  document.getElementById('round-info').textContent = '当前第 ' + round + ' 轮（最多 ' + MAX_ROUNDS + ' 轮），剩余 ' + (MAX_ROUNDS - round) + ' 轮';
+  show('questions-panel');
+
+  if (round >= MAX_ROUNDS - 1) {
+    document.getElementById('round-info').textContent += ' — 超过轮次上限后将自动进行匹配';
+  }
+}
+
+function render(data) {
+  var dimensions = data.dimensions;
+  var html = '';
+
+  html += '<div class="result-card">';
+
+  // If coming from real API, transform format
+  if (data.result) {
+    var r = data.result;
+    var dims = [];
+    (r.dimensions || []).forEach(function (d) {
+      var s = SCORE[d.rating] || 50;
+      var w = d.weight || 10;
+      dims.push({
+        label: d.dimension_name,
+        score: s,
+        weight: w,
+        level: s >= 80 ? 'high' : s >= 50 ? 'medium' : 'low',
+        evidence: d.evidence || [],
+        jd_basis: d.jd_basis || ''
+      });
+    });
+    var sum = 0, tw = 0;
+    dims.forEach(function (d) { sum += d.score * d.weight; tw += d.weight; });
+    var avg = tw ? Math.round(sum / tw) : 0;
+
+    html += '<h3>' + esc(r.candidate_name || '候选人') + ' · 匹配分析报告</h3>';
+
+    // JD quality
+    if (data.jd_quality === '不足' || data.jd_quality === '一般') {
+      html += '<div class="warning-banner">⚠ JD信息' + data.jd_quality + '，部分维度基于行业常识补全，结果仅供参考。</div>';
+    }
+
+    html += '<div class="score-section">';
+    html += '  <div class="score-circle">' + avg + '<span class="lbl">综合匹配分</span></div>';
+    html += '  <span class="quality-badge ' + (data.jd_quality === '充足' ? 'good' : data.jd_quality === '一般' ? 'warn' : 'bad') + '">JD信息' + (data.jd_quality || '未知') + '</span>';
+    html += '</div>';
+
+    html += '<div class="dim-section">';
+    dims.forEach(function (d) {
+      html += '<div class="dim-row">';
+      html += '  <div class="dim-header">';
+      html += '    <span class="dim-label">' + esc(d.label) + '</span>';
+      html += '    <span style="font-size:0.75rem;color:var(--muted)">权重 ' + d.weight + '%</span>';
+      html += '  </div>';
+      if (d.jd_basis) {
+        html += '  <div class="dim-basis">📋 ' + esc(d.jd_basis) + '</div>';
+      }
+      html += '  <div class="dim-bar-wrap">';
+      html += '    <div class="dim-bar"><div class="dim-fill ' + d.level + '" style="width:' + d.score + '%"></div></div>';
+      html += '    <span class="dim-value">' + d.score + ' 分</span>';
+      html += '  </div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="summary-section"><p>' + esc(r.overall_assessment || '') + '</p></div>';
+
+    dims.forEach(function (d) {
+      if (d.evidence && d.evidence.length > 0) {
+        html += '<div class="evidence-section"><strong>' + esc(d.label) + ' 证据：</strong><ul>';
+        d.evidence.forEach(function (e) { html += '<li>' + esc(e) + '</li>'; });
+        html += '</ul></div>';
+      }
+    });
+  } else {
+    // Mock result rendering
+    html += '<h3>候选人 · 匹配分析报告';
+    if (!apiAvailable) {
+      html += '<span class="mock-indicator">Demo</span>';
+    }
+    html += '</h3>';
+
+    if (data.jdQuality === '不足') {
+      html += '<div class="warning-banner">⚠ JD信息不足，建议补充更多岗位细节以获得更准确的匹配结果。</div>';
+    }
+
+    html += '<div class="score-section">';
+    html += '  <div class="score-circle">' + data.total + '<span class="lbl">综合匹配分</span></div>';
+    html += '  <span class="quality-badge ' + (data.jdQuality === '充足' ? 'good' : data.jdQuality === '一般' ? 'warn' : 'bad') + '">JD信息' + data.jdQuality + '</span>';
+    html += '</div>';
+
+    html += '<div class="dim-section">';
+    dimensions.forEach(function (d) {
+      html += '<div class="dim-row">';
+      html += '  <div class="dim-header">';
+      html += '    <span class="dim-label">' + esc(d.label) + '</span>';
+      html += '    <span style="font-size:0.75rem;color:var(--muted)">权重 ' + d.weight + '%</span>';
+      html += '  </div>';
+      if (d.jd_basis) {
+        html += '  <div class="dim-basis">📋 ' + esc(d.jd_basis) + '</div>';
+      }
+      html += '  <div class="dim-bar-wrap">';
+      html += '    <div class="dim-bar"><div class="dim-fill ' + d.level + '" style="width:' + d.score + '%"></div></div>';
+      html += '    <span class="dim-value">' + d.score + ' 分</span>';
+      html += '  </div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="summary-section"><p>' + esc(data.summary) + '</p></div>';
+
+    dimensions.forEach(function (d) {
+      if (d.evidence && d.evidence.length > 0) {
+        html += '<div class="evidence-section"><strong>' + esc(d.label) + ' 证据：</strong><ul>';
+        d.evidence.forEach(function (e) { html += '<li>' + esc(e) + '</li>'; });
+        html += '</ul></div>';
+      }
+    });
+  }
+
+  html += '</div>';
+
+  var el = document.getElementById('result');
+  el.innerHTML = html;
+  show('result');
+
+  // Scroll into view
+  setTimeout(function () {
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+function show(id) { document.getElementById(id).style.display = 'block'; document.getElementById(id).classList.add('active'); }
+function hide(id) { document.getElementById(id).style.display = 'none'; document.getElementById(id).classList.remove('active'); }
+function showErr(m) {
+  var e = document.getElementById('error');
+  e.innerHTML = '<strong>匹配失败：</strong>' + esc(m);
+  show('error');
+}
+function showInfo(m) {
+  var e = document.getElementById('info');
+  e.innerHTML = '💡 ' + esc(m);
+  show('info');
+}
+
+// ============================================================
+// Init
+// ============================================================
+checkAPI();
+// Re-check every 30s
+setInterval(checkAPI, 30000);
+</script>
+
+</body>
+</html>

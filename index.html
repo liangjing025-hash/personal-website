@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="welcome me, i'm 梁婧 - 个人作品集">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>welcome me, i'm 梁婧</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="circular-gallery.css?v=6">
+  <link rel="stylesheet" href="logo-loop.css?v=2">
+  <link rel="stylesheet" href="ScrollStack.css?v=2">
+  <link rel="stylesheet" href="gooey-nav.css?v=2">
+  <link rel="stylesheet" href="chroma-grid.css?v=2">
+  <link rel="stylesheet" href="variable-proximity.css?v=2">
+  <link rel="stylesheet" href="video-3d-cards.css?v=2">
+  <link rel="stylesheet" href="conveyor-belt.css">
+  <link rel="stylesheet" href="timeline.css?v=2">
+  <link rel="stylesheet" href="research-browser.css?v=2">
+  <link rel="stylesheet" href="slide.css?v=4">
+</head>
+<body>
+
+  <!-- ======== 纸张纹理叠加层 ======== -->
+  <div class="paper-texture"></div>
+
+  <!-- ======== 主体内容 ======== -->
+  <div class="main-content">
+
+    <!-- ======== 导航栏 ======== -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-container">
+        <a href="#" class="nav-logo" id="navLogo">梁婧</a>
+        <ul class="nav-links" id="navLinks">
+          <!-- JS 动态生成 -->
+        </ul>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">☰</button>
+      </div>
+    </nav>
+
+    <!-- ======== 封面页 ======== -->
+    <section class="cover-section" id="cover">
+      <div class="cover-wrapper" id="coverWrapper">
+        <div class="cover-sticky">
+          <h1 class="cover-title" id="coverTitle">welcome me, i'm 梁婧</h1>
+          <button class="cover-explore-btn" id="coverExploreBtn">let's explore more</button>
+          <div class="cover-nav-buttons" id="coverNavButtons">
+            <!-- JS -->
+          </div>
+          <div class="cover-img-layer" id="coverImgLayer">
+            <div class="cover-img-item cover-img-main" data-img="main" style="top:6%;left:4%"><img src="images/cover/cover_20260614155720.png" alt="Cover 01"></div>
+            <div class="cover-img-item cover-img-main" data-img="main" style="top:6%;right:4%"><img src="images/cover/cover_20260614155721.png" alt="Cover 02"></div>
+            <div class="cover-img-item cover-img-main" data-img="main" style="top:72%;left:5%"><img src="images/cover/cover_20260612210956.png" alt="Cover 03"></div>
+            <div class="cover-img-item cover-img-main" data-img="main" style="top:72%;right:5%"><img src="images/cover/cover_202606122109561.png" alt="Cover 04"></div>
+            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:5%;left:28%"><img src="images/cover/cover_202606122109562.png" alt="Cover 05"></div>
+            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:5%;right:26%"><img src="images/cover/cover_202606122109563.png" alt="Cover 06"></div>
+            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:35%;left:2%"><img src="images/cover/cover_202606122109564.png" alt="Cover 07"></div>
+            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:50%;right:2%"><img src="images/cover/cover_202606122109565.png" alt="Cover 08"></div>
+            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:84%;left:42%"><img src="images/cover/cover_202606122109566.png" alt="Cover 09"></div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<!-- ======== 第1区：个人信息 ======== -->
+    <section class="section" id="personal">
+      <div id="personalInfo">
+        <!-- JS 动态渲染 -->
+      </div>
+    </section>
+
+    <!-- ======== 第2区：AI匹配器 ======== -->
+    <section class="section" id="matcher">
+      <div id="matcherSection" class="matcher-iframe-wrapper">
+        <iframe src="matcher.html" class="matcher-iframe" title="AI 岗位匹配器"></iframe>
+      </div>
+    </section>
+
+    <!-- ======== 第2.5区：我的技能 ======== -->
+    <section class="section" id="skills">
+      <div id="mySkills">
+        <!-- JS 动态渲染 -->
+      </div>
+    </section>
+
+    <!-- ======== 第3区：工作 & 项目经历 (ScrollStack) ======== -->
+    <section class="section" id="experience">
+      <div id="experienceSection">
+        <!-- JS 动态渲染 -->
+      </div>
+    </section>
+
+    <!-- ======== 第4区：科研经历 ======== -->
+    <section class="section" id="research">
+      <div id="researchSection">
+        <!-- JS 动态渲染 -->
+      </div>
+    </section>
+
+    <!-- ======== 第5区：作品集 ======== -->
+    <section class="section" id="portfolio">
+      <div id="portfolioSection">
+        <!-- JS 动态渲染 -->
+      </div>
+    </section>
+
+    <!-- ======== 页脚 ======== -->
+    <footer class="site-footer" id="siteFooter">
+      <!-- JS 动态渲染 -->
+    </footer>
+
+  </div><!-- /main-content -->
+
+  <!-- ======== 图片灯箱 ======== -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="关闭">&times;</button>
+    <img class="lightbox-content" id="lightboxImg" src="" alt="预览图片">
+  </div>
+
+  <!-- ======== 脚本 ======== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="data.js?v=4"></script>
+  <script src="gallery-init.js?v=4"></script>
+  <script src="logo-loop.js?v=2"></script>
+  <script src="gooey-nav.js?v=2"></script>
+  <script src="chroma-grid.js?v=2"></script>
+  <script src="variable-proximity.js?v=2"></script>
+  <script src="text-pressure.js?v=2"></script>
+  <script src="video-3d-cards.js?v=2"></script>
+  <script src="conveyor-belt.js"></script>
+  <script src="script.js?v=9"></script>
+
+</body>
+</html>

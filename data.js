@@ -269,65 +269,65 @@
           {
             "name": "",
             "photos": [
-              { "image": "images/photography/人文169/DSCF2522_1.JPG", "title": "人文 01" },
-              { "image": "images/photography/人文169/微信图片_202605312016241.jpg", "title": "人文 02" },
-              { "image": "images/photography/人文169/微信图片_2026053120162410.jpg", "title": "人文 03" },
-              { "image": "images/photography/人文169/微信图片_202605312016242.jpg", "title": "人文 04" },
-              { "image": "images/photography/人文169/微信图片_202605312016244.jpg", "title": "人文 05" },
-              { "image": "images/photography/人文169/微信图片_202605312016245.jpg", "title": "人文 06" },
-              { "image": "images/photography/人文169/微信图片_202605312016246.jpg", "title": "人文 07" },
-              { "image": "images/photography/人文169/微信图片_202605312016249.jpg", "title": "人文 08" },
-              { "image": "images/photography/人文169/微信图片_2026061417185310.jpg", "title": "人文 09" },
-              { "image": "images/photography/人文169/微信图片_202606141718534.jpg", "title": "人文 10" },
-              { "image": "images/photography/人文169/微信图片_202606141731045.jpg", "title": "人文 11" },
-              { "image": "images/photography/人文169/微信图片_20260706145051.jpg", "title": "人文 12" },
-              { "image": "images/photography/人文169/微信图片_202607061450511.jpg", "title": "人文 13" }
+              { "image": "images/photography/renwen169/01.jpg", "title": "人文 01" },
+              { "image": "images/photography/renwen169/02.jpg", "title": "人文 02" },
+              { "image": "images/photography/renwen169/03.jpg", "title": "人文 03" },
+              { "image": "images/photography/renwen169/04.jpg", "title": "人文 04" },
+              { "image": "images/photography/renwen169/05.jpg", "title": "人文 05" },
+              { "image": "images/photography/renwen169/06.jpg", "title": "人文 06" },
+              { "image": "images/photography/renwen169/07.jpg", "title": "人文 07" },
+              { "image": "images/photography/renwen169/08.jpg", "title": "人文 08" },
+              { "image": "images/photography/renwen169/09.jpg", "title": "人文 09" },
+              { "image": "images/photography/renwen169/10.jpg", "title": "人文 10" },
+              { "image": "images/photography/renwen169/11.jpg", "title": "人文 11" },
+              { "image": "images/photography/renwen169/12.jpg", "title": "人文 12" },
+              { "image": "images/photography/renwen169/13.jpg", "title": "人文 13" }
             ]
           },
           {
             "name": "",
             "photos": [
-              { "image": "images/photography/人文916/微信图片_20260531201624.jpg", "title": "人文 14" },
-              { "image": "images/photography/人文916/微信图片_202605312016243.jpg", "title": "人文 15" },
-              { "image": "images/photography/人文916/微信图片_20260614171853.jpg", "title": "人文 16" },
-              { "image": "images/photography/人文916/微信图片_202606141718531.jpg", "title": "人文 17" },
-              { "image": "images/photography/人文916/微信图片_202606141718532.jpg", "title": "人文 18" },
-              { "image": "images/photography/人文916/微信图片_202606141718533.jpg", "title": "人文 19" },
-              { "image": "images/photography/人文916/微信图片_202606141718535.jpg", "title": "人文 20" },
-              { "image": "images/photography/人文916/微信图片_202606141718536.jpg", "title": "人文 21" },
-              { "image": "images/photography/人文916/微信图片_202606141718537.jpg", "title": "人文 22" },
-              { "image": "images/photography/人文916/微信图片_202606141718538.jpg", "title": "人文 23" },
-              { "image": "images/photography/人文916/微信图片_202606141718539.jpg", "title": "人文 24" },
-              { "image": "images/photography/人文916/微信图片_20260614173105.jpg", "title": "人文 25" },
-              { "image": "images/photography/人文916/微信图片_20260706145100.jpg", "title": "人文 26" }
+              { "image": "images/photography/renwen916/01.jpg", "title": "人文 14" },
+              { "image": "images/photography/renwen916/02.jpg", "title": "人文 15" },
+              { "image": "images/photography/renwen916/03.jpg", "title": "人文 16" },
+              { "image": "images/photography/renwen916/04.jpg", "title": "人文 17" },
+              { "image": "images/photography/renwen916/05.jpg", "title": "人文 18" },
+              { "image": "images/photography/renwen916/06.jpg", "title": "人文 19" },
+              { "image": "images/photography/renwen916/07.jpg", "title": "人文 20" },
+              { "image": "images/photography/renwen916/08.jpg", "title": "人文 21" },
+              { "image": "images/photography/renwen916/09.jpg", "title": "人文 22" },
+              { "image": "images/photography/renwen916/10.jpg", "title": "人文 23" },
+              { "image": "images/photography/renwen916/11.jpg", "title": "人文 24" },
+              { "image": "images/photography/renwen916/12.jpg", "title": "人文 25" },
+              { "image": "images/photography/renwen916/13.jpg", "title": "人文 26" }
             ]
           },
           {
             "name": "",
             "photos": [
-              { "image": "images/photography/美食169/微信图片_202606141731041.jpg", "title": "美食 01" },
-              { "image": "images/photography/美食169/微信图片_202606141731043.jpg", "title": "美食 02" },
-              { "image": "images/photography/美食169/微信图片_20260616213313.jpg", "title": "美食 03" }
+              { "image": "images/photography/meishi169/01.jpg", "title": "美食 01" },
+              { "image": "images/photography/meishi169/02.jpg", "title": "美食 02" },
+              { "image": "images/photography/meishi169/03.jpg", "title": "美食 03" }
             ]
           },
           {
             "name": "",
             "photos": [
-              { "image": "images/photography/美食916/微信图片_202606141731042.jpg", "title": "美食 04" },
-              { "image": "images/photography/美食916/微信图片_202606162133131.jpg", "title": "美食 05" }
+              { "image": "images/photography/meishi916/01.jpg", "title": "美食 04" },
+              { "image": "images/photography/meishi916/02.jpg", "title": "美食 05" }
             ]
           },
           {
             "name": "",
             "photos": [
-              { "image": "images/photography/风景169/DSCF6712.JPG", "title": "风景 01" }
+              { "image": "images/photography/fengjing169/01.jpg", "title": "风景 01" }
             ]
           },
           {
             "name": "",
             "photos": [
-              { "image": "images/photography/风景916/微信图片_2026053120162411.jpg", "title": "风景 02" },
-              { "image": "images/photography/风景916/微信图片_202606141731044.jpg", "title": "风景 03" }
+              { "image": "images/photography/fengjing916/01.jpg", "title": "风景 02" },
+              { "image": "images/photography/fengjing916/02.jpg", "title": "风景 03" }
             ]
           }
         ]

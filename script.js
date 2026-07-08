@@ -882,7 +882,7 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0, rootMargin: '500px 0px 500px 0px' });
     titles.forEach(function (el) { observer.observe(el); });
   }
 
@@ -1187,7 +1187,7 @@
     var fadeUpEls = document.querySelectorAll('.fade-up');
     var staggerEls = document.querySelectorAll('.stagger-children');
 
-    var observerOptions = { threshold: 0.15, rootMargin: '0px 0px -40px 0px' };
+    var observerOptions = { threshold: 0, rootMargin: '500px 0px 500px 0px' };
 
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -1211,7 +1211,7 @@
             entry.target.classList.add('visible');
           }
         });
-      }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+      }, { threshold: 0, rootMargin: '500px 0px 500px 0px' });
 
       document.querySelectorAll('.narrative-item').forEach(function (el) {
         narrativeObserver.observe(el);
@@ -1226,7 +1226,7 @@
           entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    }, { threshold: 0, rootMargin: '500px 0px 500px 0px' });
 
     document.querySelectorAll('.narrative-item:not(.visible)').forEach(function (el) {
       narrativeObserver.observe(el);
@@ -1620,6 +1620,43 @@
     setTimeout(initCoverImageStack, 100);
   }
 
+})();
+
+// === Image preloader: prefetch images 800px before they enter viewport ===
+(function() {
+  var prefetched = {};
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      var section = entry.target;
+      var imgs = section.querySelectorAll('img[loading="lazy"]');
+      imgs.forEach(function(img) {
+        var src = img.getAttribute('src') || img.dataset.src;
+        if (!src || prefetched[src]) return;
+        prefetched[src] = true;
+        // Use link prefetch to warm browser cache
+        var link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.as = 'image';
+        link.href = src;
+        document.head.appendChild(link);
+      });
+      observer.unobserve(section);
+    });
+  }, { rootMargin: '800px 0px 800px 0px' });
+
+  function observeSections() {
+    var sections = document.querySelectorAll('.section');
+    sections.forEach(function(section) {
+      observer.observe(section);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', observeSections);
+  } else {
+    observeSections();
+  }
 })();
 
 // === Image fade-in on load ===

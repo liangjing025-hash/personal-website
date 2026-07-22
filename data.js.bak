@@ -1,0 +1,1035 @@
+APP_DATA = {
+  "site": {
+    "title": "Hi,there!  I'Hazel",
+    "subtitle": ""
+  },
+  "navLinks": [
+    {
+      "id": "cover",
+      "label": "Hiii"
+    },
+    {
+      "id": "personal",
+      "label": "个人信息"
+    },
+    {
+      "id": "matcher",
+      "label": "AI匹配器"
+    },
+    {
+      "id": "skills",
+      "label": "个人技能"
+    },
+    {
+      "id": "experience",
+      "label": "工作&项目经历"
+    },
+    {
+      "id": "research",
+      "label": "科研经历"
+    },
+    {
+      "id": "portfolio",
+      "label": "作品集"
+    },
+    {
+      "id": "siteFooter",
+      "label": "Lovely to meet u"
+    }
+  ],
+  "cover": {
+    "title": "welcome to my channel,\nI've been waiting for you a long time",
+    "buttonText": "let's explore more"
+  },
+  "personalInfo": {
+    "title": "About Me",
+    "tagline": "Hardworking and a total animal lover.",
+    "avatar": "待填写",
+    "name": "梁婧",
+    "birthday": "2005-02",
+    "age": "待填写",
+    "photos": [
+      {
+        "url": "images/personal-photos/photo_01.webp",
+        "title": ""
+      },
+      {
+        "url": "images/personal-photos/photo_02.webp",
+        "title": ""
+      },
+      {
+        "url": "images/personal-photos/upload_20260719122223_e872a9.webp",
+        "title": ""
+      },
+      {
+        "url": "images/personal-photos/photo_04.webp",
+        "title": ""
+      },
+      {
+        "url": "images/personal-photos/photo_05.webp",
+        "title": ""
+      }
+    ],
+    "contact": {
+      "email": "18982085032@163.com",
+      "phone": "18982085032",
+      "wechat": "wacffgsg555"
+    },
+    "awards": [
+      "2024-2025学年优秀学生奖学金",
+      "2024-2025学年三好学生",
+      "CET4证书",
+      "四川轻化工大学2025年学生网球比赛女子组第五名",
+      "挑战杯大学生创业计划竞赛第三名"
+    ],
+    "education": [
+      "本科 | 2023年9月-2027年6月",
+      "四川轻化工大学",
+      "酿酒工程专业"
+    ],
+    "hobbies": [
+      "🎾 网球 —— 黄体期没有手感版",
+      "🍳 烹饪 —— 喜欢为了一道菜忙活一下午的感觉",
+      "🛒 逛超市 —— 都市丽人的心灵马杀鸡",
+      "☀️ 在有阳光和风的地方发呆 —— 光合作用式摸鱼",
+      "🌊 海边散步+骑车 —— 自封 海风检测仪",
+      "🌲 森林捡果实和叶子 —— 人形松鼠转世",
+      "做一切新奇或幸福的事 —— 超爱看蚂蚁搬家"
+    ]
+  },
+  "workExperience": {
+    "title": "Professional Experience",
+    "items": [
+      {
+        "photo": "images/work_exp_02.webp",
+        "company": "途家网网络技术（北京）有限公司",
+        "position": "商服热线运营",
+        "period": "2025.06 – 2025.09",
+        "details": [
+          "高效处理商家咨询、纠纷及运营问题，严格遵循SOP，业务高峰期保持工单准确率与响应速度，好评率达91%",
+          "多渠道对接商家，快速拆解复杂诉求，提供针对性解决方案，主动跟进至问题闭环，降低重复投诉率",
+          "定期复盘工单类型与处理时长，识别高频问题并优化话术流程，1个月内将平均通话时长压缩至2分钟内",
+          "协调内部资源处理高风险用户，成功将差评倾向转为中立/满意，避免用户流失"
+        ]
+      },
+      {
+        "photo": "images/work_exp_03.webp",
+        "company": "小红书",
+        "position": "自媒体博主",
+        "period": "2024.09 – 2025.07",
+        "details": [
+          "自主完成选题、文案、排版、封面设计与发布全流程，建立内容与视觉规范",
+          "累计点赞收藏8.96万次，单篇最高曝光10万+、赞藏1.3万+；商业软广单篇赞藏7k+、曝光4.5万+",
+          "对接10+品牌方PR，从需求对接到效果复盘全程跟进，品牌复投意愿超50%",
+          "根据评论区与私信用户需求创建跟练合集、个性化回复，建立高粘性粉丝2000+"
+        ]
+      },
+      {
+        "photo": "images/work_exp_01.webp",
+        "company": "成都莹尘传媒",
+        "position": "内容运营（TikTok方向）",
+        "period": "2024.06 – 2024.11",
+        "details": [
+          "负责TikTok海外博主商业广告全流程，包括广告商需求对接、创意策划、文案撰写、视频剪辑与海外拍摄落地",
+          "基于投放数据（互动率、转化率）与用户评论优化内容策略，覆盖5+广告商品，转化率提升15%以上",
+          "跨团队协调拍摄需求，搭建跨境内容执行闭环，形成可复用项目流程"
+        ]
+      }
+    ]
+  },
+  "projectExperience": {
+    "title": "Project Experience",
+    "items": [
+      {
+        "photo": "images/proj_exp_03.webp",
+        "name": "挑战杯大学生创业计划竞赛",
+        "role": "队长 / 主要负责人 | 2026.01 – 2026.03",
+        "details": [
+          "Situation  \n2025年，国家推进“美育浸润”与社区文化振兴战略，但自贡、宜宾等城市社区的文化服务供给存在明显断层： \n老年人：有大量空闲时间，对音乐兴趣浓厚，但市场上几乎没有面向零基础老人的专业辅导班； \n幼儿家长：希望孩子接受艺术启蒙，但孩子兴趣多变，家长担心“报了名学几天就不想学了”，试错成本高； \n年轻人：对舞蹈、声乐等体验有需求，但“一个人去太尴尬”“怕自己是小白”，缺乏低门槛的社交型体验场景。 \n我们依托四川轻化工大学音乐学院资源与“松鸣工作室”的运营经验，以音乐服务为切口，探索“路演引流 + 教学转化 + 公益沉淀”的轻资产社区服务模型。",
+          "Task  在两个月内（2026.01—2026.03），通过三场差异化路演分别触达中老年、幼儿家长、年轻人三个群体，以最低成本验证市场需求，采集真实转化数据。",
+          "Action  \n第一场：中老年专场 · 公园怀旧音乐会 选址公园晨练及傍晚人流高峰时段，用A3纸打印歌词谱并以落地衣架展示，配备专业音响设备。曲目定为《甜蜜蜜》《真心英雄》《铁血丹心》及《东方红》《红星闪闪》等怀旧金曲，营造“露天KTV”式跟唱氛围。现场邀约8名老人参与免费试课，试课中提供大屏幕第一视角指法跟练视频，解决“记不住”难题。\n 第二场：亲子专场 · 商场气球引流 选址商场儿童游乐区，以“加微信送气球”为引流手段（100个气球成本80元）。现场由音乐专业学生引导小朋友体验乐器或舞蹈，沟通话术以“孩子乐感很好”“手指长适合学钢琴”等肯定性评价切入。共送出60个气球，留存42个有效微信，最终转化8名学员报名“随心拼”课程（定价为常规课70%，毛利率约35%，靠续课盈利）。 \n第三场：青年专场 · Kpop快闪与社群运营 线上发起“商圈Kpop随舞挑战”话题预热，线下以快闪形式展开。先由工作室舞蹈学生跳Kpop暖场，再主动邀请有意愿的围观群众加入共舞。活动后建立“i人社交群”，持续发布热舞推荐、舞室实拍及老师自荐视频等内容，群内咨询一一回复。共计47人进群，6人到店体验。",
+          "Result  \n中老年群体通过公园路演及免费试课，以8名试课老人为基础，经口碑裂变新增4人，最终12人报名一学期课程。\n幼儿家长群体通过气球引流获得42个有效微信，经过线上沟通转化8名学员。\n青年群体通过快闪活动吸引47人加入社群，最终6人参加线下体验课。\n全项目累计转化26名学员，三场路演直接成本不足500元，验证了该轻资产模式在财务上的可行性。",
+          "复盘反思 \n问题一：“随心拼”产品设计与供给能力存在矛盾。 幼儿选课方向分散，涵盖钢琴、声乐、舞蹈、非洲鼓等多个品类，而工作室以一对一教学为主，排课管理成本远超预期。改进方向为改为“限定品类加固定时段”的拼团模式，使产品设计与师资供给能力相匹配。 \n问题二：社群运营的“最后一公里”断裂。 6名年轻人到店体验后，团队未建立后续跟进机制，前期引流产生的势能被浪费。改进方向为建立标准化体验后回访SOP，在24小时内完成首次跟进。 \n问题三：实物引流的用户留存率偏低。 以送气球方式获取的60个微信中，最终留存仅42个，留存率70%，部分用户属于“薅羊毛”性质。改进方向为用“我把孩子体验的视频发给您”等内价值替代实物诱饵，前置筛选有真实意向的用户。 核心认知： 产品设计不仅要考虑用户需求，更要时刻审视供给端是否具备承载能力，这是我从该项目中获得的最重要的商业认知。"
+        ]
+      },
+      {
+        "photo": "images/proj_exp_02.webp",
+        "name": "卧式换热器设计",
+        "role": "负责人 | 2025.10 – 2025.12",
+        "details": [
+          "零基础（无CAD、无化工设备知识）自主查阅书籍、B站视频、学习CAD绘图技巧、联系网友获取插件，提前30天完成课程设计",
+          "完成1000+零部件参数清洗与公式建模，搭建Excel参数计算体系，成绩超越85%同专业同学",
+          "使用AI进行零件参数错误检查与绘图逻辑纠偏，验证参数合理性，提升设计质量"
+        ]
+      },
+      {
+        "photo": "images/proj_exp_04.webp",
+        "name": "AI岗位匹配器设计",
+        "role": "独立开发 | 2026.06 – 2026.07",
+        "details": [
+          "Situation  \nHR 与技术面试官在简历筛选中长期面临两大矛盾： \n语义鸿沟：关键词匹配无法识别\"能力等价但术语不同\"的候选人，如\"用户增长\"与\"DAU 提升\"在关键词层面毫无交集，但能力高度等价； \n黑盒幻觉：LLM 直接打分缺乏推理链条，决策者面对一个分数却无法溯源\"为什么\"，导致信任度低，不敢采信。 \n此外，评估标准随人和时间漂移——同一位评估者上午和下午对同一维度的权重感知可能完全不同，同一批简历可能被不同隐性标准评判，缺乏结构化、可复现的度量体系。",
+          "Target  \n效率：将单岗位 20 份简历的筛选耗时从人工约 20-30 分钟压缩至 45-65 秒； \n召回：通过语义检索找回约 15-20% 的关键词零命中但能力匹配的隐性候选人； \n可信度：100% 维度评级附带简历原文证据，让 HR 从\"信分数\"变为\"信证据\"； \n一致性：通过前置标尺锁定评估标准，消除同一批简历的主观漂移。",
+          "Action  \n1. 需求洞察：重构 JD 为可量化的评估体系 深度拆解目标岗位能力模型，将 JD 中的自然语言需求解构为「硬技能 + 软素质」双维框架。采用三层关键词锚定法：从 JD 直接提取显性要求并分配权重；从显性要求推导一层隐性能力，严格禁止二级延伸以避免维度膨胀；当 JD 信息不足时基于岗位常识补全维度，但强制标注\"补全\"以区分依据来源。 沉淀了一套\"高权重冷门词\"库——识别出\"从0到1\"\"闭环\"\"带团队\"等低频高信号词，在评估中给予更高权重，让系统从\"平等对待每个词\"进化为\"识别真实需求优先级\"。 \n2. 快速搭建：两阶段 Agent + 语义 RAG 的架构设计 AI 被定义为\"结构化面试官\"——先拆解 JD 定标尺，再基于标尺评估每一位候选人。 Phase 1（定标尺） ：LLM 仅分析 JD，输出带权重的结构化评估维度及原文依据，内置 6 项自查清单作为质量门禁，未通过则自动重试，确保进入下游的数据是高质量的； Phase 2（量人才） ：先通过语义向量检索筛选每位候选人最相关的 Top-K 段经历，再送入 LLM 评分。这一设计的核心权衡在于：全量文本喂入会稀释注意力、浪费 token；先粗筛后精判（类似推荐系统的召回→排序）则兼顾了成本与精准度； 批量匹配：将 N 次串行调用合并为 1 次批量评估，以 20 份简历为例，LLM 调用从 21 次降至 2 次，Token 消耗节省约 90-95%； 反馈闭环：用户标记\"评分偏离\"时，复盘 Agent 自动执行三步归因——问题归类 → 根因定位 → 生成结构化补丁。补丁经置信度与多人验证双重过滤后自动注入对应阶段的 System Prompt，实现下一次匹配即刻生效、无需重新上线代码的自进化机制。 \n3. 迭代优化 邀请目标用户内测，基于反馈驱动迭代。针对\"维度权重偏移\"\"证据门槛过松/过严\"等问题，通过上述补丁机制动态调整，累计完成多轮 Prompt 与检索策略的闭环优化。",
+          "Result  \n核心指标：单岗位 20 份简历的筛选耗时从人工约 20-30 分钟压缩至 45-65 秒（压缩比约 20-30:1）；\n语义检索相比纯关键词匹配提升约 15-20% 的隐性召回；\n每项评级 100% 附带可溯源原文证据； \n用户反馈：内测用户最认可\"证据链展示\"（每条评级下方直接引用简历原文）和\"匹配经历高亮\"（按工作/实习/项目分板块展示），表示匹配结果从\"仅供参考\"升级为\"可辅助决策\"；",
+          "方法沉淀： \n《两阶段评估 Prompt 模板库》——可快速复用于不同岗位序列； \n《高权重岗位能力词典》——指导 RAG 检索中的 Query 增强与维度提炼； \n《反馈归因与补丁注入 SOP》——可复制的 AI 产品自进化路径；\n《语义检索阈值调优手册》——Top-N 取值与检索策略的设计经验。"
+        ]
+      },
+      {
+        "photo": "images/upload_20260722113103_5069ca.webp",
+        "name": "校园新生教材团购项目",
+        "role": "领航学姐 -2025年9月",
+        "details": [
+          "【项目概述】 \n以辅导员认证的“领航学姐”身份切入新生教材采购市场，针对122名新生中官方新书（980元）价格过高、校外书贩（300-400元）信任度低且版本易错、直系学长跨校区送书难联系难的三重痛点，设计了一套0仓储、0物流、高转化的轻资产团购方案。\n15天内转化53名客户，市场渗透率43.4%，净利润8000元，0退单0差评。",
+          "【销售逻辑与策略】\n 信任前置，私域蓄水：以“领航学姐”身份顺利提前15天进入新生专业群，并持续输出入学攻略等高价值内容，引导新生私信添加个人QQ，在零广告投放的情况下沉淀50%+新生好友，建立“可信赖的自己人”人设，而非“卖书的商人”\n 差异化产品定位：不打价格战（定价309-399元，与书贩子300-400元持平），主卖 “确定性”——利用“上过同样课程”的经验优势，建立教材数据库，将隐性知识转化为竞争壁垒，解决新生“买错版本”的核心焦虑 \n阶梯定价+社交裂变：设计1-4人拼团体系（399/369/339/309元），精准锚定大学宿舍的4人寝场景。单人购买不具价格优势（接近书贩子上限），但4人团价格极具竞争力（309元），制造 “不拼团就是亏损” 的心理博弈，驱动寝室内部自发传播，实现零成本获客",
+          "【风险预测与应对】 \n版本错发风险：预判上游二手书市场的粗放特性（书贩子按“书名+出版社”堆货，无法精确到ISBN），实施分级采购策略——70%宽泛类课程只约定“书名+出版社”以降低配货难度换取底价，30%精确类课程单独锁定版次并前置约定 “错发包换、运费商家承担” ，将最棘手的售后成本合法转移给供应商 \n供应链缺货/时间风险：预设10天军训期作为缓冲窗口，约定报到当天完成首发，为漏发补发预留充足时间；设定报到前3天刚性截单，截单后定金不退，规避自身库存积压风险 \n现金流风险：采用50%定金制锁定真实购买意愿，同时覆盖向供应商垫付的成本，实现零自有资金启动",
+          "【突发事件处理】 \n供应商漏发/错发：分发现场出现数例单本书遗漏。双重响应机制——①个人层面：当场自费购买饮料安抚受影响同学，以诚意守住“学姐靠谱”的口碑底线；②供应链层面：详细记录遗漏书目，强硬要求供应商3日内快递补发，运费及换货成本由供应商承担 \n结果：0退单0差评，受安抚的同学因危机处理中的真诚态度，主动带来额外转介绍订单——验证了“危机处理得当即最佳二次营销”的判断"
+        ]
+      }
+    ]
+  },
+  "aiMatcher": {
+    "title": "AI 岗位匹配器 — 项目作品集",
+    "matcherTitle": "AI Job Matcher",
+    "matcherSubtitle": "粘贴岗位JD，AI将分析岗位需求并与候选人经历进行匹配评分",
+    "placeholder": "请粘贴岗位JD描述（例如：岗位职责、任职要求等）...",
+    "buttonText": "生成匹配报告",
+    "loadingText": "AI分析中，请稍候…",
+    "panelTitle": "📋 JD 信息不足，请补充以下信息以提升匹配准确性",
+    "supplementPlaceholder": "请在此回答以上问题，补充岗位相关信息...",
+    "resubmitText": "补充信息并重新匹配",
+    "skipText": "跳过补充，直接匹配"
+  },
+  "researchExperience": {
+    "title": "Research Experience",
+    "items": [
+      {
+        "photo": "images/research/research_01.webp",
+        "title": "酿酒工业分析",
+        "date": "",
+        "category": "",
+        "description": "1. 滴定分析全流程：熟练掌握酸碱滴定、反滴定及费林氏容量法（直接滴定），精通指示剂法与pH计电位滴定双模式判定终点。\n2. 样品前处理与分离：独立完成酸水解法、皂化回流法、全玻璃蒸馏等复杂前处理操作；熟练运用乙酸锌/亚铁氰化钾沉淀及三氯乙酸除蛋白技术，有效消除复杂基质干扰。\n3. 分析仪器操作规范：熟练操作pH计（两点校正法）及分光光度计（福林酚法，680nm比色测定），掌握恒温水浴精准控温及酶促反应条件控制。\n4. 数据质控与统计学评价：运用F检验、t检验进行方法精密度与系统误差分析；独立设计加标回收实验（回收率95%-105%）；建立并验证标准曲线（相关系数R²≥0.999），掌握Grubbs检验法剔除异常值。\n5. 工艺关联与工程应用：能将总酸、总酯、还原糖、淀粉及蛋白酶活力等核心指标检测与酿酒发酵工艺调控、产品质量评估紧密结合，具备运用分析手段解决酿酒工程实际问题的初步能力。"
+      },
+      {
+        "photo": "images/research/research_02.webp",
+        "title": "生化分离工程实验",
+        "date": "",
+        "category": "",
+        "description": "1. 细胞破碎与固液分离：掌握超声波细胞破碎技术（功率300W，间歇破碎模式），熟练操作离心机进行菌体收集与洗涤，通过OD₆₂₀nm变化评价破碎效率。\n2. 溶媒萃取分离工艺：独立完成青霉素的溶媒萃取-反萃取循环操作（pH2.0→6.8→2.0梯度调节），熟练使用分液漏斗进行液-液萃取，掌握pH精细调控对分配系数的影响及有机相脱水干燥技术。\n3. 双水相萃取系统：掌握PEG-磷酸盐双水相系统的构建与相平衡调控，熟练配制考马斯亮蓝显色剂并建立牛血清白蛋白标准曲线（595nm比色），计算分配系数与萃取收率。\n4. 吸附层析分离纯化：熟练操作大孔吸附树脂（D101型）的预处理、湿法装柱、动态吸附-解吸全流程；掌握回流提取、减压浓缩、正丁醇萃取等中药有效成分提取精制技术。\n5. 检测与定量分析：熟练使用紫外-可见分光光度计进行核酸/蛋白质定量（OD₂₄₈nm、OD₅₉₅nm、OD₆₂₀nm），建立标准曲线进行目标物浓度计算与收率核算。\n6. 分离纯化全流程认知：具备从「细胞破碎→固液分离→初步纯化→精细分离→产品精制」完整生物下游处理工艺的设计与操作能力，理解分配系数、收率、浓缩倍数等工程评价指标。"
+      },
+      {
+        "photo": "images/research/research_03.webp",
+        "title": "化工原理实验",
+        "date": "",
+        "category": "",
+        "description": "1. 化工单元操作能力：掌握离心泵开停车规范与性能测定、套管换热器传热系数测定、精馏塔全回流/部分回流操作与参数调节，熟悉气缚、液泛等异常工况识别与处理。\n2. 流体力学与传质传热实验技能：能够独立完成管路阻力测定（直管摩擦系数λ、局部阻力系数ζ）、流量计标定与校正，以及气-液对流传热系数α的测定与Nu-Re关联式拟合。\n3. 精馏分离与过程评价能力：能够通过调节回流比、进料位置、加热功率等参数实现指定分离任务，熟练进行塔顶塔釜取样与浓度分析（折光率/色谱法），并运用q线法计算理论塔板数、测定全塔效率。\n4. 工程测试与仪表使用能力：熟练使用转子流量计、涡轮流量计、孔板流量计、热电偶温度计、压差计、功率表等化工过程常用仪表进行温度、压力、流量、功率等参数的综合测量。\n5. 工程数据处理与分析能力：掌握实验误差分析、有效数字运算及最小二乘法数据拟合，熟练运用Origin进行双对数/半对数坐标作图与曲线回归，能够根据实验结果评价设备性能并提出优化建议。"
+      },
+      {
+        "photo": "images/research/research_04.webp",
+        "title": "白酒品评与勾兑实验",
+        "date": "",
+        "category": "",
+        "description": "1. 白酒感官品评能力：掌握白酒尝评「色、香、味、格」四步评价体系，熟练运用初嗅法、摇杯法、手搓法、滤纸法等多种闻香技巧，以及平铺法、蠕动法等口尝技巧，具备对十二大香型白酒典型风格特征的识别与判别能力。\n2. 白酒质量评价与等级判定：能够按照量化评分标准（外观10分、香气25分、口味50分、风格15分）对白酒质量差进行分级鉴别，独立完成多轮次明品与盲品，准确判断酒体缺陷并给出品评结论。\n3. 异杂味识别与成因分析：能够辨别白酒中苦、辣、酸、涩、油、霉、糠、腥、焦糊等常见异杂味，并能结合原辅料处理、发酵条件、蒸馏操作等工艺环节分析其产生原因，具备从感官异常反推工艺问题的逆向思维能力。\n4. 白酒勾兑与调味操作：掌握基础酒选择原则及大宗酒、带酒、搭酒、调味酒的功能定位，熟练运用折算率公式完成不同酒精度间的换算与加浆计算，能够通过小组品评筛选最优配比方案并制定配方。\n5. 感官与工艺关联分析能力：能将香型特征与原料选择、糖化发酵剂类型、发酵设备及工艺特点（如清蒸清烧、续糟配料、四高等）建立对应关系，形成「感官评价→工艺溯源→质量改进」的系统思维。"
+      },
+      {
+        "photo": "images/research/research_05.webp",
+        "title": "果酒酿造工艺研究",
+        "date": "",
+        "category": "",
+        "description": "1. 果酒酿造工艺操作：独立完成从原料分选、清洗、破碎榨汁、果汁处理（SO₂抑菌、果胶酶澄清）、酵母活化到控温发酵的完整果酒酿造全流程操作。\n2. 工艺条件优化能力：运用单因素实验法分别考察初始pH（3.0-5.0）、酵母接种量（0.01-0.05g/100mL）、初始糖度（5%-25%）对果酒品质的影响，并结合正交试验设计优化多因素组合，具备系统的工艺参数筛选与优化能力。\n3. 分析检测操作技能：熟练使用酒精计法测定酒精度、手持式折光仪/糖度计测定糖度、pH计测定酸度，掌握福林-肖卡试剂比色法（760nm）测定多酚含量的标准曲线建立与定量分析技术。\n4. 感官品评与质量控制：能够从色泽、香气、澄清度、风味、口味、酒精度六个维度对果酒进行感官评分（满分100分），综合判断产品质量等级。\n5. 实验设计与数据处理：具备单因素实验与正交试验（L₉正交表）的设计能力，能够通过极差分析（R值）确定各因素对品质指标影响的主次顺序及最优水平组合。"
+      },
+      {
+        "photo": "images/research/research_06.webp",
+        "title": "精酿啤酒工艺研究",
+        "date": "",
+        "category": "",
+        "description": "1. 精酿啤酒小试酿造全流程操作：独立完成从麦芽粉碎、糖化（料水比控制、目标糖度8°P）、麦汁过滤、煮沸（60min）、酒花分次添加、冷却、接种到发酵（7天主发酵）的全流程酿造操作。\n2. 工艺优化实验设计能力：运用单因素实验法考察酒花添加量、果汁添加量、麦芽配比对品质的影响，并结合L₉(3³)正交表进行三因素三水平优化，具备系统的工艺参数筛选与多因素交互效应分析能力。\n3. 酒花分次添加工艺操作：掌握煮沸过程三次酒花添加技术（50min苦花、30min兼香、5min香花），理解不同添加时相对苦味贡献与香气保留的影响规律。\n4. 分析检测与过程监控技能：熟练使用手持折光仪/比重计监测糖化终点与发酵进程，通过初始糖度与终糖度计算发酵率，使用pH计测定酸度，具备发酵过程关键指标跟踪能力。\n5. 啤酒感官品评能力：能够从外观（色泽、澄清度）、泡沫（起泡性、持久性）、香气（酒花香、果香、麦香）、口感、风味协调性五个维度进行系统感官评价，运用加权评分法量化产品质量。\n6. 数据驱动的工艺决策能力：通过单因素趋势曲线判断各因素最优水平拐点，利用正交极差分析法（K值、R值）确定因素影响主次顺序及最优参数组合，具备将实验数据转化为工艺决策的能力。"
+      },
+      {
+        "photo": "images/research/research_07.webp",
+        "title": "微生物技术实验",
+        "date": "",
+        "category": "",
+        "description": "1. 微生物培养基配制：掌握细菌（牛肉膏蛋白胨）、放线菌（高氏Ⅰ号）、酵母菌（马铃薯葡萄糖）、霉菌（察氏）四大类微生物培养基的配方计算、称量、溶化、pH调节（酸碱滴定法）、分装、加塞包扎及高压蒸汽灭菌（0.103MPa，121℃，20min）全流程操作。\n2. 消毒灭菌与无菌操作：掌握干热灭菌（160-170℃，2h）和高压蒸汽灭菌的原理与操作规范，熟练制备无菌培养皿、无菌移液管等器材，具备严格的微生物无菌操作意识。\n3. 微生物分离纯化技术：熟练运用平板划线分离法（分区划线技术）和稀释涂布平板法（10倍系列稀释至10⁻⁶，涂布棒均匀涂布）从混合菌样中分离纯种，获得单菌落。\n4. 染色与显微观察：掌握革兰氏染色法（初染→媒染→脱色→复染四步法），能够区分革兰氏阳性菌（G⁺，蓝紫色）与阴性菌（G⁻，红色）；熟练制作水浸片，使用油镜（香柏油浸没，NA>1）观察细菌、放线菌、酵母菌及霉菌（曲霉、青霉、根霉、毛霉）的个体形态与繁殖结构。\n5. 菌落形态鉴别：能够从菌落大小、边缘、隆起程度、表面结构、颜色及生长密度等特征区分细菌、放线菌、酵母菌和霉菌四大类微生物。\n6. 微生物计数与大小测定：掌握血细胞计数板显微镜直接计数法（测定酵母菌细胞数与出芽率），熟练运用目镜测微尺与镜台测微尺校正技术进行微生物大小测定（μm级），具备定量微生物检测能力。"
+      },
+      {
+        "photo": "images/research/research_08.webp",
+        "title": "仪器分析实验",
+        "date": "",
+        "category": "",
+        "description": "1. 紫外-可见分光光度法：掌握邻二氮菲光度法测定铁含量的标准曲线法（工作曲线法），熟练配制系列标准溶液，在特定波长（如510nm、500nm）测定吸光度并建立A-c定量关系，具备完整的光度法分析能力。\n2. 配合物组成研究：掌握摩尔比法（饱和法）和等摩尔连续变化法测定配合物配位比的原理与操作，能够通过外推法从A-[R]/[M]或A-f关系图确定配位数n，具备配合物化学计量关系研究能力。\n3. 自动电位滴定法：掌握K₂Cr₂O₇氧化还原滴定Fe²⁺的自动电位滴定操作，熟练使用铂电极（指示电极）和甘汞电极（参比电极）组成的原电池系统，能够依据E-V曲线突跃（0.86～1.07V）准确判断滴定终点。\n4. pH电位法：掌握酸度计（pH计）的使用与校准，熟练运用一点定位法和两点定位法进行温度补偿与电极校正，理解pH的实用定义（pHx = pHs + ΔE/0.059），具备溶液pH准确测定的能力。\n5. 气相色谱分析：熟练操作GC7900气相色谱仪（热导检测器），掌握汽化室、柱箱、检测器温度设置与桥电流调节，熟练使用微量进样器（2μL）进样，运用归一化法（峰高×保留时间×校正因子）进行醇系物（甲醇、乙醇、正丙醇、正丁醇）定量分析。\n6. 高效液相色谱分析：掌握反相高效液相色谱（C₁₈柱，254nm紫外检测）分离苯系物（苯、甲苯、乙苯）的操作流程，熟练运用外标法（单点校正法：Cx = Ax/A标×C标）进行定量分析，具备液相色谱基本操作与数据处理能力。"
+      },
+      {
+        "photo": "images/research/research_09.webp",
+        "title": "生物化学技术实验",
+        "date": "",
+        "category": "",
+        "description": "1. 蛋白质等电点沉淀制备：掌握牛奶中酪蛋白的等电点沉淀制备（pH4.7醋酸-醋酸钠缓冲体系），熟练操作离心洗涤、抽滤干燥等步骤，具备蛋白质粗提与纯化的基本能力。\n2. 双缩脲法蛋白质定量：掌握双缩脲法测定蛋白质浓度的原理与操作（540nm比色），熟练配制牛血清蛋白标准系列并建立标准曲线，具备蛋白质浓度准确测定的能力。\n3. 薄层层析（TLC）分离技术：掌握硅胶G薄板的制备（涂布→自然晾干→110℃活化）、点样、上行展层及茚三酮显色全流程，能够根据Rf值对氨基酸进行定性鉴定。\n4. CTAB法提取细菌DNA：掌握CTAB法提取细菌总DNA的全流程（溶菌酶破壁→SDS裂解→CTAB除蛋白多糖→酚/氯仿抽提→异丙醇沉淀→乙醇洗涤），熟练操作低温离心、水浴等设备。\n5. 琼脂糖凝胶电泳：掌握凝胶制备（1%~1.5%）、点样、电泳（150V）及EB/生物染料染色操作，能够在紫外成像仪下观察DNA条带并拍照记录，具备DNA质量检测能力。\n6. PCR基因扩增：掌握PCR反应体系配制（模板DNA、引物、dNTPs、Taq酶、Mg²⁺、buffer）及扩增程序设定（变性→退火→延伸循环），能够将PCR产物进行电泳检测。\n7. 二苯胺法DNA定量：掌握二苯胺法测定DNA含量的原理与操作（沸水浴10min，595nm比色），能够通过标准曲线法进行DNA浓度定量分析。\n8. 多酚氧化酶提取与酶学性质研究：掌握马铃薯多酚氧化酶的匀浆提取及硫酸铵盐析纯化方法，能够系统考察底物专一性、酶浓度、底物浓度、温度、pH及抑制剂（三氯乙酸、硫脲）对酶活力的影响，初步具备酶促反应动力学研究能力。\n9. 定磷法测定发酵无机磷消耗：掌握钼蓝法定磷的原理与操作（660nm比色），通过监测发酵过程中无机磷含量的动态变化，理解酵母发酵对磷的利用规律。"
+      },
+      {
+        "photo": "images/research/research_10.webp",
+        "title": "发酵工程实验",
+        "date": "",
+        "category": "",
+        "description": "1. 木质纤维素预处理与酶解糖化：掌握酿酒高粱秸秆的碱预处理（0.75% NaOH，120℃高压处理20min）及纤维素酶（Cellic CTec3 HS）糖化操作（pH4.8，50℃，2h），具备生物质资源化利用的基本实验能力。\n2. 还原糖定量分析（DNS法）：掌握DNS试剂的配制与还原糖测定方法，熟练操作分光光度计进行比色分析，能够通过标准曲线法计算糖化液中的还原糖含量。\n3. 微生物生长曲线测定与动力学分析：掌握比浊法（OD600nm）测定细菌生长量的方法，能够绘制细菌生长曲线、底物消耗曲线，并计算比生长速率（μ = 1/X·dX/dt），具备发酵过程动力学分析能力。\n4. 乳酸菌培养与细菌素活性检测：掌握MRS培养基的配制与pH调节（4.0-8.0），熟练操作双层琼脂平板法结合牛津杯法检测细菌素的抑菌活性，能够通过抑菌圈直径（十字交叉法测量）评价细菌素产量。\n5. 发酵条件单因素优化：运用单因素实验法考察pH、接种量等关键参数对细菌素产量的影响，具备通过抑菌圈直径指标确定最优发酵条件的能力。\n6. 无菌操作与灭菌技术：熟练操作高压蒸汽灭菌、无菌工作台酒精灯火焰接种等微生物无菌操作技术。"
+      },
+      {
+        "photo": "images/research/research_11.webp",
+        "title": "葡萄酒工艺实验",
+        "date": "",
+        "category": "",
+        "description": "1. 干红葡萄酒小容器酿造全流程操作：独立完成从原料分选、除梗破碎（70%破碎率）、SO₂抑菌（50-60mg/L）、果胶酶处理、酵母接种（1%优选酵母）到控温浸渍发酵（20-25℃，5天，每日搅拌皮渣帽5次）、分离压榨、酒精发酵（15-18℃至还原糖<2g/L）的全流程酿造操作。\n2. 发酵过程监控与管理：熟练使用比重计监测发酵进程，掌握糖度与温度的双重监控方法，能够根据发酵记录表（温度、比重、时间）判断发酵启动与终止节点。\n3. 陈酿管理与SO₂调控：掌握葡萄酒陈酿过程中游离SO₂的调控技术（30-40mg/L），熟练操作分离换瓶、氮气保护（防氧化）及明胶澄清处理，明确CO₂对葡萄酒品质的影响。\n4. 还原糖测定（裴林试剂热滴定法）：掌握裴林试剂A、B液直接滴定法测定葡萄酒及原料中还原糖含量，熟练操作亚甲基蓝指示剂终点判断，具备糖度精准定量能力。\n5. 总酸测定（酸碱滴定法）：掌握以酚酞为指示剂、NaOH标准溶液滴定葡萄酒总酸的操作，能够以酒石酸计（系数0.075）计算总酸含量（g/L）。\n6. 小容器酿造工艺设计与记录：掌握小容器酿造规范下的工艺参数控制（酒度12-13%、总酸5.4-6.1g/L），具备完整的实验记录与数据整理能力。"
+      },
+      {
+        "photo": "images/research/research_12.webp",
+        "title": "白酒生产工艺实操",
+        "date": "",
+        "category": "",
+        "description": "1. 工艺参数把控能力：精准管控水分、温度、发酵周期，判断粮食糊化、发酵成熟标准，排查夹生、酸败等工艺问题；\n2. 微生物应用能力：理解酵母厌氧产酒机理，把控菌种活性适宜条件；\n3. 分离提纯实操能力：基于沸点差原理规范蒸馏除杂，分级收集原酒；\n4. 原料优化利用思维：掌握二轮底发酵工艺，提升原料出酒利用率；\n5. 标准化实验实操与现场问题分析、工艺优化判断能力。"
+      }
+    ]
+  },
+  "mySkills": {
+    "title": "Technical Skills",
+    "description": "技能栈与工具链",
+    "categories": [
+      {
+        "name": "",
+        "iconPlaceholder": true,
+        "items": [
+          {
+            "name": "GitHub",
+            "url": "https://github.com/dashboard"
+          },
+          {
+            "name": "DeepSeek",
+            "url": "https://www.deepseek.com/"
+          },
+          {
+            "name": "即梦AI",
+            "url": "https://dreamina.capcut.com/ai-tool/home?type=image&workspace=0"
+          },
+          {
+            "name": "Codrops",
+            "url": "https://tympanus.net/codrops/hub/all/"
+          },
+          {
+            "name": "VS Code",
+            "url": "https://code.visualstudio.com/thank-you?dv=win64user"
+          },
+          {
+            "name": "AutoCAD",
+            "url": "https://www.autodesk.com.cn/products/autocad/overview"
+          },
+          {
+            "name": "剪映",
+            "url": "https://www.capcut.cn/"
+          },
+          {
+            "name": "Excel",
+            "url": "https://excel.cloud.microsoft/zh-hans/"
+          },
+          {
+            "name": "PowerPoint",
+            "url": "https://powerpoint.cloud.microsoft/zh-hans/"
+          },
+          {
+            "name": "Word",
+            "url": "https://word.cloud.microsoft/zh-hans/"
+          },
+          {
+            "name": "SPSSAU",
+            "url": "https://spssau.com/"
+          },
+          {
+            "name": "Canva",
+            "url": "https://www.canva.com/zh_cn/"
+          },
+          {
+            "name": "Origin",
+            "url": "https://www.originlab.com/"
+          },
+          {
+            "name": "Claude",
+            "url": "https://claude.com/download"
+          },
+          {
+            "name": "Codex",
+            "url": "https://openai.com/zh-Hans-CN/codex/"
+          },
+          {
+            "name": "小红书专业版",
+            "url": "https://pro.xiaohongshu.com/ares/login"
+          },
+          {
+            "name": "TikTok",
+            "url": "https://www.tiktok.com/zh-Hans/"
+          },
+          {
+            "name": "trae",
+            "url": "https://www.trae.com.cn"
+          }
+        ]
+      }
+    ]
+  },
+  "portfolio": {
+    "title": "Portfolio",
+    "tabs": [
+      {
+        "id": "xiaohongshu",
+        "label": "小红书运营"
+      },
+      {
+        "id": "photography",
+        "label": "摄影集"
+      },
+      {
+        "id": "video",
+        "label": "剪辑作品"
+      }
+    ],
+    "xiaohongshu": {
+      "featuredIPs": [
+        {
+          "name": "爆款IP ①",
+          "photos": [
+            "images/xhs-ips/upload_20260721182059_df65bd.webp",
+            "images/xhs-ips/upload_20260721182241_3d0f87.webp",
+            "images/xhs-ips/upload_20260721182245_baed4b.webp",
+            "images/xhs-ips/upload_20260721182249_9bb9a2.webp",
+            "images/xhs-ips/upload_20260721182255_59ed25.webp"
+          ]
+        },
+        {
+          "name": "爆款IP ②",
+          "photos": [
+            "images/xhs-ips/upload_20260721182442_767213.webp",
+            "images/xhs-ips/upload_20260721182447_09572d.webp",
+            "images/xhs-ips/upload_20260721182452_9906d2.webp",
+            "images/xhs-ips/upload_20260721182456_d041a8.webp",
+            "images/xhs-ips/upload_20260721182501_21b869.webp"
+          ]
+        },
+        {
+          "name": "爆款IP ③",
+          "photos": [
+            "images/xhs-ips/upload_20260721182513_c4c57a.webp",
+            "images/xhs-ips/upload_20260721182517_7b993d.webp",
+            "images/xhs-ips/upload_20260721182523_bfdb2c.webp",
+            "images/xhs-ips/upload_20260721182527_b76866.webp",
+            "images/xhs-ips/upload_20260721182532_e35a86.webp",
+            "images/xhs-ips/upload_20260721182537_9bcc58.webp"
+          ]
+        },
+        {
+          "name": "爆款IP ④",
+          "photos": [
+            "images/xhs-ips/upload_20260721182604_c24915.webp",
+            "images/xhs-ips/upload_20260721182610_ec63c4.webp",
+            "images/xhs-ips/upload_20260721182614_31f760.webp"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "title": "账号成果总览",
+          "content": "累计点赞收藏8.96万次；\n\n单篇笔记最高曝光10万+、赞藏1.3万+；\n\n商业合作笔记单篇最高赞藏7000+、曝光4.5万+；\n\n累计对接17个品牌方PR，品牌复投意愿超50%；\n\n沉淀高粘性粉丝2000+",
+          "url": "",
+          "images": [
+            {
+              "url": "images/xhs-sections/account/3.webp",
+              "title": "主页预览"
+            },
+            {
+              "url": "images/xhs-sections/account/4.webp",
+              "title": "粉丝结构"
+            },
+            {
+              "url": "images/xhs-sections/account/1.webp",
+              "title": "作品合集"
+            },
+            {
+              "url": "images/xhs-sections/account/2.webp",
+              "title": "跟练合集"
+            },
+            {
+              "url": "images/xhs-sections/account/5.webp",
+              "title": "商业合作"
+            }
+          ]
+        },
+        {
+          "title": "定位与自我分析",
+          "content": "垂直定位：轻健身 × 健康生活方式。\n\n目标受众为18-26岁在校女学生，关注居家/宿舍健身、饮食管理、自我提升。\n\n个人IP特色：在校大学生亲和零距离 + 生物/医学的可靠背景 + 大基数减肥成功逆袭 + 科学×中式养生 + 穿搭/美妆顾问",
+          "url": "",
+          "images": [
+            {
+              "url": "images/xhs-sections/positioning/1.webp",
+              "title": "定位与自我分析树状图"
+            }
+          ]
+        },
+        {
+          "title": "竞品与差异化策略",
+          "content": "对标竞品：头部健身博主内容较扁平，大多为纯经验分享或纯理论基础；\n\n同量级博主多为单一话题，如瘦脸/揉腹。\n\n我的差异化：以「专业知识+实操经验」破圈，\n\n为粉丝提供个性化的变美/减肥/瘦脸方案，\n\n将内容宽度从「原理讲解+跟练」拓展到「一种健康的生活方式/追求美的生活态度」，\n\n提升内容辨识度与粉丝黏性",
+          "url": "",
+          "images": [
+            {
+              "url": "images/xhs-sections/competition/1.webp",
+              "title": "竞品与差异化策略分析树状图"
+            },
+            {
+              "url": "images/xhs-sections/competition/2.webp",
+              "title": "对标账号拆解表"
+            }
+          ]
+        },
+        {
+          "title": "内容体系与爆款方法",
+          "content": "内容矩阵分为四大板块：\n①跟练系列（核心流量引擎，覆盖全身/局部/燃脂）；\n②饮食系列（快手减脂餐、超市好物推荐）；\n③好物分享：平价好物/软广植入；\n④干货科普（健身误区、饮食搭配逻辑）。\n爆款公式：「痛点共鸣标题 + 真人实拍封面 + 前3秒强钩子 + 评论区互动引导」。\n标题模板示例：「跟练7天腰围小了5cm｜宿舍党友好」「减脂期逛超市必买清单｜均价不到10块」",
+          "url": "",
+          "images": [
+            {
+              "url": "images/xhs-sections/content/1.webp",
+              "title": "选题库"
+            },
+            {
+              "url": "images/xhs-sections/content/2.webp",
+              "title": "爆款笔记拆解表"
+            }
+          ]
+        },
+        {
+          "title": "数据复盘与优化机制",
+          "content": "每篇笔记发布后48小时内进行数据复盘，\n核心跟踪指标：曝光量、点击率、互动率（点赞/收藏/评论）、涨粉数、转化漏斗（曝光→互动→关注）。\n建立月度复盘模板，横向对比同类型笔记数据，提炼高互动内容的共性特征（封面风格、标题结构、发布时间段），\n低效内容分析原因后调整策略，形成「发布→监测→分析→优化」的闭环迭代机制",
+          "url": "",
+          "images": [
+            {
+              "url": "images/xhs-sections/data/1.webp",
+              "title": "自由笔记拆解表"
+            }
+          ]
+        }
+      ]
+    },
+    "photography": {
+      "categories": [
+        {
+          "name": "",
+          "photos": [
+            {
+              "image": "images/photography/renwen169/02.webp",
+              "title": "人文 02"
+            },
+            {
+              "image": "images/photography/renwen169/03.webp",
+              "title": "人文 03"
+            },
+            {
+              "image": "images/photography/renwen169/04.webp",
+              "title": "人文 04"
+            },
+            {
+              "image": "images/photography/renwen169/05.webp",
+              "title": "人文 05"
+            },
+            {
+              "image": "images/photography/renwen169/01.webp",
+              "title": "人文 01"
+            },
+            {
+              "image": "images/photography/renwen169/06.webp",
+              "title": "人文 06"
+            },
+            {
+              "image": "images/photography/renwen169/08.webp",
+              "title": "人文 08"
+            },
+            {
+              "image": "images/photography/renwen169/11.webp",
+              "title": "人文 11"
+            },
+            {
+              "image": "images/photography/renwen169/07.webp",
+              "title": "人文 07"
+            },
+            {
+              "image": "images/photography/renwen169/09.webp",
+              "title": "人文 09"
+            },
+            {
+              "image": "images/photography/renwen169/10.webp",
+              "title": "人文 10"
+            },
+            {
+              "image": "images/photography/renwen169/12.webp",
+              "title": "人文 12"
+            },
+            {
+              "image": "images/photography/renwen169/13.webp",
+              "title": "人文 13"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "photos": [
+            {
+              "image": "images/photography/renwen916/01.webp",
+              "title": "人文 14"
+            },
+            {
+              "image": "images/photography/renwen916/05.webp",
+              "title": "人文 18"
+            },
+            {
+              "image": "images/photography/renwen916/02.webp",
+              "title": "人文 15"
+            },
+            {
+              "image": "images/photography/renwen916/03.webp",
+              "title": "人文 16"
+            },
+            {
+              "image": "images/photography/renwen916/04.webp",
+              "title": "人文 17"
+            },
+            {
+              "image": "images/photography/renwen916/06.webp",
+              "title": "人文 19"
+            },
+            {
+              "image": "images/photography/renwen916/07.webp",
+              "title": "人文 20"
+            },
+            {
+              "image": "images/photography/renwen916/08.webp",
+              "title": "人文 21"
+            },
+            {
+              "image": "images/photography/renwen916/09.webp",
+              "title": "人文 22"
+            },
+            {
+              "image": "images/photography/renwen916/10.webp",
+              "title": "人文 23"
+            },
+            {
+              "image": "images/photography/renwen916/11.webp",
+              "title": "人文 24"
+            },
+            {
+              "image": "images/photography/renwen916/13.webp",
+              "title": "人文 26"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "photos": [
+            {
+              "image": "images/photography/meishi169/02.webp",
+              "title": "美食 02"
+            },
+            {
+              "image": "images/photography/meishi169/01.webp",
+              "title": "美食 01"
+            },
+            {
+              "image": "images/photography/meishi169/03.webp",
+              "title": "美食 03"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "photos": [
+            {
+              "image": "images/photography/meishi916/01.webp",
+              "title": "美食 04"
+            },
+            {
+              "image": "images/photography/meishi916/02.webp",
+              "title": "美食 05"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "photos": [
+            {
+              "image": "images/photography/fengjing169/01.webp",
+              "title": "风景 01"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "photos": [
+            {
+              "image": "images/photography/fengjing916/01.webp",
+              "title": "风景 02"
+            },
+            {
+              "image": "images/photography/fengjing916/02.webp",
+              "title": "风景 03"
+            }
+          ]
+        }
+      ]
+    },
+    "video": [
+      {
+        "cover": "images/video-covers/upload_20260715141722_895af2.webp",
+        "title": "葡萄酒品牌宣传片",
+        "description": "",
+        "src": "videos/video_upload_20260714171337_1d5c23.mp4"
+      },
+      {
+        "cover": "images/video-covers/video_01_cover.webp",
+        "title": "剪辑作品 01",
+        "description": "点击播放按钮观看完整视频",
+        "src": "videos/video_01.mp4"
+      },
+      {
+        "cover": "images/video-covers/video_02_cover.webp",
+        "title": "剪辑作品 02",
+        "description": "点击播放按钮观看完整视频",
+        "src": "videos/video_02.mp4"
+      },
+      {
+        "cover": "images/video-covers/video_03_cover.webp",
+        "title": "剪辑作品 03",
+        "description": "点击播放按钮观看完整视频",
+        "src": "videos/video_03.mp4"
+      }
+    ]
+  },
+  "pdfDownloads": [
+    {
+      "name": "待填写",
+      "url": "downloads/待填写.pdf"
+    },
+    {
+      "name": "待填写",
+      "url": "downloads/待填写.pdf"
+    },
+    {
+      "name": "待填写",
+      "url": "downloads/待填写.pdf"
+    },
+    {
+      "name": "待填写",
+      "url": "downloads/待填写.pdf"
+    },
+    {
+      "name": "待填写",
+      "url": "downloads/待填写.pdf"
+    }
+  ],
+  "coreResume": {
+    "summary": "待填写",
+    "highlights": []
+  },
+  "coverImages": {
+    "mainSize": "10vw",
+    "bgSize": "7vw",
+    "mainOpacity": 1,
+    "bgOpacity": 0.85,
+    "main": [
+      {
+        "url": "images/cover/cover_20260614155720.webp",
+        "top": "6%",
+        "left": "14%"
+      },
+      {
+        "url": "images/cover/cover_20260612210956.webp",
+        "top": "72%",
+        "left": "15%"
+      },
+      {
+        "url": "images/cover/cover_202606122109561.webp",
+        "top": "72%",
+        "right": "15%"
+      },
+      {
+        "url": "images/cover/upload_20260719232538_e8b912.webp",
+        "top": "6%",
+        "left": "",
+        "right": "14%"
+      }
+    ],
+    "bg": [
+      {
+        "url": "images/cover/cover_202606122109562.webp",
+        "top": "5%",
+        "left": "35%"
+      },
+      {
+        "url": "images/cover/upload_20260719232528_5e365b.webp",
+        "top": "75%",
+        "left": "",
+        "right": "35%"
+      },
+      {
+        "url": "images/cover/upload_20260719232556_96a0fb.webp",
+        "top": "37%",
+        "left": "4%"
+      },
+      {
+        "url": "images/cover/upload_20260719232545_ca5429.webp",
+        "top": "45%",
+        "left": "",
+        "right": "4%"
+      }
+    ]
+  },
+  "footer": {
+    "text": "Appreciate you watching!   We all hurried to become adults. May we both go light on this journey."
+  },
+  "sectionBackgrounds": {
+    "groups": [
+      {
+        "sections": [
+          "personal",
+          "matcher",
+          "skills",
+          "experience"
+        ],
+        "type": "image",
+        "url": "images/backgrounds/upload_20260719213826_5a67d4.webp",
+        "fillMode": "cover",
+        "topUrl": "images/backgrounds/upload_20260719213819_50145d.webp"
+      },
+      {
+        "sections": [
+          "portfolio",
+          "research"
+        ],
+        "type": "image",
+        "url": "images/backgrounds/upload_20260719211232_2eb841.webp",
+        "fillMode": "cover"
+      }
+    ],
+    "singles": {
+      "cover": {
+        "type": "image",
+        "url": "images/backgrounds/upload_20260720165455_e2fa2f.webp",
+        "fillMode": "cover",
+        "topUrl": "images/backgrounds/upload_20260720170317_628df2.webp"
+      },
+      "personal": {
+        "type": "none",
+        "url": "",
+        "fillMode": "cover"
+      },
+      "matcher": {
+        "type": "image",
+        "url": "images/backgrounds/upload_20260719203023_d91d35.webp",
+        "fillMode": "stretch"
+      },
+      "skills": {
+        "type": "none",
+        "url": "",
+        "fillMode": "cover"
+      },
+      "experience": {
+        "type": "image",
+        "url": "images/backgrounds/upload_20260719183026_c24532.webp",
+        "fillMode": "cover"
+      },
+      "research": {
+        "type": "image",
+        "url": "",
+        "fillMode": "cover"
+      },
+      "portfolio": {
+        "type": "none",
+        "url": "",
+        "fillMode": "cover"
+      },
+      "siteFooter": {
+        "type": "image",
+        "url": "images/backgrounds/upload_20260719162031_9992ae.webp",
+        "fillMode": "cover"
+      }
+    }
+  },
+  "theme": {
+    "--text-secondary": "#000000",
+    "--text-muted": "#000000",
+    "--text-primary": "#000000",
+    "--accent": "#000000",
+    "--accent-subtle": "#ffffff",
+    "--border-color": "#ffffff"
+  },
+  "textStyles": {
+    "personalInfo.title": {
+      "fontSize": "2.15rem",
+      "fontWeight": "900",
+      "letterSpacing": "0.128em"
+    },
+    "personalInfo.card.title.0": {
+      "fontWeight": "200"
+    },
+    "personalInfo.card.title.1": {
+      "fontWeight": "200"
+    },
+    "personalInfo.card.title.2": {
+      "fontWeight": "200"
+    },
+    "personalInfo.card.title.3": {
+      "fontWeight": "200"
+    },
+    "personalInfo.contact.email.label": {
+      "fontWeight": "200"
+    },
+    "personalInfo.contact.email.value": {
+      "fontWeight": "200"
+    },
+    "personalInfo.contact.phone.label": {
+      "fontWeight": "200"
+    },
+    "personalInfo.contact.phone.value": {
+      "fontWeight": "200"
+    },
+    "personalInfo.contact.wechat.label": {
+      "fontWeight": "200"
+    },
+    "personalInfo.contact.wechat.value": {
+      "fontWeight": "200"
+    },
+    "personalInfo.education.0": {
+      "fontWeight": "200"
+    },
+    "personalInfo.education.1": {
+      "fontWeight": "200"
+    },
+    "personalInfo.education.2": {
+      "fontWeight": "200"
+    },
+    "personalInfo.awards.0": {
+      "fontWeight": "200"
+    },
+    "personalInfo.awards.1": {
+      "fontWeight": "200"
+    },
+    "personalInfo.awards.2": {
+      "fontWeight": "200"
+    },
+    "personalInfo.awards.3": {
+      "fontWeight": "200"
+    },
+    "personalInfo.awards.4": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.0": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.1": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.2": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.3": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.4": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.5": {
+      "fontWeight": "200"
+    },
+    "personalInfo.hobbies.6": {
+      "fontWeight": "200"
+    },
+    "mySkills.description": {
+      "letterSpacing": "0.15em",
+      "fontWeight": "300"
+    },
+    "mySkills.title": {
+      "fontSize": "2.15rem",
+      "letterSpacing": "0.128em"
+    },
+    "projectExperience.title": {
+      "fontSize": "2.15rem",
+      "letterSpacing": "0.128em"
+    },
+    "workExperience.title": {
+      "fontSize": "2.15rem",
+      "letterSpacing": "0.128em"
+    },
+    "researchExperience.title": {
+      "fontSize": "2.15rem",
+      "letterSpacing": "0.128em"
+    },
+    "portfolio.title": {
+      "fontSize": "2.15rem",
+      "letterSpacing": "0.128em"
+    },
+    "portfolio.photography.quote": {
+      "fontWeight": "400"
+    },
+    "aiMatcher.matcherTitle": {
+      "fontSize": "1.3rem",
+      "letterSpacing": "0.128em"
+    },
+    "projectExperience.items.3.details.0": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.3.details.1": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.3.details.2": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.3.details.3": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.3.details.4": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.0.details.0": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.0.details.1": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.0.details.2": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.0.details.3": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.0.details.4": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.2.details.0": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.2.details.1": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.2.details.2": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.2.details.3": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.1.details.3": {
+      "letterSpacing": "0.02em",
+      "lineHeight": "2"
+    },
+    "projectExperience.items.1.details.2": {
+      "letterSpacing": "0em",
+      "lineHeight": "2"
+    },
+    "projectExperience.items.1.details.1": {
+      "lineHeight": "2"
+    },
+    "projectExperience.items.1.details.0": {
+      "lineHeight": "2"
+    }
+  }
+};

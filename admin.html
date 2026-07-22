@@ -1,0 +1,3824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网站内容管理后台</title>
+<style>
+/* ============================================================
+   CMS 管理后台样式
+   ============================================================ */
+:root {
+  --bg: #f5f5f5;
+  --bg-card: #fff;
+  --border: #e0e0e0;
+  --text: #333;
+  --text-muted: #888;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --sidebar-w: 220px;
+  --topbar-h: 52px;
+  --radius: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---- 侧边栏 ---- */
+.sidebar {
+  width: var(--sidebar-w);
+  background: #1e1e2e;
+  color: #cdd6f4;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 18px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  letter-spacing: .5px;
+}
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.sidebar-nav a {
+  display: block;
+  padding: 9px 16px;
+  color: #a6adc8;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all .15s;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  color: #fff;
+  background: rgba(255,255,255,.06);
+  border-left-color: var(--accent);
+}
+
+/* ---- 主区域 ---- */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---- 顶部栏 ---- */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+.topbar-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.topbar-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  padding: 7px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--bg-card);
+  color: var(--text);
+  transition: all .15s;
+}
+.btn:hover { background: #f0f0f0; }
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-danger:hover { background: var(--danger-hover); }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* ---- 内容区 ---- */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px 40px;
+}
+.section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  scroll-margin-top: 16px;
+}
+.section-card-header {
+  padding: 14px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  background: #fafafa;
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-card-body {
+  padding: 16px 18px;
+}
+
+/* ---- 表单行 ---- */
+.field-row {
+  margin-bottom: 12px;
+}
+.field-row:last-child { margin-bottom: 0; }
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 4px;
+}
+
+/* ---- 可编辑文字 ---- */
+.editable-text {
+  display: inline-block;
+  min-width: 60px;
+  padding: 6px 10px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: text;
+  font-size: 14px;
+  transition: border-color .15s;
+  width: 100%;
+  background: transparent;
+}
+.editable-text:hover { border-color: #d0d5dd; }
+.editable-text:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+}
+.editable-text[contenteditable="true"]:empty:before {
+  content: attr(data-placeholder);
+  color: #bbb;
+}
+
+/* ---- 文本域 ---- */
+.editable-textarea {
+  display: block;
+  width: 100%;
+  min-height: 60px;
+  padding: 8px 10px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color .15s;
+  background: transparent;
+}
+.editable-textarea:hover { border-color: #d0d5dd; }
+.editable-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+}
+
+/* ---- 图片字段 ---- */
+.image-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.image-preview {
+  width: 120px;
+  height: 90px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f9f9f9;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  transition: border-color .15s;
+}
+.image-preview:hover { border-color: var(--accent); }
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.image-preview .placeholder {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+}
+.image-field-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.image-path-display {
+  font-size: 12px;
+  color: var(--text-muted);
+  word-break: break-all;
+  max-width: 280px;
+}
+
+/* ---- 列表项 ---- */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.list-item .editable-text {
+  flex: 1;
+}
+.list-item .btn-sm {
+  flex-shrink: 0;
+}
+.add-btn-row {
+  margin-top: 8px;
+}
+
+/* ---- 对象列表（卡片） ---- */
+.object-list-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  background: #fafafa;
+  overflow: hidden;
+}
+.object-list-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  user-select: none;
+}
+.object-list-item-header:hover { background: #f0f0f0; }
+.object-list-item-body {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  display: none;
+}
+.object-list-item.open .object-list-item-body {
+  display: block;
+}
+.object-list-item-summary {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex: 1;
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Toast ---- */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+  animation: toastIn .3s ease;
+  max-width: 360px;
+}
+.toast-success { background: #16a34a; }
+.toast-error { background: var(--danger); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- 内联编辑 input / textarea ---- */
+.inline-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  background: #fff;
+}
+.list-textarea {
+  resize: vertical;
+  min-height: 38px;
+  line-height: 1.5;
+}
+
+/* ---- 空状态 ---- */
+.empty-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ---- 分栏 ---- */
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.field-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+/* ---- 视频上传独立样式 ---- */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.upload-zone:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---- 全局 spinner ---- */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid #ddd;
+  border-top: 2px solid var(--accent);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* 响应式：小屏时侧边栏变窄 */
+@media (max-width: 768px) {
+  .sidebar { width: 160px; }
+  .field-grid, .field-grid-3 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 侧边栏 ========== -->
+<aside class="sidebar">
+  <div class="sidebar-header">⚙ 内容管理</div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <!-- JS 动态生成 -->
+  </nav>
+</aside>
+
+<!-- ========== 主区域 ========== -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle">管理后台</span>
+    <div class="topbar-actions">
+      <button class="btn" id="btnRefresh" title="重新加载数据">🔄 刷新</button>
+      <button class="btn btn-primary" id="btnSave" title="保存所有更改到 data.js">💾 保存</button>
+    </div>
+  </div>
+  <div class="content" id="contentArea">
+    <!-- JS 动态生成各区块 -->
+  </div>
+</div>
+
+<!-- ========== 隐藏的文件 input ========== -->
+<input type="file" id="hiddenFileInput" style="display:none" accept="image/*">
+<input type="file" id="hiddenVideoInput" style="display:none" accept="video/*">
+
+<script>
+/* ============================================================
+   CMS 管理后台 JavaScript
+   ============================================================ */
+(function() {
+  'use strict';
+
+  const API = '';  // 同源请求
+
+  // ---- 状态 ----
+  let state = null;
+  let originalData = null;
+  let activeUploadTarget = null;  // 当前正在等待上传的字段回调
+
+  // ---- DOM ----
+  const $sidebar = document.getElementById('sidebarNav');
+  const $content = document.getElementById('contentArea');
+  const $btnSave = document.getElementById('btnSave');
+  const $btnRefresh = document.getElementById('btnRefresh');
+  const $hiddenFile = document.getElementById('hiddenFileInput');
+  const $hiddenVideo = document.getElementById('hiddenVideoInput');
+
+  // ---- Toast ----
+  function toast(msg, type) {
+    type = type || 'success';
+    const el = document.createElement('div');
+    el.className = 'toast toast-' + type;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(function() { el.remove(); }, 2500);
+  }
+
+  // ---- 侧边栏导航 ----
+  const SECTION_DEFS = [
+    { id: 'sec-site', label: '站点信息', icon: '🏠' },
+    { id: 'sec-nav', label: '导航链接', icon: '🔗' },
+    { id: 'sec-cover', label: '封面页', icon: '🎬' },
+    { id: 'sec-cover-images', label: '封面图片', icon: '🖼️' },
+    { id: 'sec-personal', label: '个人信息', icon: '👤' },
+    { id: 'sec-work', label: '工作经验', icon: '💼' },
+    { id: 'sec-project', label: '项目经验', icon: '📋' },
+    { id: 'sec-research', label: '科研经历', icon: '🔬' },
+    { id: 'sec-skills', label: '我的技能', icon: '🛠' },
+    { id: 'sec-matcher-content', label: 'AI匹配器', icon: '🤖' },
+    { id: 'sec-portfolio', label: '作品集', icon: '🎨' },
+    { id: 'sec-pdfs', label: 'PDF下载', icon: '📄' },
+    { id: 'sec-resume', label: '核心简历', icon: '📝' },
+    { id: 'sec-footer', label: '页脚', icon: '📌' },
+    { id: 'sec-theme', label: '主题设置', icon: '🎨' },
+    { id: 'sec-textstyles', label: '文字样式', icon: '📝' },
+    { id: 'sec-backgrounds', label: '背景设置', icon: '🖼️' },
+  ];
+
+  function buildSidebar() {
+    $sidebar.innerHTML = '';
+    SECTION_DEFS.forEach(function(sec) {
+      const a = document.createElement('a');
+      a.href = '#' + sec.id;
+      a.textContent = sec.icon + ' ' + sec.label;
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById(sec.id).scrollIntoView({ behavior: 'smooth' });
+        // 高亮
+        $sidebar.querySelectorAll('a').forEach(function(el) { el.classList.remove('active'); });
+        a.classList.add('active');
+      });
+      $sidebar.appendChild(a);
+    });
+  }
+
+  // ---- 工具函数 ----
+  function esc(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function getByPath(obj, path) {
+    return path.split('.').reduce(function(o, k) { return (o && o[k] !== undefined) ? o[k] : null; }, obj);
+  }
+
+  function setByPath(obj, path, val) {
+    const keys = path.split('.');
+    let o = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const k = keys[i];
+      if (!(k in o) || typeof o[k] !== 'object' || o[k] === null) {
+        o[k] = {};
+      }
+      o = o[k];
+    }
+    o[keys[keys.length - 1]] = val;
+  }
+
+  // ---- 生成唯一 section ID ----
+  let sectionIdCounter = 0;
+  function nextSectionId() { return 'sec-auto-' + (++sectionIdCounter); }
+
+  // ============================================================
+  // 编辑器组件
+  // ============================================================
+
+  // ---- 文字字段 (inline edit) ----
+  function createTextField(path, placeholder) {
+    const value = getByPath(state, path) || '';
+    const span = document.createElement('span');
+    span.className = 'editable-text';
+    span.contentEditable = 'true';
+    span.setAttribute('data-placeholder', placeholder || '点击编辑...');
+    span.textContent = value;
+
+    span.addEventListener('focus', function() {
+      if (span.textContent === (placeholder || '')) {
+        span.textContent = '';
+      }
+    });
+    span.addEventListener('blur', function() {
+      const newVal = span.textContent.trim();
+      setByPath(state, path, newVal);
+    });
+    // Enter 键失焦
+    span.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        span.blur();
+      }
+    });
+
+    return span;
+  }
+
+  function createTextFieldRow(label, path, placeholder) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.textContent = label;
+    row.appendChild(lbl);
+    row.appendChild(createTextField(path, placeholder));
+    return row;
+  }
+
+  // ---- 文本域 ----
+  function createTextArea(path, placeholder) {
+    const value = getByPath(state, path) || '';
+    const ta = document.createElement('textarea');
+    ta.className = 'editable-textarea';
+    ta.placeholder = placeholder || '点击编辑...';
+    ta.value = value;
+
+    ta.addEventListener('input', function() {
+      setByPath(state, path, ta.value);
+    });
+
+    return ta;
+  }
+
+  function createTextAreaRow(label, path, placeholder) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.textContent = label;
+    row.appendChild(lbl);
+    row.appendChild(createTextArea(path, placeholder));
+    return row;
+  }
+
+  // ---- 图片字段 ----
+  function createImageField(path, uploadDir) {
+    const value = getByPath(state, path) || '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'image-field';
+
+    // 预览
+    const preview = document.createElement('div');
+    preview.className = 'image-preview';
+    if (value && value !== '待填写') {
+      const img = document.createElement('img');
+      img.src = value;
+      img.alt = '';
+      img.onerror = function() { preview.innerHTML = '<span class="placeholder">图片加载失败</span>'; };
+      preview.appendChild(img);
+    } else {
+      preview.innerHTML = '<span class="placeholder">点击上传<br>或拖拽图片</span>';
+    }
+
+    // 拖拽上传
+    preview.addEventListener('dragover', function(e) { e.preventDefault(); preview.style.borderColor = '#2563eb'; });
+    preview.addEventListener('dragleave', function() { preview.style.borderColor = ''; });
+    preview.addEventListener('drop', function(e) {
+      e.preventDefault();
+      preview.style.borderColor = '';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        uploadAndSet(file, uploadDir, path, preview);
+      }
+    });
+    preview.addEventListener('click', function() {
+      activeUploadTarget = { path: path, uploadDir: uploadDir, preview: preview };
+      $hiddenFile.click();
+    });
+
+    // 操作按钮
+    const actions = document.createElement('div');
+    actions.className = 'image-field-actions';
+
+    const uploadBtn = document.createElement('button');
+    uploadBtn.className = 'btn btn-sm';
+    uploadBtn.textContent = '📷 更换图片';
+    uploadBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      activeUploadTarget = { path: path, uploadDir: uploadDir, preview: preview };
+      $hiddenFile.click();
+    });
+
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'btn btn-sm';
+    clearBtn.textContent = '✕ 清除';
+    clearBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      setByPath(state, path, '');
+      preview.innerHTML = '<span class="placeholder">点击上传<br>或拖拽图片</span>';
+    });
+
+    actions.appendChild(uploadBtn);
+    actions.appendChild(clearBtn);
+
+    // 路径显示
+    const pathDisplay = document.createElement('div');
+    pathDisplay.className = 'image-path-display';
+    pathDisplay.textContent = value || '未设置';
+
+    const rightCol = document.createElement('div');
+    rightCol.style.display = 'flex';
+    rightCol.style.flexDirection = 'column';
+    rightCol.style.gap = '6px';
+    rightCol.appendChild(actions);
+    rightCol.appendChild(pathDisplay);
+
+    wrapper.appendChild(preview);
+    wrapper.appendChild(rightCol);
+    return wrapper;
+  }
+
+  function createImageFieldRow(label, path, uploadDir) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.textContent = label;
+    row.appendChild(lbl);
+    row.appendChild(createImageField(path, uploadDir));
+    return row;
+  }
+
+  // ---- 上传逻辑 ----
+  function uploadAndSet(file, uploadDir, dataPath, previewEl) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('directory', uploadDir);
+
+    // 显示上传中
+    if (previewEl) {
+      previewEl.innerHTML = '<div class="spinner"></div>';
+    }
+
+    fetch(API + '/api/upload', { method: 'POST', body: formData })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          const imgPath = data.path;
+          setByPath(state, dataPath, imgPath);
+          if (previewEl) {
+            const img = document.createElement('img');
+            img.src = imgPath + '?t=' + Date.now();
+            img.alt = '';
+            previewEl.innerHTML = '';
+            previewEl.appendChild(img);
+          }
+          // 更新路径显示
+          const pathDisplay = previewEl && previewEl.parentElement &&
+            previewEl.parentElement.querySelector('.image-path-display');
+          if (pathDisplay) pathDisplay.textContent = imgPath;
+          toast('图片上传成功 ✓');
+        } else {
+          toast('上传失败: ' + (data.error || '未知错误'), 'error');
+          if (previewEl) {
+            previewEl.innerHTML = '<span class="placeholder">上传失败<br>点击重试</span>';
+          }
+        }
+      })
+      .catch(function(err) {
+        toast('上传失败: ' + err.message, 'error');
+        if (previewEl) {
+          previewEl.innerHTML = '<span class="placeholder">上传失败<br>点击重试</span>';
+        }
+      });
+  }
+
+  // ---- 隐藏文件 input 事件 ----
+  $hiddenFile.addEventListener('change', function() {
+    if (!activeUploadTarget || !$hiddenFile.files.length) return;
+    const file = $hiddenFile.files[0];
+
+    // 回调式上传（背景设置等自定义场景）
+    if (activeUploadTarget.onUploaded) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('directory', activeUploadTarget.uploadDir);
+      fetch(API + '/api/upload', { method: 'POST', body: formData })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            activeUploadTarget.onUploaded(data.path);
+            toast('图片上传成功 ✓');
+          } else {
+            toast('上传失败: ' + (data.error || '未知错误'), 'error');
+          }
+          $hiddenFile.value = '';
+          activeUploadTarget = null;
+        })
+        .catch(function(err) {
+          toast('上传失败: ' + err.message, 'error');
+          $hiddenFile.value = '';
+          activeUploadTarget = null;
+        });
+      return;
+    }
+
+    // 字符串列表中的图片上传
+    if (activeUploadTarget.isStringList) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('directory', activeUploadTarget.uploadDir);
+      fetch(API + '/api/upload', { method: 'POST', body: formData })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            const arr = getByPath(state, activeUploadTarget.path) || [];
+            arr[activeUploadTarget.idx] = data.path;
+            setByPath(state, activeUploadTarget.path, arr);
+            if (activeUploadTarget.renderFn) activeUploadTarget.renderFn();
+            toast('图片上传成功 ✓');
+          } else {
+            toast('上传失败: ' + (data.error || '未知错误'), 'error');
+          }
+          $hiddenFile.value = '';
+          activeUploadTarget = null;
+        })
+        .catch(function(err) {
+          toast('上传失败: ' + err.message, 'error');
+          $hiddenFile.value = '';
+          activeUploadTarget = null;
+        });
+      return;
+    }
+
+    // 普通图片字段上传
+    uploadAndSet(file, activeUploadTarget.uploadDir, activeUploadTarget.path, activeUploadTarget.preview);
+    $hiddenFile.value = '';
+    activeUploadTarget = null;
+  });
+
+  $hiddenVideo.addEventListener('change', function() {
+    if (!activeUploadTarget || !$hiddenVideo.files.length) return;
+    const file = $hiddenVideo.files[0];
+
+    // 回调式视频上传（背景设置等）
+    if (activeUploadTarget.onUploaded) {
+      const formData = new FormData();
+      formData.append('file', file);
+      fetch(API + '/api/upload/video', { method: 'POST', body: formData })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            activeUploadTarget.onUploaded(data.path);
+            toast('视频上传成功 ✓');
+          } else {
+            toast('上传失败: ' + (data.error || '未知错误'), 'error');
+          }
+          $hiddenVideo.value = '';
+          activeUploadTarget = null;
+        })
+        .catch(function(err) {
+          toast('上传失败: ' + err.message, 'error');
+          $hiddenVideo.value = '';
+          activeUploadTarget = null;
+        });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    if (activeUploadTarget.preview) {
+      activeUploadTarget.preview.innerHTML = '<div class="spinner"></div>';
+    }
+
+    fetch(API + '/api/upload/video', { method: 'POST', body: formData })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          if (activeUploadTarget.path) {
+            setByPath(state, activeUploadTarget.path, data.path);
+          } else {
+            // 通用视频上传 → 尝试自动填入当前展开的视频项
+            var openItem = document.querySelector('.object-list-item.open');
+            if (openItem) {
+              var allItems = openItem.parentElement.querySelectorAll('.object-list-item');
+              var idx = -1;
+              for (var i = 0; i < allItems.length; i++) {
+                if (allItems[i] === openItem) { idx = i; break; }
+              }
+              if (idx >= 0) {
+                var srcPath = 'portfolio.video.' + idx + '.src';
+                setByPath(state, srcPath, data.path);
+                var input = openItem.querySelector('input[type="text"][data-path$="\\.src"]');
+                if (!input) {
+                  var inputs = openItem.querySelectorAll('input[type="text"]');
+                  inputs.forEach(function(inp) {
+                    if (inp.dataset.path && inp.dataset.path.endsWith('.src')) input = inp;
+                  });
+                }
+                if (input) { input.value = data.path; input.dispatchEvent(new Event('input')); }
+                toast('视频上传成功！已自动填入 #' + (idx + 1) + ' 的 src: ' + data.path);
+              }
+            } else {
+              toast('视频上传成功！路径: ' + data.path + '（请展开一个视频项后再上传以自动填入）');
+            }
+          }
+          if (activeUploadTarget.preview) {
+            activeUploadTarget.preview.innerHTML = '<span style="font-size:12px;color:#16a34a;">✓ ' + data.path.split('/').pop() + '</span>';
+          }
+        } else {
+          toast('上传失败: ' + (data.error || '未知错误'), 'error');
+        }
+        $hiddenVideo.value = '';
+        activeUploadTarget = null;
+      })
+      .catch(function(err) {
+        toast('上传失败: ' + err.message, 'error');
+        $hiddenVideo.value = '';
+        activeUploadTarget = null;
+      });
+  });
+
+  // ---- 字符串列表编辑器 ----
+  function createStringList(path, placeholder) {
+    const items = getByPath(state, path) || [];
+    const container = document.createElement('div');
+
+    function render() {
+      container.innerHTML = '';
+      const list = getByPath(state, path) || [];
+      list.forEach(function(item, idx) {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+
+        const input = document.createElement('textarea');
+        input.className = 'inline-input list-textarea';
+        input.value = item;
+        input.placeholder = placeholder || '输入内容...';
+        input.rows = 2;
+        input.addEventListener('input', function() {
+          const arr = getByPath(state, path) || [];
+          arr[idx] = input.value;
+          setByPath(state, path, arr);
+        });
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-sm btn-danger';
+        delBtn.textContent = '✕';
+        delBtn.addEventListener('click', function() {
+          const arr = getByPath(state, path) || [];
+          arr.splice(idx, 1);
+          setByPath(state, path, arr);
+          render();
+        });
+
+        row.appendChild(input);
+        row.appendChild(delBtn);
+        container.appendChild(row);
+      });
+
+      // 添加按钮
+      const addRow = document.createElement('div');
+      addRow.className = 'add-btn-row';
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn btn-sm';
+      addBtn.textContent = '+ 添加项';
+      addBtn.addEventListener('click', function() {
+        const arr = getByPath(state, path) || [];
+        arr.push('');
+        setByPath(state, path, arr);
+        render();
+      });
+      addRow.appendChild(addBtn);
+      container.appendChild(addRow);
+    }
+
+    render();
+    return container;
+  }
+
+  function createStringListRow(label, path, placeholder) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.textContent = label;
+    row.appendChild(lbl);
+    row.appendChild(createStringList(path, placeholder));
+    return row;
+  }
+
+  // ---- 图片字符串列表编辑器（用于纯字符串数组的图片管理） ----
+  function createImageStringList(path, uploadDir) {
+    const container = document.createElement('div');
+
+    function render() {
+      container.innerHTML = '';
+      const list = getByPath(state, path) || [];
+
+      if (list.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-hint';
+        empty.textContent = '暂无图片';
+        container.appendChild(empty);
+      }
+
+      list.forEach(function(imgPath, idx) {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px;';
+
+        // 缩略图预览
+        const preview = document.createElement('div');
+        preview.style.cssText = 'width:80px;height:60px;border:1px solid var(--border);border-radius:4px;overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+        if (imgPath) {
+          const img = document.createElement('img');
+          img.src = imgPath;
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          img.onerror = function() { preview.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">加载失败</span>'; };
+          preview.appendChild(img);
+        } else {
+          preview.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">空</span>';
+        }
+
+        // 拖拽上传
+        preview.addEventListener('dragover', function(e) { e.preventDefault(); });
+        preview.addEventListener('drop', function(e) {
+          e.preventDefault();
+          const file = e.dataTransfer.files[0];
+          if (file && file.type.startsWith('image/')) {
+            uploadImageString(file, uploadDir, path, idx, render);
+          }
+        });
+        preview.addEventListener('click', function() {
+          activeUploadTarget = { path: path, uploadDir: uploadDir, idx: idx, renderFn: render, isStringList: true };
+          $hiddenFile.click();
+        });
+
+        // 路径文本
+        const pathInput = document.createElement('input');
+        pathInput.className = 'inline-input';
+        pathInput.value = imgPath || '';
+        pathInput.placeholder = '图片路径';
+        pathInput.style.cssText = 'flex:1;font-size:12px;';
+        pathInput.addEventListener('input', function() {
+          const arr = getByPath(state, path) || [];
+          arr[idx] = pathInput.value;
+          setByPath(state, path, arr);
+        });
+
+        // 上传按钮
+        const uploadBtn = document.createElement('button');
+        uploadBtn.className = 'btn btn-sm';
+        uploadBtn.textContent = '📷';
+        uploadBtn.title = '上传新图片';
+        uploadBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          activeUploadTarget = { path: path, uploadDir: uploadDir, idx: idx, renderFn: render, isStringList: true };
+          $hiddenFile.click();
+        });
+
+        // 删除按钮
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-sm btn-danger';
+        delBtn.textContent = '✕';
+        delBtn.addEventListener('click', function() {
+          const arr = getByPath(state, path) || [];
+          arr.splice(idx, 1);
+          setByPath(state, path, arr);
+          render();
+        });
+
+        row.appendChild(preview);
+        row.appendChild(pathInput);
+        row.appendChild(uploadBtn);
+        row.appendChild(delBtn);
+        container.appendChild(row);
+      });
+
+      // 添加按钮
+      const addRow = document.createElement('div');
+      addRow.className = 'add-btn-row';
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn btn-sm';
+      addBtn.textContent = '+ 添加图片';
+      addBtn.addEventListener('click', function() {
+        const arr = getByPath(state, path) || [];
+        arr.push('');
+        setByPath(state, path, arr);
+        render();
+      });
+      addRow.appendChild(addBtn);
+      container.appendChild(addRow);
+    }
+
+    function uploadImageString(file, dir, dataPath, idx, renderFn) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('directory', dir);
+      fetch(API + '/api/upload', { method: 'POST', body: formData })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            const arr = getByPath(state, dataPath) || [];
+            arr[idx] = data.path;
+            setByPath(state, dataPath, arr);
+            renderFn();
+            toast('图片上传成功 ✓');
+          } else {
+            toast('上传失败: ' + (data.error || '未知错误'), 'error');
+          }
+        })
+        .catch(function(err) {
+          toast('上传失败: ' + err.message, 'error');
+        });
+    }
+
+    render();
+    return container;
+  }
+
+  function createImageStringListRow(label, path, uploadDir) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.textContent = label;
+    row.appendChild(lbl);
+    row.appendChild(createImageStringList(path, uploadDir));
+    return row;
+  }
+
+  // ---- 图片+标题列表编辑器（对象数组 [{url, title}]） ----
+  function createImageWithTitleList(path, uploadDir) {
+    const container = document.createElement('div');
+
+    function render() {
+      container.innerHTML = '';
+      const list = getByPath(state, path) || [];
+
+      if (list.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-hint';
+        empty.textContent = '暂无配图';
+        container.appendChild(empty);
+      }
+
+      list.forEach(function(item, idx) {
+        // 兼容旧数据：如果是字符串，转为对象
+        if (typeof item === 'string') {
+          item = { url: item, title: '' };
+          const arr = getByPath(state, path) || [];
+          arr[idx] = item;
+          setByPath(state, path, arr);
+        }
+        if (!item.url) item.url = '';
+        if (!item.title) item.title = '';
+
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--border);border-radius:var(--radius);flex-wrap:wrap;';
+
+        // 缩略图预览
+        const preview = document.createElement('div');
+        preview.style.cssText = 'width:72px;height:54px;border:1px dashed var(--border);border-radius:4px;overflow:hidden;flex-shrink:0;background:#f9f9f9;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+        if (item.url) {
+          const img = document.createElement('img');
+          img.src = item.url;
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          img.onerror = function() { preview.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">加载失败</span>'; };
+          preview.appendChild(img);
+        } else {
+          preview.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">点击上传</span>';
+        }
+
+        // 拖拽上传
+        preview.addEventListener('dragover', function(e) { e.preventDefault(); });
+        preview.addEventListener('drop', function(e) {
+          e.preventDefault();
+          const file = e.dataTransfer.files[0];
+          if (file && file.type.startsWith('image/')) {
+            uploadImageWithTitle(file, uploadDir, path, idx, render);
+          }
+        });
+        preview.addEventListener('click', function() {
+          var input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.style.display = 'none';
+          document.body.appendChild(input);
+          input.addEventListener('change', function() {
+            if (!input.files.length) { input.remove(); return; }
+            uploadImageWithTitle(input.files[0], uploadDir, path, idx, render);
+            input.remove();
+          });
+          input.click();
+        });
+
+        // 右列：URL + 标题
+        const rightCol = document.createElement('div');
+        rightCol.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:4px;min-width:140px;';
+
+        // 路径输入
+        const urlInput = document.createElement('input');
+        urlInput.className = 'inline-input';
+        urlInput.value = item.url || '';
+        urlInput.placeholder = '图片路径';
+        urlInput.style.cssText = 'font-size:11px;';
+        urlInput.addEventListener('input', function() {
+          const arr = getByPath(state, path) || [];
+          if (!arr[idx] || typeof arr[idx] === 'string') arr[idx] = { url: '', title: '' };
+          arr[idx].url = urlInput.value.trim();
+          setByPath(state, path, arr);
+        });
+
+        // 标题输入
+        const titleInput = document.createElement('input');
+        titleInput.className = 'inline-input';
+        titleInput.value = item.title || '';
+        titleInput.placeholder = '图片标题（可选）';
+        titleInput.style.cssText = 'font-size:11px;';
+        titleInput.addEventListener('input', function() {
+          const arr = getByPath(state, path) || [];
+          if (!arr[idx] || typeof arr[idx] === 'string') arr[idx] = { url: '', title: '' };
+          arr[idx].title = titleInput.value.trim();
+          setByPath(state, path, arr);
+        });
+
+        rightCol.appendChild(urlInput);
+        rightCol.appendChild(titleInput);
+
+        // 上传按钮
+        const uploadBtn = document.createElement('button');
+        uploadBtn.className = 'btn btn-sm';
+        uploadBtn.textContent = '📷';
+        uploadBtn.title = '上传新图片';
+        uploadBtn.style.cssText = 'flex-shrink:0;';
+        uploadBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.style.display = 'none';
+          document.body.appendChild(input);
+          input.addEventListener('change', function() {
+            if (!input.files.length) { input.remove(); return; }
+            uploadImageWithTitle(input.files[0], uploadDir, path, idx, render);
+            input.remove();
+          });
+          input.click();
+        });
+
+        // 删除按钮
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-sm btn-danger';
+        delBtn.textContent = '✕';
+        delBtn.style.cssText = 'flex-shrink:0;';
+        delBtn.addEventListener('click', function() {
+          const arr = getByPath(state, path) || [];
+          arr.splice(idx, 1);
+          setByPath(state, path, arr);
+          render();
+        });
+
+        row.appendChild(preview);
+        row.appendChild(rightCol);
+        row.appendChild(uploadBtn);
+        row.appendChild(delBtn);
+        container.appendChild(row);
+      });
+
+      // 添加按钮
+      const addRow = document.createElement('div');
+      addRow.className = 'add-btn-row';
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn btn-sm';
+      addBtn.textContent = '+ 添加配图';
+      addBtn.addEventListener('click', function() {
+        const arr = getByPath(state, path) || [];
+        arr.push({ url: '', title: '' });
+        setByPath(state, path, arr);
+        render();
+      });
+      addRow.appendChild(addBtn);
+      container.appendChild(addRow);
+    }
+
+    function uploadImageWithTitle(file, dir, dataPath, idx, renderFn) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('directory', dir);
+      fetch(API + '/api/upload', { method: 'POST', body: formData })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            const arr = getByPath(state, dataPath) || [];
+            if (!arr[idx] || typeof arr[idx] === 'string') arr[idx] = { url: '', title: '' };
+            arr[idx].url = data.path;
+            setByPath(state, dataPath, arr);
+            renderFn();
+            toast('图片上传成功 ✓');
+          } else {
+            toast('上传失败: ' + (data.error || '未知错误'), 'error');
+          }
+        })
+        .catch(function(err) {
+          toast('上传失败: ' + err.message, 'error');
+        });
+    }
+
+    render();
+    return container;
+  }
+
+  function createImageWithTitleListRow(label, path, uploadDir) {
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    const lbl = document.createElement('label');
+    lbl.className = 'field-label';
+    lbl.textContent = label;
+    row.appendChild(lbl);
+    row.appendChild(createImageWithTitleList(path, uploadDir));
+    return row;
+  }
+
+  // ---- 通用对象列表编辑器 ----
+  function createObjectList(path, schema, summaryFn, defaults) {
+    defaults = defaults || {};
+    const items = getByPath(state, path) || [];
+    const container = document.createElement('div');
+
+    function render() {
+      container.innerHTML = '';
+      const list = getByPath(state, path) || [];
+
+      if (list.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-hint';
+        empty.textContent = '暂无数据';
+        container.appendChild(empty);
+      }
+
+      list.forEach(function(item, idx) {
+        const card = document.createElement('div');
+        card.className = 'object-list-item';
+
+        // 头部（可折叠）
+        const header = document.createElement('div');
+        header.className = 'object-list-item-header';
+
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = '#' + (idx + 1);
+        titleSpan.style.fontWeight = '700';
+
+        const summarySpan = document.createElement('span');
+        summarySpan.className = 'object-list-item-summary';
+        summarySpan.textContent = summaryFn ? summaryFn(item) : JSON.stringify(item).substring(0, 60);
+
+        const actionsSpan = document.createElement('span');
+        actionsSpan.style.display = 'flex';
+        actionsSpan.style.gap = '4px';
+
+        const moveUpBtn = document.createElement('button');
+        moveUpBtn.className = 'btn btn-sm';
+        moveUpBtn.textContent = '↑';
+        moveUpBtn.disabled = idx === 0;
+        moveUpBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const arr = getByPath(state, path) || [];
+          if (idx > 0) {
+            const tmp = arr[idx - 1];
+            arr[idx - 1] = arr[idx];
+            arr[idx] = tmp;
+            setByPath(state, path, arr);
+            render();
+          }
+        });
+
+        const moveDownBtn = document.createElement('button');
+        moveDownBtn.className = 'btn btn-sm';
+        moveDownBtn.textContent = '↓';
+        moveDownBtn.disabled = idx === list.length - 1;
+        moveDownBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const arr = getByPath(state, path) || [];
+          if (idx < arr.length - 1) {
+            const tmp = arr[idx + 1];
+            arr[idx + 1] = arr[idx];
+            arr[idx] = tmp;
+            setByPath(state, path, arr);
+            render();
+          }
+        });
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn btn-sm btn-danger';
+        delBtn.textContent = '🗑';
+        delBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (confirm('确定删除 #' + (idx + 1) + '？')) {
+            const arr = getByPath(state, path) || [];
+            arr.splice(idx, 1);
+            setByPath(state, path, arr);
+            render();
+          }
+        });
+
+        actionsSpan.appendChild(moveUpBtn);
+        actionsSpan.appendChild(moveDownBtn);
+        actionsSpan.appendChild(delBtn);
+
+        header.appendChild(titleSpan);
+        header.appendChild(summarySpan);
+        header.appendChild(actionsSpan);
+
+        header.addEventListener('click', function(e) {
+          if (e.target.tagName === 'BUTTON') return;
+          card.classList.toggle('open');
+        });
+
+        // 内容区
+        const body = document.createElement('div');
+        body.className = 'object-list-item-body';
+
+        // 根据 schema 渲染子字段
+        schema.forEach(function(field) {
+          const itemPath = path + '.' + idx + '.' + field.key;
+          if (field.type === 'text') {
+            body.appendChild(createTextFieldRow(field.label, itemPath, field.placeholder));
+          } else if (field.type === 'textarea') {
+            body.appendChild(createTextAreaRow(field.label, itemPath, field.placeholder));
+          } else if (field.type === 'image') {
+            body.appendChild(createImageFieldRow(field.label, itemPath, field.uploadDir));
+          } else if (field.type === 'stringList') {
+            body.appendChild(createStringListRow(field.label, itemPath, field.placeholder));
+          } else if (field.type === 'imageStringList') {
+            body.appendChild(createImageStringListRow(field.label, itemPath, field.uploadDir));
+          } else if (field.type === 'imageWithTitleList') {
+            body.appendChild(createImageWithTitleListRow(field.label, itemPath, field.uploadDir));
+          }
+        });
+
+        card.appendChild(header);
+        card.appendChild(body);
+        container.appendChild(card);
+      });
+
+      // 添加按钮
+      const addRow = document.createElement('div');
+      addRow.className = 'add-btn-row';
+      const addBtn = document.createElement('button');
+      addBtn.className = 'btn';
+      addBtn.textContent = '+ 添加项';
+      addBtn.addEventListener('click', function() {
+        const arr = getByPath(state, path) || [];
+        // 创建默认空对象
+        const newItem = {};
+        schema.forEach(function(field) {
+          if (field.type === 'stringList') newItem[field.key] = [];
+          else if (field.type === 'image' || field.type === 'text' || field.type === 'textarea') newItem[field.key] = '';
+          else newItem[field.key] = '';
+        });
+        // 合并额外默认值
+        for (var dk in defaults) {
+          if (defaults.hasOwnProperty(dk) && !(dk in newItem)) {
+            newItem[dk] = JSON.parse(JSON.stringify(defaults[dk]));
+          }
+        }
+        arr.push(newItem);
+        setByPath(state, path, arr);
+        render();
+        // 自动展开新项目
+        setTimeout(function() {
+          const cards = container.querySelectorAll('.object-list-item');
+          const lastCard = cards[cards.length - 1];
+          if (lastCard) lastCard.classList.add('open');
+        }, 50);
+      });
+      addRow.appendChild(addBtn);
+      container.appendChild(addRow);
+    }
+
+    render();
+    return container;
+  }
+
+  // ---- Section 卡片 ----
+  function createSectionCard(id, title) {
+    const card = document.createElement('div');
+    card.className = 'section-card';
+    card.id = id;
+
+    const header = document.createElement('div');
+    header.className = 'section-card-header';
+    header.textContent = title;
+
+    const body = document.createElement('div');
+    body.className = 'section-card-body';
+
+    card.appendChild(header);
+    card.appendChild(body);
+    return { card: card, body: body };
+  }
+
+  // ============================================================
+  // 各 Section 渲染函数
+  // ============================================================
+
+  function renderSiteSection() {
+    const { card, body } = createSectionCard('sec-site', '🏠 站点信息');
+    body.appendChild(createTextFieldRow('网站标题', 'site.title', '输入网站标题'));
+    body.appendChild(createTextFieldRow('副标题', 'site.subtitle', '输入副标题'));
+    $content.appendChild(card);
+  }
+
+  function renderNavSection() {
+    const { card, body } = createSectionCard('sec-nav', '🔗 导航链接');
+    const desc = document.createElement('p');
+    desc.style.cssText = 'font-size:12px;color:var(--text-muted);margin-bottom:12px;';
+    desc.textContent = '修改导航栏的链接。id 为页面锚点，label 为显示文字。';
+    body.appendChild(desc);
+    body.appendChild(createObjectList('navLinks', [
+      { key: 'id', label: '锚点ID', type: 'text', placeholder: '如 cover, personal' },
+      { key: 'label', label: '显示文字', type: 'text', placeholder: '如 Hiii, 个人信息' },
+    ], function(item) { return (item.label || '?') + ' → #' + (item.id || '?'); }));
+    $content.appendChild(card);
+  }
+
+  function renderCoverSection() {
+    const { card, body } = createSectionCard('sec-cover', '🎬 封面页');
+    body.appendChild(createTextFieldRow('封面标题', 'cover.title', '支持 \\n 换行'));
+    body.appendChild(createTextFieldRow('按钮文字', 'cover.buttonText', '如 let\'s explore more'));
+    $content.appendChild(card);
+  }
+
+  // ════════════════════════════════════════════════
+  // 封面图片管理
+  // ════════════════════════════════════════════════
+  function renderCoverImagesSection() {
+    // 先移除旧卡片
+    var oldCard = document.getElementById('sec-cover-images');
+    if (oldCard) oldCard.remove();
+
+    const { card, body } = createSectionCard('sec-cover-images', '🖼️ 封面图片');
+    if (!state.coverImages) state.coverImages = { main:[], bg:[], mainSize:'15vw', bgSize:'9vw', mainOpacity:1, bgOpacity:0.45 };
+    var ci = state.coverImages;
+    if (!ci.main) ci.main = [];
+    if (!ci.bg) ci.bg = [];
+
+    // ── 大小与透明度 ──
+    var slidersRow = document.createElement('div');
+    slidersRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;';
+
+    function makeSlider(label, key, min, max, step, unit) {
+      var wrap = document.createElement('div');
+      var lbl = document.createElement('div');
+      lbl.style.cssText = 'font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:2px;';
+      lbl.textContent = label + ': ' + (ci[key] !== undefined ? ci[key] : '');
+      var input = document.createElement('input');
+      input.type = 'range'; input.min = min; input.max = max; input.step = step;
+      input.value = parseFloat(ci[key]) || 0;
+      input.style.cssText = 'width:100%;';
+      input.addEventListener('input', function() { ci[key] = input.value + (unit || ''); lbl.textContent = label + ': ' + ci[key]; });
+      wrap.appendChild(lbl); wrap.appendChild(input);
+      return wrap;
+    }
+
+    function makeOpacitySlider(label, key) {
+      var wrap = document.createElement('div');
+      var lbl = document.createElement('div');
+      lbl.style.cssText = 'font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:2px;';
+      lbl.textContent = label + ': ' + (ci[key] !== undefined ? ci[key] : '');
+      var input = document.createElement('input');
+      input.type = 'range'; input.min = 0; input.max = 1; input.step = 0.05;
+      input.value = ci[key] !== undefined ? ci[key] : 1;
+      input.style.cssText = 'width:100%;';
+      input.addEventListener('input', function() { ci[key] = parseFloat(input.value); lbl.textContent = label + ': ' + ci[key]; });
+      wrap.appendChild(lbl); wrap.appendChild(input);
+      return wrap;
+    }
+
+    slidersRow.appendChild(makeSlider('主图大小', 'mainSize', 5, 30, 1, 'vw'));
+    slidersRow.appendChild(makeSlider('背景图大小', 'bgSize', 3, 20, 1, 'vw'));
+    slidersRow.appendChild(makeOpacitySlider('主图透明度', 'mainOpacity'));
+    slidersRow.appendChild(makeOpacitySlider('背景图透明度', 'bgOpacity'));
+    body.appendChild(slidersRow);
+
+    // ── 主图列表 ──
+    var mainLabel = document.createElement('div');
+    mainLabel.style.cssText = 'font-size:13px;font-weight:700;margin-bottom:6px;margin-top:8px;';
+    mainLabel.textContent = '📷 主图（' + ci.main.length + ' 张）';
+    body.appendChild(mainLabel);
+
+    ci.main.forEach(function(img, idx) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);';
+      var num = document.createElement('span');
+      num.style.cssText = 'font-size:12px;font-weight:600;min-width:24px;';
+      num.textContent = '#' + (idx + 1);
+      row.appendChild(num);
+
+      var thumb = document.createElement('div');
+      thumb.style.cssText = 'width:48px;height:36px;border:1px dashed var(--border);border-radius:3px;overflow:hidden;flex-shrink:0;background:#f9f9f9;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+      if (img.url) { var im = document.createElement('img'); im.src = img.url; im.style.cssText = 'width:100%;height:100%;object-fit:cover;'; thumb.appendChild(im); }
+      else thumb.innerHTML = '<span style="font-size:10px;color:var(--text-muted);">上传</span>';
+      thumb.addEventListener('click', function() {
+        activeUploadTarget = { uploadDir:'images/cover', onUploaded: function(p) { img.url = p; renderCoverImagesSection(); } };
+        $hiddenFile.click();
+      });
+      row.appendChild(thumb);
+
+      var posInputs = document.createElement('div');
+      posInputs.style.cssText = 'display:flex;gap:4px;font-size:11px;';
+      ['top','left','right'].forEach(function(prop) {
+        var lbl2 = document.createElement('span');
+        lbl2.textContent = prop + ':'; lbl2.style.cssText = 'color:var(--text-muted);';
+        var inp = document.createElement('input');
+        inp.style.cssText = 'width:48px;padding:2px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;';
+        inp.value = img[prop] || '';
+        inp.placeholder = 'auto';
+        inp.addEventListener('change', function() { img[prop] = inp.value.trim(); });
+        posInputs.appendChild(lbl2); posInputs.appendChild(inp);
+      });
+      row.appendChild(posInputs);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn btn-sm btn-danger'; delBtn.textContent = '✕';
+      delBtn.addEventListener('click', function() { ci.main.splice(idx, 1); renderCoverImagesSection(); });
+      row.appendChild(delBtn);
+      body.appendChild(row);
+    });
+
+    var addMainBtn = document.createElement('button');
+    addMainBtn.className = 'btn btn-sm'; addMainBtn.textContent = '+ 添加主图';
+    addMainBtn.addEventListener('click', function() { ci.main.push({ url:'', top:'', left:'' }); renderCoverImagesSection(); });
+    body.appendChild(addMainBtn);
+
+    // ── 背景图列表 ──
+    var bgLabel = document.createElement('div');
+    bgLabel.style.cssText = 'font-size:13px;font-weight:700;margin-bottom:6px;margin-top:16px;';
+    bgLabel.textContent = '🌫 背景图（' + ci.bg.length + ' 张）';
+    body.appendChild(bgLabel);
+
+    ci.bg.forEach(function(img, idx) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius);';
+      var num = document.createElement('span');
+      num.style.cssText = 'font-size:12px;font-weight:600;min-width:24px;';
+      num.textContent = '#' + (idx + 1);
+      row.appendChild(num);
+
+      var thumb = document.createElement('div');
+      thumb.style.cssText = 'width:48px;height:36px;border:1px dashed var(--border);border-radius:3px;overflow:hidden;flex-shrink:0;background:#f9f9f9;cursor:pointer;display:flex;align-items:center;justify-content:center;';
+      if (img.url) { var im = document.createElement('img'); im.src = img.url; im.style.cssText = 'width:100%;height:100%;object-fit:cover;'; thumb.appendChild(im); }
+      else thumb.innerHTML = '<span style="font-size:10px;color:var(--text-muted);">上传</span>';
+      thumb.addEventListener('click', function() {
+        activeUploadTarget = { uploadDir:'images/cover', onUploaded: function(p) { img.url = p; renderCoverImagesSection(); } };
+        $hiddenFile.click();
+      });
+      row.appendChild(thumb);
+
+      var posInputs = document.createElement('div');
+      posInputs.style.cssText = 'display:flex;gap:4px;font-size:11px;';
+      ['top','left','right'].forEach(function(prop) {
+        var lbl2 = document.createElement('span');
+        lbl2.textContent = prop + ':'; lbl2.style.cssText = 'color:var(--text-muted);';
+        var inp = document.createElement('input');
+        inp.style.cssText = 'width:48px;padding:2px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;';
+        inp.value = img[prop] || '';
+        inp.placeholder = 'auto';
+        inp.addEventListener('change', function() { img[prop] = inp.value.trim(); });
+        posInputs.appendChild(lbl2); posInputs.appendChild(inp);
+      });
+      row.appendChild(posInputs);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn btn-sm btn-danger'; delBtn.textContent = '✕';
+      delBtn.addEventListener('click', function() { ci.bg.splice(idx, 1); renderCoverImagesSection(); });
+      row.appendChild(delBtn);
+      body.appendChild(row);
+    });
+
+    var addBgBtn = document.createElement('button');
+    addBgBtn.className = 'btn btn-sm'; addBgBtn.textContent = '+ 添加背景图';
+    addBgBtn.addEventListener('click', function() { ci.bg.push({ url:'', top:'', left:'' }); renderCoverImagesSection(); });
+    body.appendChild(addBgBtn);
+
+    $content.appendChild(card);
+  }
+
+  function renderPersonalSection() {
+    const { card, body } = createSectionCard('sec-personal', '👤 个人信息');
+    body.appendChild(createTextFieldRow('区块标题', 'personalInfo.title', '个人信息'));
+    body.appendChild(createTextFieldRow('一句话标签', 'personalInfo.tagline', '如：酿酒工程在读'));
+    body.appendChild(createImageFieldRow('头像', 'personalInfo.avatar', 'images/personal-photos'));
+    body.appendChild(createTextFieldRow('姓名', 'personalInfo.name', '输入姓名'));
+    body.appendChild(createTextFieldRow('生日', 'personalInfo.birthday', '如 2004-01-15'));
+    body.appendChild(createTextFieldRow('年龄', 'personalInfo.age', '如 22岁'));
+
+    // 联系方式
+    const contactLabel = document.createElement('label');
+    contactLabel.className = 'field-label';
+    contactLabel.textContent = '联系方式';
+    contactLabel.style.cssText = 'margin-top:16px;padding-top:12px;border-top:1px solid var(--border);';
+    body.appendChild(contactLabel);
+    const contactGrid = document.createElement('div');
+    contactGrid.className = 'field-grid';
+    contactGrid.appendChild(createTextFieldRow('邮箱', 'personalInfo.contact.email', 'email@example.com'));
+    contactGrid.appendChild(createTextFieldRow('电话', 'personalInfo.contact.phone', '手机号'));
+    contactGrid.appendChild(createTextFieldRow('微信', 'personalInfo.contact.wechat', '微信号'));
+    body.appendChild(contactGrid);
+
+    // 个人照片
+    const photosLabel = document.createElement('label');
+    photosLabel.className = 'field-label';
+    photosLabel.textContent = '个人照片（CircularGallery）';
+    photosLabel.style.cssText = 'margin-top:16px;padding-top:12px;border-top:1px solid var(--border);';
+    body.appendChild(photosLabel);
+    body.appendChild(createObjectList('personalInfo.photos', [
+      { key: 'url', label: '照片', type: 'image', uploadDir: 'images/personal-photos' },
+      { key: 'title', label: '照片标题', type: 'text', placeholder: '照片描述' },
+    ], function(item) { return item.title || item.url || '未命名照片'; }));
+
+    // 列表
+    body.appendChild(createStringListRow('获奖及证书', 'personalInfo.awards', '输入获奖或证书名称'));
+    body.appendChild(createStringListRow('教育背景', 'personalInfo.education', '输入教育经历'));
+    body.appendChild(createStringListRow('爱好', 'personalInfo.hobbies', '输入爱好'));
+    $content.appendChild(card);
+  }
+
+  function renderWorkSection() {
+    const { card, body } = createSectionCard('sec-work', '💼 工作经验');
+    body.appendChild(createTextFieldRow('区块标题', 'workExperience.title', '工作经验'));
+    body.appendChild(createObjectList('workExperience.items', [
+      { key: 'photo', label: '照片', type: 'image', uploadDir: 'images' },
+      { key: 'company', label: '公司', type: 'text', placeholder: '公司名称' },
+      { key: 'position', label: '职位', type: 'text', placeholder: '岗位名称' },
+      { key: 'period', label: '时间段', type: 'text', placeholder: '如 2025.06 – 2025.09' },
+      { key: 'details', label: '工作详情', type: 'stringList', placeholder: '输入工作内容' },
+    ], function(item) { return (item.company || '?') + ' — ' + (item.position || ''); }));
+    $content.appendChild(card);
+  }
+
+  function renderProjectSection() {
+    const { card, body } = createSectionCard('sec-project', '📋 项目经验');
+    body.appendChild(createTextFieldRow('区块标题', 'projectExperience.title', '项目经验'));
+    body.appendChild(createObjectList('projectExperience.items', [
+      { key: 'photo', label: '照片', type: 'image', uploadDir: 'images' },
+      { key: 'name', label: '项目名称', type: 'text', placeholder: '项目名称' },
+      { key: 'role', label: '角色 / 时间段', type: 'text', placeholder: '如 负责人 | 2025.01 – 2025.06' },
+      { key: 'details', label: '项目详情', type: 'stringList', placeholder: '输入项目内容' },
+    ], function(item) { return (item.name || '?') + ' — ' + (item.role || ''); }));
+    $content.appendChild(card);
+  }
+
+  function renderResearchSection() {
+    const { card, body } = createSectionCard('sec-research', '🔬 科研经历');
+    body.appendChild(createTextFieldRow('区块标题', 'researchExperience.title', '科研经验'));
+    body.appendChild(createObjectList('researchExperience.items', [
+      { key: 'photo', label: '照片', type: 'image', uploadDir: 'images/research' },
+      { key: 'title', label: '标题', type: 'text', placeholder: '研究/实验名称' },
+      { key: 'date', label: '日期', type: 'text', placeholder: '日期（可选）' },
+      { key: 'category', label: '分类', type: 'text', placeholder: '分类标签（可选）' },
+      { key: 'description', label: '描述', type: 'textarea', placeholder: '详细描述，支持 \\n 换行' },
+    ], function(item) { return item.title || '未命名研究'; }));
+    $content.appendChild(card);
+  }
+
+  function renderSkillsSection() {
+    const { card, body } = createSectionCard('sec-skills', '🛠 我的技能');
+    body.appendChild(createTextFieldRow('区块标题', 'mySkills.title', '我的技能'));
+    body.appendChild(createTextFieldRow('描述', 'mySkills.description', '技能栈与工具链'));
+
+    const catLabel = document.createElement('label');
+    catLabel.className = 'field-label';
+    catLabel.textContent = '技能分类';
+    catLabel.style.cssText = 'margin-top:12px;padding-top:8px;border-top:1px solid var(--border);';
+    body.appendChild(catLabel);
+
+    body.appendChild(createObjectList('mySkills.categories', [
+      { key: 'name', label: '分类名称', type: 'text', placeholder: '如 常用工具、编程语言' },
+    ], function(item) { return item.name || '未命名分类'; }, { items: [], iconPlaceholder: true }));
+
+    // 每个 category 的 items
+    const catNote = document.createElement('p');
+    catNote.style.cssText = 'font-size:12px;color:var(--text-muted);margin-top:4px;';
+    catNote.textContent = '提示：每个分类下的具体工具（name, url）请在下方展开后通过 JSON 编辑，或直接在 data.js 中修改。';
+    body.appendChild(catNote);
+
+    // 内联编辑分类下的 items
+    const cats = getByPath(state, 'mySkills.categories') || [];
+    cats.forEach(function(cat, catIdx) {
+      const catItemsLabel = document.createElement('label');
+      catItemsLabel.className = 'field-label';
+      catItemsLabel.textContent = '▸ ' + (cat.name || '分类 #' + (catIdx + 1)) + ' 的工具列表';
+      catItemsLabel.style.cssText = 'margin-top:8px;';
+      body.appendChild(catItemsLabel);
+
+      const itemsPath = 'mySkills.categories.' + catIdx + '.items';
+      body.appendChild(createObjectList(itemsPath, [
+        { key: 'name', label: '工具名称', type: 'text', placeholder: '如 GitHub' },
+        { key: 'url', label: '链接', type: 'text', placeholder: 'https://...' },
+      ], function(item) { return item.name || '未命名'; }));
+    });
+
+    $content.appendChild(card);
+  }
+
+  function renderPortfolioSection() {
+    const { card, body } = createSectionCard('sec-portfolio', '🎨 作品集');
+    body.appendChild(createTextFieldRow('区块标题', 'portfolio.title', '作品集'));
+
+    // Tabs
+    const tabsLabel = document.createElement('label');
+    tabsLabel.className = 'field-label';
+    tabsLabel.textContent = '标签页';
+    body.appendChild(tabsLabel);
+    body.appendChild(createObjectList('portfolio.tabs', [
+      { key: 'id', label: 'ID', type: 'text', placeholder: '如 xiaohongshu' },
+      { key: 'label', label: '显示名称', type: 'text', placeholder: '如 小红书运营' },
+    ], function(item) { return (item.label || '?') + ' (' + (item.id || '?') + ')'; }));
+
+    // ---- 小红书 ----
+    const xhsLabel = document.createElement('label');
+    xhsLabel.className = 'field-label';
+    xhsLabel.textContent = '小红书运营';
+    xhsLabel.style.cssText = 'margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:14px;';
+    body.appendChild(xhsLabel);
+
+    // 爆款IP（2×2 网格轮播）
+    const xhsIPsLabel = document.createElement('label');
+    xhsIPsLabel.className = 'field-label';
+    xhsIPsLabel.textContent = '🔥 爆款IP（左侧 2×2 网格，各 4 个独立轮播）';
+    xhsIPsLabel.style.cssText = 'margin-bottom:6px;color:#e65100;';
+    body.appendChild(xhsIPsLabel);
+    body.appendChild(createObjectList('portfolio.xiaohongshu.featuredIPs', [
+      { key: 'name', label: 'IP 名称', type: 'text', placeholder: '如 7天瘦腰跟练' },
+      { key: 'photos', label: '轮播图片', type: 'imageStringList', uploadDir: 'images/xhs-ips' },
+    ], function(item) { return (item.name || '未命名IP') + ' — ' + ((item.photos && item.photos.length) || 0) + ' 张图'; }));
+
+    // 小红书 sections
+    const xhsSectionsLabel = document.createElement('label');
+    xhsSectionsLabel.className = 'field-label';
+    xhsSectionsLabel.textContent = '内容板块';
+    body.appendChild(xhsSectionsLabel);
+    body.appendChild(createObjectList('portfolio.xiaohongshu.sections', [
+      { key: 'title', label: '板块标题', type: 'text', placeholder: '如 账号成果总览' },
+      { key: 'content', label: '板块内容', type: 'textarea', placeholder: '支持 \\n 换行' },
+      { key: 'url', label: '链接（可选）', type: 'text', placeholder: 'https://...' },
+      { key: 'images', label: '板块配图（可加标题）', type: 'imageWithTitleList', uploadDir: 'images/xhs-sections' },
+    ], function(item) { return item.title || '未命名板块'; }));
+
+    // ---- 摄影集 ----
+    const photoLabel = document.createElement('label');
+    photoLabel.className = 'field-label';
+    photoLabel.textContent = '摄影集';
+    photoLabel.style.cssText = 'margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:14px;';
+    body.appendChild(photoLabel);
+
+    body.appendChild(createObjectList('portfolio.photography.categories', [
+      { key: 'name', label: '分类名', type: 'text', placeholder: '如 人文、美食、风景' },
+    ], function(item) { return item.name || '未命名分类'; }, { photos: [] }));
+
+    // 每个分类下的照片列表
+    const cats = getByPath(state, 'portfolio.photography.categories') || [];
+    cats.forEach(function(cat, catIdx) {
+      const catPhotosLabel = document.createElement('label');
+      catPhotosLabel.className = 'field-label';
+      catPhotosLabel.textContent = '▸ ' + (cat.name || '分类 #' + (catIdx + 1)) + ' 的照片';
+      catPhotosLabel.style.cssText = 'margin-top:12px;';
+      body.appendChild(catPhotosLabel);
+
+      const photosPath = 'portfolio.photography.categories.' + catIdx + '.photos';
+      body.appendChild(createObjectList(photosPath, [
+        { key: 'image', label: '照片', type: 'image', uploadDir: 'images/photography' },
+        { key: 'title', label: '照片标题', type: 'text', placeholder: '如 人文 01' },
+      ], function(item) { return item.title || item.image || '未命名'; }));
+    });
+
+    // ---- 视频 ----
+    const videoLabel = document.createElement('label');
+    videoLabel.className = 'field-label';
+    videoLabel.textContent = '剪辑作品';
+    videoLabel.style.cssText = 'margin-top:16px;padding-top:12px;border-top:1px solid var(--border);font-size:14px;';
+    body.appendChild(videoLabel);
+
+    const videoListEl = createObjectList('portfolio.video', [
+      { key: 'cover', label: '封面图', type: 'image', uploadDir: 'images/video-covers' },
+      { key: 'title', label: '视频标题', type: 'text', placeholder: '如 剪辑作品 01' },
+      { key: 'description', label: '视频描述', type: 'text', placeholder: '视频描述' },
+      { key: 'src', label: '视频文件', type: 'text', placeholder: '如 videos/video_01.mp4（上传后自动填入）' },
+    ], function(item) { return item.title || '未命名视频'; });
+    body.appendChild(videoListEl);
+
+    // 视频文件上传
+    const videoSrcHint = document.createElement('p');
+    videoSrcHint.style.cssText = 'font-size:12px;color:var(--text-muted);margin-top:4px;';
+    videoSrcHint.textContent = '📹 上传视频：先展开要关联的视频项，再使用下方按钮上传，路径会自动填入该视频的 src 字段。';
+    body.appendChild(videoSrcHint);
+
+    // 辅助：获取当前展开的视频项的索引
+    function getOpenVideoIndex() {
+      var openEl = videoListEl.querySelector('.object-list-item.open');
+      if (!openEl) return -1;
+      var items = videoListEl.querySelectorAll('.object-list-item');
+      for (var i = 0; i < items.length; i++) {
+        if (items[i] === openEl) return i;
+      }
+      return -1;
+    }
+
+    // 上传成功后自动填入 src
+    function onVideoUploadSuccess(videoPath) {
+      var idx = getOpenVideoIndex();
+      if (idx >= 0) {
+        var srcPath = 'portfolio.video.' + idx + '.src';
+        setByPath(state, srcPath, videoPath);
+        // 同步更新 DOM 中的 input
+        var openEl = videoListEl.querySelector('.object-list-item.open');
+        if (openEl) {
+          var input = openEl.querySelector('input[type="text"][data-path$=".src"]');
+          if (!input) {
+            // 回退：找所有 text input
+            var inputs = openEl.querySelectorAll('input[type="text"]');
+            inputs.forEach(function(inp) {
+              if (inp.dataset.path && inp.dataset.path.endsWith('.src')) input = inp;
+            });
+          }
+          if (input) { input.value = videoPath; input.dispatchEvent(new Event('input')); }
+        }
+        toast('视频上传成功！已自动填入 #' + (idx + 1) + ' 的 src: ' + videoPath);
+      } else {
+        toast('视频上传成功！路径: ' + videoPath + '（请展开一个视频项后再上传以自动填入）');
+      }
+    }
+
+    var videoUploadZone = document.createElement('div');
+    videoUploadZone.className = 'upload-zone';
+    videoUploadZone.textContent = '📹 点击或拖拽上传视频文件（将保存到 videos/ 目录）';
+    videoUploadZone.addEventListener('click', function() {
+      activeUploadTarget = { path: null, uploadDir: 'videos', preview: videoUploadZone };
+      $hiddenVideo.click();
+    });
+    videoUploadZone.addEventListener('dragover', function(e) { e.preventDefault(); });
+    videoUploadZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      var file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('video/')) {
+        var formData = new FormData();
+        formData.append('file', file);
+        videoUploadZone.innerHTML = '<div class="spinner"></div> 上传中...';
+        fetch(API + '/api/upload/video', { method: 'POST', body: formData })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data.ok) {
+              videoUploadZone.innerHTML = '<span style="color:#16a34a;">✓ 上传成功: ' + data.path + '</span>';
+              onVideoUploadSuccess(data.path);
+            } else {
+              videoUploadZone.textContent = '📹 上传失败，点击重试';
+              toast('上传失败: ' + (data.error || '未知错误'), 'error');
+            }
+          });
+      }
+    });
+    body.appendChild(videoUploadZone);
+
+    $content.appendChild(card);
+  }
+
+  function renderPDFSection() {
+    const { card, body } = createSectionCard('sec-pdfs', '📄 PDF下载');
+    const desc = document.createElement('p');
+    desc.style.cssText = 'font-size:12px;color:var(--text-muted);margin-bottom:12px;';
+    desc.textContent = '可下载的 PDF 文件列表。PDF 文件放置于 downloads/ 目录。';
+    body.appendChild(desc);
+    body.appendChild(createObjectList('pdfDownloads', [
+      { key: 'name', label: '显示名称', type: 'text', placeholder: '如 个人简历' },
+      { key: 'url', label: '文件路径', type: 'text', placeholder: '如 downloads/resume.pdf' },
+    ], function(item) { return item.name || '未命名文件'; }));
+    $content.appendChild(card);
+  }
+
+  function renderResumeSection() {
+    const { card, body } = createSectionCard('sec-resume', '📝 核心简历');
+    body.appendChild(createTextAreaRow('个人总结', 'coreResume.summary', '输入个人总结...'));
+    body.appendChild(createStringListRow('亮点', 'coreResume.highlights', '输入亮点'));
+    $content.appendChild(card);
+  }
+
+  function renderMatcherSection() {
+    const { card, body } = createSectionCard('sec-matcher-content', '🤖 AI岗位匹配器');
+    const desc = document.createElement('p');
+    desc.style.cssText = 'font-size:12px;color:var(--text-muted);margin-bottom:12px;';
+    desc.textContent = '修改匹配器页面（matcher.html）中的文字内容。保存后刷新主页即可看到效果。';
+    body.appendChild(desc);
+    body.appendChild(createTextFieldRow('主站标题', 'aiMatcher.title', '在主页中显示的标题'));
+    body.appendChild(createTextFieldRow('页面标题', 'aiMatcher.matcherTitle', '匹配器页面大标题'));
+    body.appendChild(createTextFieldRow('副标题说明', 'aiMatcher.matcherSubtitle', '标题下方的说明文字'));
+    body.appendChild(createTextFieldRow('输入框占位符', 'aiMatcher.placeholder', 'JD输入框的提示文字'));
+    body.appendChild(createTextFieldRow('主按钮文字', 'aiMatcher.buttonText', '生成匹配报告按钮'));
+    body.appendChild(createTextFieldRow('加载提示', 'aiMatcher.loadingText', '分析中提示文字'));
+    body.appendChild(createTextFieldRow('补充面板标题', 'aiMatcher.panelTitle', 'JD信息不足时的提示标题'));
+    body.appendChild(createTextFieldRow('补充输入框占位符', 'aiMatcher.supplementPlaceholder', '补充信息输入框提示'));
+    body.appendChild(createTextFieldRow('重新提交按钮', 'aiMatcher.resubmitText', '补充信息并重新匹配按钮'));
+    body.appendChild(createTextFieldRow('跳过按钮', 'aiMatcher.skipText', '跳过补充按钮'));
+    $content.appendChild(card);
+  }
+
+  function renderFooterSection() {
+    const { card, body } = createSectionCard('sec-footer', '📌 页脚');
+    body.appendChild(createTextFieldRow('页脚文字', 'footer.text', '如 © 2026 梁婧'));
+    $content.appendChild(card);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // 背景设置 V2 — 自由分组
+  // ══════════════════════════════════════════════════════════
+  function renderBackgroundsSection() {
+    var obj = createSectionCard('sec-backgrounds', '🖼️ 背景设置');
+    var card = obj.card;
+    var body = obj.body;
+    var uploadDir = 'images/backgrounds';
+
+    // 初始化数据结构
+    if (!state.sectionBackgrounds) state.sectionBackgrounds = { groups: [], singles: {} };
+    var bg = state.sectionBackgrounds;
+    if (!bg.groups) bg.groups = [];
+    if (!bg.singles) bg.singles = {};
+
+    var ALL_IDS = ['cover','personal','matcher','skills','experience','research','portfolio','siteFooter'];
+    var LABELS = {
+      cover:'🎬 封面', personal:'👤 个人信息', matcher:'🤖 AI匹配器', skills:'🛠 个人技能',
+      experience:'💼 工作&项目经历', research:'🔬 科研经历', portfolio:'🎨 作品集', siteFooter:'📌 Lovely to meet u'
+    };
+    // 保证 singles 里每个板块都有默认值
+    ALL_IDS.forEach(function(id) {
+      if (!bg.singles[id]) bg.singles[id] = { type:'none', url:'', fillMode:'cover' };
+    });
+
+    // ══════════════════════════════════
+    // 辅助：获取当前已被分组的 ID 集合
+    // ══════════════════════════════════
+    function getGroupedIds() {
+      var ids = {};
+      (bg.groups||[]).forEach(function(g) {
+        (g.sections||[]).forEach(function(sid) { ids[sid] = true; });
+      });
+      return ids;
+    }
+
+    // ══════════════════════════════════
+    // 辅助：获取当前可加入分组的 ID 列表（排除封面和已分组的）
+    // ══════════════════════════════════
+    function getAvailableIds() {
+      var grouped = getGroupedIds();
+      return ALL_IDS.filter(function(id) { return id !== 'cover' && !grouped[id]; });
+    }
+
+    // ══════════════════════════════════
+    // 辅助：上传回调工厂
+    // ══════════════════════════════════
+    function makeUploadCallback(setFn) {
+      return function(imgPath) { setFn(imgPath); renderAll(); };
+    }
+
+    // ══════════════════════════════════
+    // 辅助：渲染上传预览缩略图
+    // ══════════════════════════════════
+    function createThumb(url, setUrlFn) {
+      var preview = document.createElement('div');
+      preview.style.cssText = 'width:72px;height:48px;border:1px dashed var(--border);border-radius:4px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#f9f9f9;cursor:pointer;';
+      if (url) {
+        var img = document.createElement('img');
+        img.src = url; img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        img.onerror = function() { preview.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">加载失败</span>'; };
+        preview.appendChild(img);
+      } else {
+        preview.innerHTML = '<span style="font-size:11px;color:var(--text-muted);text-align:center;">点击上传</span>';
+      }
+      preview.addEventListener('dragover', function(e) { e.preventDefault(); });
+      preview.addEventListener('drop', function(e) {
+        e.preventDefault();
+        var file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) doUploadImage(file, setUrlFn, preview);
+      });
+      preview.addEventListener('click', function() {
+        // 创建独立的文件输入，避免全局 $hiddenFile 状态冲突
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+        input.addEventListener('change', function() {
+          if (!input.files.length) { input.remove(); return; }
+          var file = input.files[0];
+          // 显示上传中
+          preview.innerHTML = '<div class="spinner"></div>';
+          var fd = new FormData();
+          fd.append('file', file);
+          fd.append('directory', uploadDir);
+          fetch(API + '/api/upload', { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+              if (d.ok) {
+                setUrlFn(d.path);
+                toast('上传成功 ✓');
+              } else {
+                toast('上传失败: ' + (d.error || '未知错误'), 'error');
+              }
+              renderAll();
+              input.remove();
+            })
+            .catch(function(e) {
+              toast('上传失败: ' + e.message, 'error');
+              renderAll();
+              input.remove();
+            });
+        });
+        input.click();
+      });
+      return preview;
+    }
+
+    function doUploadImage(file, setFn, previewEl) {
+      var fd = new FormData(); fd.append('file', file); fd.append('directory', uploadDir);
+      if (previewEl) previewEl.innerHTML = '<div class="spinner"></div>';
+      fetch(API+'/api/upload', { method:'POST', body:fd })
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if(d.ok){ setFn(d.path); toast('上传成功 ✓'); } else toast('上传失败: '+(d.error||'未知错误'),'error'); renderAll(); })
+        .catch(function(e){ toast('上传失败: '+e.message,'error'); renderAll(); });
+    }
+
+    // ══════════════════════════════════
+    // 辅助：填充方式下拉
+    // ══════════════════════════════════
+    function createFillSelect(curVal, onChange) {
+      var sel = document.createElement('select');
+      sel.style.cssText = 'padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;';
+      [{v:'cover',t:'铺满裁剪'},{v:'contain',t:'完整显示'},{v:'stretch',t:'拉伸填充'}].forEach(function(f){
+        var o = document.createElement('option'); o.value = f.v; o.textContent = f.t;
+        if (curVal === f.v) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', function(){ onChange(sel.value); });
+      return sel;
+    }
+
+    // ══════════════════════════════════
+    // 辅助：类型下拉
+    // ══════════════════════════════════
+    function createTypeSelect(curVal, onChange) {
+      var sel = document.createElement('select');
+      sel.style.cssText = 'padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;';
+      [{v:'none',t:'无'},{v:'image',t:'🖼 图片'},{v:'video',t:'🎬 视频'}].forEach(function(opt){
+        var o = document.createElement('option'); o.value = opt.v; o.textContent = opt.t;
+        if (curVal === opt.v) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', function(){ onChange(sel.value); });
+      return sel;
+    }
+
+    // ══════════════════════════════════
+    // 主渲染
+    // ══════════════════════════════════
+    function renderAll() {
+      body.innerHTML = '';
+      var grouped = getGroupedIds();
+
+      // ── 提示 ──
+      var desc = document.createElement('p');
+      desc.style.cssText = 'font-size:12px;color:var(--text-muted);margin-bottom:14px;';
+      desc.textContent = '将多个板块放入同一分组，它们会无缝拼接并共享一张背景图。封面永远独立。';
+      body.appendChild(desc);
+
+      // ── 渲染每个分组 ──
+      (bg.groups||[]).forEach(function(group, gIdx) {
+        var groupCard = document.createElement('div');
+        groupCard.style.cssText = 'border:2px solid #2563eb;border-radius:var(--radius);margin-bottom:14px;overflow:hidden;';
+
+        // 分组头部
+        var groupHead = document.createElement('div');
+        groupHead.style.cssText = 'background:#eff6ff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;';
+        var groupTitle = document.createElement('span');
+        groupTitle.style.cssText = 'font-weight:700;font-size:13px;color:#2563eb;';
+        groupTitle.textContent = '📦 分组 ' + (gIdx + 1);
+        var delGroupBtn = document.createElement('button');
+        delGroupBtn.className = 'btn btn-sm btn-danger';
+        delGroupBtn.textContent = '🗑 删除此分组';
+        delGroupBtn.addEventListener('click', function() {
+          if (confirm('确定删除分组 ' + (gIdx+1) + '？其中的板块将恢复为独立。')) {
+            bg.groups.splice(gIdx, 1);
+            renderAll();
+          }
+        });
+        groupHead.appendChild(groupTitle);
+        groupHead.appendChild(delGroupBtn);
+        groupCard.appendChild(groupHead);
+
+        var groupBody = document.createElement('div');
+        groupBody.style.cssText = 'padding:12px 14px;';
+
+        // ── 已选板块标签 ──
+        var tagsRow = document.createElement('div');
+        tagsRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center;';
+        var tagsLabel = document.createElement('span');
+        tagsLabel.style.cssText = 'font-size:12px;color:var(--text-muted);';
+        tagsLabel.textContent = '板块：';
+        tagsRow.appendChild(tagsLabel);
+
+        (group.sections||[]).forEach(function(sid) {
+          var tag = document.createElement('span');
+          tag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#dbeafe;color:#1e40af;border-radius:20px;font-size:12px;font-weight:500;';
+          tag.textContent = LABELS[sid] || sid;
+          var xBtn = document.createElement('span');
+          xBtn.textContent = '×';
+          xBtn.style.cssText = 'cursor:pointer;font-weight:700;margin-left:2px;';
+          xBtn.addEventListener('click', function() {
+            group.sections = group.sections.filter(function(s) { return s !== sid; });
+            if (group.sections.length === 0) { bg.groups.splice(gIdx, 1); }
+            renderAll();
+          });
+          tag.appendChild(xBtn);
+          tagsRow.appendChild(tag);
+        });
+
+        // ── 添加板块下拉 ──
+        var available = getAvailableIds();
+        if (available.length > 0) {
+          var addSel = document.createElement('select');
+          addSel.style.cssText = 'padding:3px 6px;border:1px solid #2563eb;border-radius:4px;font-size:12px;color:#2563eb;';
+          var placeholder = document.createElement('option');
+          placeholder.value = ''; placeholder.textContent = '+ 添加板块'; placeholder.disabled = true; placeholder.selected = true;
+          addSel.appendChild(placeholder);
+          available.forEach(function(id) {
+            var o = document.createElement('option'); o.value = id; o.textContent = LABELS[id];
+            addSel.appendChild(o);
+          });
+          addSel.addEventListener('change', function() {
+            if (addSel.value) {
+              if (!group.sections) group.sections = [];
+              group.sections.push(addSel.value);
+              renderAll();
+            }
+          });
+          tagsRow.appendChild(addSel);
+        }
+        groupBody.appendChild(tagsRow);
+
+        // ── 背景设置 ──
+        if (!group.type) group.type = 'none';
+        if (!group.fillMode) group.fillMode = 'cover';
+        if (!group.url) group.url = '';
+
+        var bgRow = document.createElement('div');
+        bgRow.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;';
+
+        var typeSel = createTypeSelect(group.type, function(v) {
+          group.type = v;
+          if (v === 'none') group.url = '';
+          renderAll();
+        });
+        bgRow.appendChild(typeSel);
+
+        if (group.type !== 'none') {
+          var thumb = createThumb(group.url, function(p) { group.url = p; });
+          bgRow.appendChild(thumb);
+          if (group.url) {
+            var fn = document.createElement('span');
+            fn.style.cssText = 'font-size:11px;color:var(--text-muted);';
+            fn.textContent = group.url.split('/').pop();
+            bgRow.appendChild(fn);
+          }
+
+          if (group.type === 'video') {
+            var vInput = document.createElement('input');
+            vInput.className = 'inline-input'; vInput.value = group.url||''; vInput.placeholder = '视频路径';
+            vInput.style.cssText = 'width:160px;font-size:12px;';
+            vInput.addEventListener('input', function(){ group.url = vInput.value.trim(); });
+            var vUpBtn = document.createElement('button');
+            vUpBtn.className = 'btn btn-sm'; vUpBtn.textContent = '📹 上传';
+            vUpBtn.addEventListener('click', function(){
+              activeUploadTarget = { uploadDir:'videos', onUploaded: function(p){ group.url = p; renderAll(); } };
+              $hiddenVideo.click();
+            });
+            bgRow.appendChild(vInput); bgRow.appendChild(vUpBtn);
+          }
+
+          var fillSel = createFillSelect(group.fillMode, function(v){ group.fillMode = v; });
+          bgRow.appendChild(fillSel);
+
+          // ── 双层探照灯 ──
+          if (group.type === 'image') {
+            var dualRow = document.createElement('div');
+            dualRow.style.cssText = 'display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;';
+
+            var dualCheck = document.createElement('label');
+            dualCheck.style.cssText = 'font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none;';
+            var cb = document.createElement('input');
+            cb.type = 'checkbox';
+            var hasDual = (group.topUrl !== undefined);
+            cb.checked = hasDual;
+            cb.style.cssText = 'cursor:pointer;';
+            dualCheck.appendChild(cb);
+            dualCheck.appendChild(document.createTextNode('🔦 双层探照灯'));
+            dualRow.appendChild(dualCheck);
+
+            if (hasDual) {
+              if (!group.topUrl) group.topUrl = '';
+              var topThumb = createThumb(group.topUrl, function(p) { group.topUrl = p; });
+              dualRow.appendChild(topThumb);
+              if (group.topUrl) {
+                var tfn = document.createElement('span');
+                tfn.style.cssText = 'font-size:11px;color:var(--text-muted);';
+                tfn.textContent = '表层: ' + group.topUrl.split('/').pop();
+                dualRow.appendChild(tfn);
+              }
+              var topLabel = document.createElement('span');
+              topLabel.style.cssText = 'font-size:11px;color:var(--text-muted);';
+              topLabel.textContent = '← 表层图片（鼠标探照灯）';
+              dualRow.appendChild(topLabel);
+            }
+
+            cb.addEventListener('change', function() {
+              if (cb.checked) {
+                group.topUrl = '';
+              } else {
+                delete group.topUrl;
+              }
+              renderAll();
+            });
+            groupBody.appendChild(dualRow);
+          }
+        }
+        groupBody.appendChild(bgRow);
+        groupCard.appendChild(groupBody);
+        body.appendChild(groupCard);
+      });
+
+      // ── 新建分组按钮 ──
+      var addGroupRow = document.createElement('div');
+      addGroupRow.style.cssText = 'margin-bottom:16px;';
+      var addGroupBtn = document.createElement('button');
+      addGroupBtn.className = 'btn btn-primary';
+      addGroupBtn.textContent = '+ 新建分组';
+      addGroupBtn.addEventListener('click', function() {
+        bg.groups.push({ sections:[], type:'none', url:'', fillMode:'cover' });
+        renderAll();
+      });
+      addGroupRow.appendChild(addGroupBtn);
+      body.appendChild(addGroupRow);
+
+      // ── 独立板块 ──
+      var singlesTitle = document.createElement('div');
+      singlesTitle.style.cssText = 'font-size:13px;font-weight:700;color:#333;margin-bottom:10px;padding-top:8px;border-top:2px solid #e0e0e0;';
+      singlesTitle.textContent = '📌 独立板块';
+      body.appendChild(singlesTitle);
+
+      ALL_IDS.forEach(function(id) {
+        if (getGroupedIds()[id]) return; // 已在分组中
+        var single = bg.singles[id];
+        if (!single) { single = { type:'none', url:'', fillMode:'cover' }; bg.singles[id] = single; }
+
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px;flex-wrap:wrap;';
+
+        var lbl = document.createElement('div');
+        lbl.style.cssText = 'font-weight:600;font-size:13px;min-width:130px;';
+        lbl.textContent = LABELS[id] || id;
+        row.appendChild(lbl);
+
+        var typeSel = createTypeSelect(single.type, function(v){
+          single.type = v; if (v==='none') single.url = '';
+          renderAll();
+        });
+        row.appendChild(typeSel);
+
+        if (single.type !== 'none') {
+          var thumb = createThumb(single.url, function(p) { single.url = p; });
+          row.appendChild(thumb);
+          if (single.url) {
+            var fn = document.createElement('span');
+            fn.style.cssText = 'font-size:11px;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+            fn.textContent = single.url.split('/').pop();
+            row.appendChild(fn);
+          }
+
+          if (single.type === 'video') {
+            var vInput = document.createElement('input');
+            vInput.className = 'inline-input'; vInput.value = single.url||''; vInput.placeholder = '视频路径';
+            vInput.style.cssText = 'width:140px;font-size:12px;';
+            vInput.addEventListener('input', function(){ single.url = vInput.value.trim(); });
+            var vUpBtn = document.createElement('button');
+            vUpBtn.className = 'btn btn-sm'; vUpBtn.textContent = '📹';
+            vUpBtn.addEventListener('click', function(){
+              activeUploadTarget = { uploadDir:'videos', onUploaded: function(p){ single.url = p; renderAll(); } };
+              $hiddenVideo.click();
+            });
+            row.appendChild(vInput); row.appendChild(vUpBtn);
+          }
+
+          var fillSel = createFillSelect(single.fillMode, function(v){ single.fillMode = v; });
+          row.appendChild(fillSel);
+
+          // ── 封面双层探照灯 ──
+          if (id === 'cover' && single.type === 'image') {
+            var spotRow = document.createElement('div');
+            spotRow.style.cssText = 'display:flex;align-items:center;gap:6px;width:100%;margin-top:4px;';
+
+            var spotCheck = document.createElement('label');
+            spotCheck.style.cssText = 'font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;user-select:none;';
+            var cb = document.createElement('input');
+            cb.type = 'checkbox';
+            var hasTop = (single.topUrl !== undefined);
+            cb.checked = hasTop;
+            cb.style.cssText = 'cursor:pointer;';
+            spotCheck.appendChild(cb);
+            spotCheck.appendChild(document.createTextNode('🔦 鼠标探照灯'));
+            spotRow.appendChild(spotCheck);
+
+            if (hasTop) {
+              if (!single.topUrl) single.topUrl = '';
+              var topThumb = createThumb(single.topUrl, function(p) { single.topUrl = p; });
+              spotRow.appendChild(topThumb);
+              if (single.topUrl) {
+                var tfn = document.createElement('span');
+                tfn.style.cssText = 'font-size:10px;color:var(--text-muted);';
+                tfn.textContent = single.topUrl.split('/').pop();
+                spotRow.appendChild(tfn);
+              }
+            }
+
+            cb.addEventListener('change', function() {
+              if (cb.checked) {
+                single.topUrl = '';
+              } else {
+                delete single.topUrl;
+              }
+              renderAll();
+            });
+            row.appendChild(spotRow);
+          }
+        }
+        body.appendChild(row);
+      });
+
+      // 视频上传区域提示
+      var videoHint = document.createElement('p');
+      videoHint.style.cssText = 'font-size:11px;color:var(--text-muted);margin-top:8px;';
+      videoHint.textContent = '💡 视频背景：选择「视频」类型后，可上传或填入视频路径。同一分组或独立板块共用一张背景。';
+      body.appendChild(videoHint);
+    }
+
+    renderAll();
+    $content.appendChild(card);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // 主题编辑器 V2 — 逐板块可视化编辑 + 点击选择
+  // ══════════════════════════════════════════════════════════
+  function renderThemeSection() {
+    var obj = createSectionCard('sec-theme', '🎨 主题编辑器');
+    var card = obj.card;
+    var body = obj.body;
+    body.style.padding = '0';
+
+    if (!state.theme) state.theme = {};
+
+    // ── 全局默认值 ──
+    var DEFAULTS = {
+      '--bg':'#ffffff','--bg-subtle':'#f7f7f7','--text-primary':'#1a1a1a',
+      '--text-secondary':'#555555','--text-muted':'#999999','--accent':'#4F46E5',
+      '--accent-subtle':'rgba(79,70,229,0.06)','--border-color':'#e5e5e5',
+      '--surface':'#ffffff','--nav-bg':'rgba(255,255,255,0.92)',
+      '--font-body':"system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif",
+      '--font-heading':"'Roboto Flex',sans-serif",'--font-size-base':'16px',
+      '--letter-spacing':'-0.011em','--line-height':'1.7',
+      '--section-padding':'100px 32px 80px','--section-title-size':'1.6rem',
+      '--section-title-spacing':'-0.025em','--section-title-align':'center',
+      '--section-mb':'56px','--cover-title-size':'clamp(2.6rem,5.5vw,4rem)',
+      '--cover-title-spacing':'-0.02em','--cover-title-align':'center',
+      '--cover-title-mt':'0px','--cover-title-ml':'0px','--cover-title-color':'',
+      '--cover-btn-size':'1.05rem','--cover-btn-mt':'0px','--cover-btn-ml':'0px',
+      '--sec-title-color':'','--sec-title-mt':'0px','--sec-title-ml':'0px',
+      '--sec-bg':'transparent','--max-width':'1000px','--radius':'6px','--radius-lg':'12px',
+      '--footer-align':'center','--footer-padding':'48px 32px','--footer-color':'',
+      '--footer-size':'0.82rem','--footer-mt':'40px'
+    };
+
+    function tv(key) { return (state.theme&&state.theme[key]!==undefined)?state.theme[key]:''; }
+    function setTheme(key,val) {
+      var def=DEFAULTS[key];
+      if(val===def||val===''||val===null||val===undefined) delete state.theme[key];
+      else state.theme[key]=val;
+      updateIframe();
+    }
+
+    // ── iframe 预览更新 ──
+    function updateIframe() {
+      var iframe=document.getElementById('themePreviewIframe');
+      if(!iframe) return;
+      try {
+        var doc=iframe.contentDocument||iframe.contentWindow.document;
+        if(!doc) return;
+        Object.keys(DEFAULTS).forEach(function(k){
+          var v=(state.theme&&state.theme[k]!==undefined)?state.theme[k]:DEFAULTS[k];
+          if(v) doc.documentElement.style.setProperty(k,v);
+          else doc.documentElement.style.removeProperty(k);
+        });
+      } catch(e){}
+    }
+
+    // ── 高亮 iframe 中的元素 ──
+    var highlightedEl = null;
+    function highlightInIframe(selector) {
+      var iframe=document.getElementById('themePreviewIframe');
+      if(!iframe) return;
+      try {
+        var doc=iframe.contentDocument||iframe.contentWindow.document;
+        if(!doc) return;
+        // 清除旧高亮
+        if(highlightedEl) { highlightedEl.style.outline=''; highlightedEl=null; }
+        if(!selector) return;
+        var el=doc.querySelector(selector);
+        if(el) { el.style.outline='3px solid #2563eb'; el.style.outlineOffset='2px'; highlightedEl=el; }
+      } catch(e){}
+    }
+
+    // ── iframe 点击选择桥接 ──
+    function injectIframeBridge() {
+      var iframe=document.getElementById('themePreviewIframe');
+      if(!iframe) return;
+      try {
+        var doc=iframe.contentDocument||iframe.contentWindow.document;
+        if(!doc||!doc.body) return;
+        if(doc.getElementById('_themeBridge')) {
+          // 已注入，但检查函数是否存在
+          var win=iframe.contentWindow;
+          if(win&&!win._themeEnterSelect){
+            // 函数丢失，重新注入
+            var old=doc.getElementById('_themeBridge');
+            if(old) old.remove();
+          } else return;
+        }
+
+        var script=doc.createElement('script');
+        script.id='_themeBridge';
+        script.textContent = [
+          '(function(){',
+          '  var EDIT_MAP={',
+          '    ".cover-title":"cover-title",',
+          '    ".cover-explore-btn":"cover-btn",',
+          '    ".section-title":"sec-title",',
+          '    ".info-card":"info-card-elm",',
+          '    ".personal-gallery-wrapper":"personal-gallery",',
+          '    ".site-footer":"footer-text",',
+          '    ".navbar":"global-nav",',
+          '    ".section":"sec-layout",',
+          '    ".cover-nav-btn":"cover-nav-btn-elm"',
+          '  };',
+          '  var selectMode=false, overlay=null;',
+          '',
+          '  function getTarget(x,y){',
+          '    overlay.style.display="none";',
+          '    var el=document.elementFromPoint(x,y);',
+          '    overlay.style.display="";',
+          '    return el;',
+          '  }',
+          '',
+          '  function enterSelectMode(){',
+          '    if(selectMode) return; selectMode=true;',
+          '    overlay=document.createElement("div");',
+          '    overlay.id="_themeOverlay";',
+          '    overlay.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;cursor:crosshair;";',
+          '    document.body.appendChild(overlay);',
+          '    overlay.addEventListener("click",function(e){',
+          '      e.preventDefault(); e.stopPropagation();',
+          '      var target=getTarget(e.clientX,e.clientY);',
+          '      if(!target||target===document.body||target===document.documentElement) return;',
+          '      var sel="",id="";',
+          '      Object.keys(EDIT_MAP).forEach(function(s){',
+          '        var el=target.closest(s);',
+          '        if(el){ sel=s; id=EDIT_MAP[s]; }',
+          '      });',
+          '      if(!sel){',
+          '        var sec=target.closest("section");',
+          '        if(sec&&sec.id){ sel="#"+sec.id; id="section-"+sec.id; }',
+          '      }',
+          '      if(sel){',
+          '        window.parent.postMessage({type:"themePick",selector:sel,id:id},"*");',
+          '      }',
+          '    },true);',
+          '  };',
+          '',
+          '  function exitSelectMode(){',
+          '    selectMode=false;',
+          '    if(overlay){ overlay.remove(); overlay=null; }',
+          '  };',
+          '',
+          '  window._themeEnterSelect=enterSelectMode;',
+          '  window._themeExitSelect=exitSelectMode;',
+          '  window._themeSelectMode=function(){return selectMode;};',
+          '})();'
+        ].join('\n');
+        (doc.head||doc.body).appendChild(script);
+      } catch(e){ console.log('Bridge inject error:',e); }
+    }
+
+    // 监听 iframe 发来的选中消息
+    window.addEventListener('message', function(e) {
+      if(!e.data||e.data.type!=='themePick') return;
+      var info=e.data;
+      // 在高亮的同时切换到对应 tab
+      selectElementInPanel(info.selector, info.id);
+    });
+
+    // ── 板块和元素定义 ──
+    var currentTab = 'global';
+    var currentEl = null;
+
+    var TABS = [
+      { id:'global', label:'🌐 全局', icon:'🌐' },
+      { id:'cover', label:'🎬 封面', icon:'🎬' },
+      { id:'sections', label:'📄 板块', icon:'📄' },
+      { id:'personal', label:'👤 个人信息', icon:'👤' },
+      { id:'footer', label:'📌 页脚', icon:'📌' }
+    ];
+
+    // 每个 tab 下的可编辑元素及其 CSS 变量
+    var ELEMENTS = {
+      'global': [
+        { id:'body-global', label:'页面基础', selector:'body',
+          vars:[
+            { label:'基础字号', key:'--font-size-base', def:'16px', type:'slider', min:12,max:24,step:1,unit:'px' },
+            { label:'字间距', key:'--letter-spacing', def:'-0.011em', type:'slider', min:-0.05,max:0.1,step:0.001,unit:'em' },
+            { label:'行高', key:'--line-height', def:'1.7', type:'slider', min:1.2,max:2.5,step:0.05,unit:'' }
+          ]
+        },
+        { id:'global-nav', label:'导航栏', selector:'.navbar',
+          vars:[
+            { label:'背景色', key:'--nav-bg', def:'rgba(255,255,255,0.92)', type:'color' }
+          ]
+        },
+        { id:'global-layout', label:'布局与间距', selector:'.section',
+          vars:[
+            { label:'内容最大宽', key:'--max-width', def:'1000px', type:'slider', min:600,max:1400,step:20,unit:'px' },
+            { label:'小圆角', key:'--radius', def:'6px', type:'slider', min:2,max:20,step:1,unit:'px' },
+            { label:'大圆角', key:'--radius-lg', def:'12px', type:'slider', min:4,max:32,step:2,unit:'px' }
+          ]
+        },
+        { id:'global-colors', label:'全局配色', selector:'body',
+          vars:[
+            { label:'背景色', key:'--bg', def:'#ffffff', type:'color' },
+            { label:'次背景', key:'--bg-subtle', def:'#f7f7f7', type:'color' },
+            { label:'主文字', key:'--text-primary', def:'#1a1a1a', type:'color' },
+            { label:'次文字', key:'--text-secondary', def:'#555555', type:'color' },
+            { label:'弱文字', key:'--text-muted', def:'#999999', type:'color' },
+            { label:'强调色', key:'--accent', def:'#4F46E5', type:'color' },
+            { label:'强调浅色', key:'--accent-subtle', def:'rgba(79,70,229,0.06)', type:'color' },
+            { label:'边框色', key:'--border-color', def:'#e5e5e5', type:'color' },
+            { label:'卡片底', key:'--surface', def:'#ffffff', type:'color' }
+          ]
+        }
+      ],
+      'cover': [
+        { id:'cover-title', label:'封面大标题', selector:'.cover-title',
+          vars:[
+            { label:'字号', key:'--cover-title-size', def:'clamp(2.6rem,5.5vw,4rem)', type:'text' },
+            { label:'字距', key:'--cover-title-spacing', def:'-0.02em', type:'slider', min:-0.08,max:0.05,step:0.001,unit:'em' },
+            { label:'对齐', key:'--cover-title-align', def:'center', type:'align' },
+            { label:'颜色', key:'--cover-title-color', def:'', type:'color', placeholder:'跟随主文字色' },
+            { label:'上移/下移', key:'--cover-title-mt', def:'0px', type:'slider', min:-300,max:300,step:2,unit:'px' },
+            { label:'左移/右移', key:'--cover-title-ml', def:'0px', type:'slider', min:-300,max:300,step:2,unit:'px' }
+          ]
+        },
+        { id:'cover-nav-btn-elm', label:'封面导航按钮', selector:'.cover-nav-btn',
+          vars:[
+            { label:'字号', key:'--cover-nav-btn-size', def:'0.95rem', type:'text' },
+            { label:'上移/下移', key:'--cover-nav-btn-mt', def:'0px', type:'slider', min:-100,max:100,step:2,unit:'px' }
+          ]
+        },
+        { id:'cover-btn', label:'封面按钮', selector:'.cover-explore-btn',
+          vars:[
+            { label:'字号', key:'--cover-btn-size', def:'1.05rem', type:'text' },
+            { label:'上移/下移', key:'--cover-btn-mt', def:'0px', type:'slider', min:-200,max:200,step:2,unit:'px' },
+            { label:'左移/右移', key:'--cover-btn-ml', def:'0px', type:'slider', min:-200,max:200,step:2,unit:'px' }
+          ]
+        }
+      ],
+      'sections': [
+        { id:'sec-title', label:'板块标题（全部）', selector:'.section-title',
+          vars:[
+            { label:'标题字号', key:'--section-title-size', def:'1.6rem', type:'slider', min:1,max:3,step:0.05,unit:'rem' },
+            { label:'字距', key:'--section-title-spacing', def:'-0.025em', type:'slider', min:-0.08,max:0.05,step:0.001,unit:'em' },
+            { label:'对齐', key:'--section-title-align', def:'center', type:'align' },
+            { label:'颜色', key:'--sec-title-color', def:'', type:'color', placeholder:'跟随主文字色' },
+            { label:'上移/下移', key:'--sec-title-mt', def:'0px', type:'slider', min:-100,max:100,step:2,unit:'px' },
+            { label:'左移/右移', key:'--sec-title-ml', def:'0px', type:'slider', min:-100,max:100,step:2,unit:'px' }
+          ]
+        },
+        { id:'sec-layout', label:'板块容器', selector:'.section',
+          vars:[
+            { label:'内边距', key:'--section-padding', def:'100px 32px 80px', type:'text' },
+            { label:'背景色', key:'--sec-bg', def:'transparent', type:'color' },
+            { label:'标题下间距', key:'--section-mb', def:'56px', type:'slider', min:20,max:120,step:4,unit:'px' }
+          ]
+        }
+      ],
+      'personal': [
+        { id:'personal-gallery', label:'照片轮播', selector:'.personal-gallery-wrapper',
+          vars:[
+            { label:'轮播高度', key:'--personal-gallery-height', def:'auto', type:'text' }
+          ]
+        },
+        { id:'info-card-elm', label:'信息卡片', selector:'.info-card',
+          vars:[
+            { label:'卡片背景', key:'--info-card-bg', def:'var(--surface)', type:'color' },
+            { label:'卡片内边距', key:'--info-card-padding', def:'20px 22px', type:'text' }
+          ]
+        }
+      ],
+      'footer': [
+        { id:'footer-text', label:'页脚文字', selector:'.site-footer',
+          vars:[
+            { label:'对齐', key:'--footer-align', def:'center', type:'align' },
+            { label:'字号', key:'--footer-size', def:'0.82rem', type:'text' },
+            { label:'颜色', key:'--footer-color', def:'', type:'color', placeholder:'跟随弱文字色' },
+            { label:'内边距', key:'--footer-padding', def:'48px 32px', type:'text' },
+            { label:'上边距', key:'--footer-mt', def:'40px', type:'slider', min:0,max:200,step:4,unit:'px' }
+          ]
+        }
+      ]
+    };
+
+    // ── 构建 UI ──
+    // Tab 栏
+    var tabBar=document.createElement('div');
+    tabBar.style.cssText='display:flex;border-bottom:2px solid #e0e0e0;background:#fafafa;';
+    TABS.forEach(function(tab){
+      var btn=document.createElement('button');
+      btn.textContent=tab.icon+' '+tab.label;
+      btn.dataset.tab=tab.id;
+      btn.style.cssText='flex:1;padding:10px 8px;border:none;background:'+(tab.id===currentTab?'#fff':'transparent')+';cursor:pointer;font-size:12px;font-weight:'+(tab.id===currentTab?'700':'500')+';color:'+(tab.id===currentTab?'#2563eb':'#666')+';border-bottom:'+(tab.id===currentTab?'2px solid #2563eb':'2px solid transparent')+';margin-bottom:-2px;transition:all .15s;';
+      btn.addEventListener('click',function(){
+        currentTab=tab.id; currentEl=null;
+        body.innerHTML=''; buildUI();
+      });
+      tabBar.appendChild(btn);
+    });
+    body.appendChild(tabBar);
+
+    // 主区域：预览 + 控件
+    var mainArea=document.createElement('div');
+    mainArea.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:400px;';
+
+    // 左侧：预览
+    var previewPane=document.createElement('div');
+    previewPane.style.cssText='border-right:1px solid #e0e0e0;display:flex;flex-direction:column;';
+
+    var previewToolbar=document.createElement('div');
+    previewToolbar.style.cssText='display:flex;gap:4px;padding:6px 8px;background:#f5f5f5;border-bottom:1px solid #e0e0e0;align-items:center;';
+    var btnDesktop=document.createElement('button');
+    btnDesktop.textContent='💻 桌面'; btnDesktop.className='btn btn-sm';
+    btnDesktop.style.cssText='background:#2563eb;color:#fff;border-color:#2563eb;';
+    var btnMobile=document.createElement('button');
+    btnMobile.textContent='📱 手机'; btnMobile.className='btn btn-sm';
+    var btnPick=document.createElement('button');
+    btnPick.textContent='🎯 点击选择'; btnPick.className='btn btn-sm';
+    btnPick.title='点击预览中的元素来选中编辑';
+    var pickingActive=false;
+
+    btnPick.addEventListener('click',function(){
+      // 先确保 bridge 已注入
+      injectIframeBridge();
+      pickingActive=!pickingActive;
+      btnPick.style.background=pickingActive?'#dc2626':'';
+      btnPick.style.color=pickingActive?'#fff':'';
+      btnPick.textContent=pickingActive?'🔴 选择中...':'🎯 点击选择';
+      var iframe=document.getElementById('themePreviewIframe');
+      if(iframe){
+        try {
+          var win=iframe.contentWindow;
+          if(win){
+            // 如果 bridge 函数不存在，等一会再试
+            if(!win._themeEnterSelect) {
+              setTimeout(function(){
+                injectIframeBridge();
+                try { if(win._themeEnterSelect) win._themeEnterSelect(); } catch(e){}
+              }, 300);
+            } else {
+              if(pickingActive) win._themeEnterSelect();
+              else win._themeExitSelect();
+            }
+          }
+        } catch(e){ console.log('Bridge error:', e); }
+      }
+    });
+
+    btnDesktop.addEventListener('click',function(){
+      var iframe=document.getElementById('themePreviewIframe');
+      if(iframe){ iframe.style.width='100%'; iframe.style.height='500px'; }
+      btnDesktop.style.background='#2563eb'; btnDesktop.style.color='#fff';
+      btnMobile.style.background=''; btnMobile.style.color='';
+    });
+    btnMobile.addEventListener('click',function(){
+      var iframe=document.getElementById('themePreviewIframe');
+      if(iframe){ iframe.style.width='375px'; iframe.style.height='600px'; }
+      btnMobile.style.background='#2563eb'; btnMobile.style.color='#fff';
+      btnDesktop.style.background=''; btnDesktop.style.color='';
+    });
+
+    previewToolbar.appendChild(btnDesktop);
+    previewToolbar.appendChild(btnMobile);
+    previewToolbar.appendChild(btnPick);
+    previewPane.appendChild(previewToolbar);
+
+    var iframe=document.createElement('iframe');
+    iframe.id='themePreviewIframe';
+    iframe.src='/';
+    iframe.style.cssText='flex:1;width:100%;border:none;min-height:400px;';
+    iframe.addEventListener('load',function(){
+      updateIframe();
+      setTimeout(injectIframeBridge,800);
+    });
+    iframe.addEventListener('mouseenter',function(){
+      // 自动注入桥接（如果尚未）
+      setTimeout(injectIframeBridge,200);
+    });
+    previewPane.appendChild(iframe);
+    mainArea.appendChild(previewPane);
+
+    // 右侧：控件面板
+    var controlPane=document.createElement('div');
+    controlPane.style.cssText='padding:12px 16px;overflow-y:auto;max-height:500px;';
+    controlPane.id='themeControlPane';
+    mainArea.appendChild(controlPane);
+
+    function selectElementInPanel(selector,elId) {
+      var elements=ELEMENTS[currentTab]||[];
+      var found=null;
+      elements.forEach(function(el){
+        if(el.selector===selector||el.id===elId) found=el;
+      });
+      if(found){
+        currentEl=found;
+        highlightInIframe(found.selector);
+      } else {
+        // 跨 tab 查找
+        Object.keys(ELEMENTS).forEach(function(tabId){
+          (ELEMENTS[tabId]||[]).forEach(function(el){
+            if(el.selector===selector||el.id===elId){
+              currentTab=tabId; currentEl=el;
+              highlightInIframe(el.selector);
+              // 更新 tab 栏高亮
+              var tabs=body.querySelectorAll('button[data-tab]');
+              tabs.forEach(function(t){ t.style.background='transparent';t.style.color='#666';t.style.fontWeight='500';t.style.borderBottom='2px solid transparent'; });
+              tabs.forEach(function(t){ if(t.dataset.tab===tabId){ t.style.background='#fff';t.style.color='#2563eb';t.style.fontWeight='700';t.style.borderBottom='2px solid #2563eb'; } });
+            }
+          });
+        });
+      }
+      if(!currentEl){
+        // 未找到匹配元素，给出提示
+        var elList2=controlPane.querySelector('.el-list');
+        if(elList2){
+          var warn=document.createElement('span');
+          warn.style.cssText='font-size:11px;color:#dc2626;';
+          warn.textContent=' 未找到匹配控件，请手动选择';
+          elList2.appendChild(warn);
+        }
+        return;
+      }
+      controlPane.innerHTML='';
+      buildControls();
+      var elList=controlPane.querySelector('.el-list');
+      if(elList){
+        elList.querySelectorAll('button').forEach(function(b){
+          if(b.dataset.elId===currentEl?.id) b.style.background='#eff6ff';
+        });
+      }
+    }
+
+    function buildControls() {
+      controlPane.innerHTML='';
+      var elements=ELEMENTS[currentTab]||[];
+
+      if(!elements.length) {
+        controlPane.innerHTML='<p style="color:#999;font-size:13px;padding:20px;">此板块暂无独立的布局设置，请在"全局"或"板块"tab中调整通用样式。</p>';
+        return;
+      }
+
+      // 元素列表
+      var elSection=document.createElement('div');
+      elSection.style.cssText='margin-bottom:16px;';
+      var elLabel=document.createElement('div');
+      elLabel.style.cssText='font-size:12px;font-weight:600;color:#888;text-transform:uppercase;margin-bottom:6px;';
+      elLabel.textContent='页面元素（点击选择）';
+      elSection.appendChild(elLabel);
+
+      var elList=document.createElement('div');
+      elList.className='el-list';
+      elList.style.cssText='display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;';
+
+      elements.forEach(function(elDef){
+        var b=document.createElement('button');
+        b.textContent=elDef.label;
+        b.dataset.elId=elDef.id;
+        b.style.cssText='padding:5px 10px;border:1px solid #ddd;border-radius:4px;background:'+(currentEl&&currentEl.id===elDef.id?'#eff6ff':'#fff')+';cursor:pointer;font-size:12px;transition:all .15s;';
+        b.addEventListener('click',function(){
+          currentEl=elDef;
+          highlightInIframe(elDef.selector);
+          elList.querySelectorAll('button').forEach(function(btn){ btn.style.background='#fff'; });
+          b.style.background='#eff6ff';
+          buildControls();
+        });
+        elList.appendChild(b);
+      });
+      elSection.appendChild(elList);
+      controlPane.appendChild(elSection);
+
+      // 当前选中元素的控件
+      if(currentEl) {
+        var ctrlSection=document.createElement('div');
+        var ctrlTitle=document.createElement('div');
+        ctrlTitle.style.cssText='font-size:14px;font-weight:700;color:#333;margin-bottom:4px;';
+        ctrlTitle.textContent='编辑：'+currentEl.label;
+        ctrlSection.appendChild(ctrlTitle);
+
+        var selInfo=document.createElement('div');
+        selInfo.style.cssText='font-size:11px;color:#999;margin-bottom:10px;font-family:monospace;';
+        selInfo.textContent=currentEl.selector;
+        ctrlSection.appendChild(selInfo);
+
+        (currentEl.vars||[]).forEach(function(vDef){
+          ctrlSection.appendChild(buildVarControl(vDef));
+        });
+
+        controlPane.appendChild(ctrlSection);
+      } else {
+        var hint=document.createElement('p');
+        hint.style.cssText='color:#999;font-size:13px;margin-top:12px;';
+        hint.textContent='👆 点击上方元素按钮，或点击预览中的"🎯 点击选择"后在预览页面中点选元素';
+        controlPane.appendChild(hint);
+      }
+    }
+
+    function buildVarControl(vDef) {
+      var row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px;';
+
+      var lbl=document.createElement('label');
+      lbl.style.cssText='font-size:11px;color:#666;min-width:60px;margin:0;';
+      lbl.textContent=vDef.label;
+
+      var curVal=tv(vDef.key)||vDef.def;
+
+      if(vDef.type==='color') {
+        var colorInput=document.createElement('input');
+        colorInput.type='color';
+        colorInput.value=curVal||'#ffffff';
+        colorInput.style.cssText='width:30px;height:26px;border:1px solid #ddd;border-radius:3px;cursor:pointer;padding:0;';
+        var txtInput=document.createElement('input');
+        txtInput.type='text';
+        txtInput.value=curVal;
+        txtInput.placeholder=vDef.placeholder||'';
+        txtInput.style.cssText='flex:1;padding:3px 6px;border:1px solid #ddd;border-radius:3px;font-size:11px;font-family:monospace;width:80px;';
+        colorInput.addEventListener('input',function(){ txtInput.value=colorInput.value; setTheme(vDef.key,colorInput.value); });
+        txtInput.addEventListener('change',function(){ setTheme(vDef.key,txtInput.value.trim()); });
+        row.appendChild(lbl);
+        row.appendChild(colorInput);
+        row.appendChild(txtInput);
+      }
+      else if(vDef.type==='align') {
+        var grid=document.createElement('div');
+        grid.style.cssText='display:inline-grid;grid-template-columns:repeat(3,28px);grid-template-rows:repeat(3,24px);gap:2px;';
+        [{v:'left',t:'左'},{v:'center',t:'中'},{v:'right',t:'右'},
+         {v:'left',t:''},{v:'center',t:'⊙'},{v:'right',t:''},
+         {v:'left',t:''},{v:'center',t:''},{v:'right',t:''}].forEach(function(p){
+          var btn=document.createElement('button');
+          btn.textContent=p.t||'·';
+          btn.style.cssText='border:1px solid #ddd;border-radius:2px;background:'+(curVal===p.v&&p.t?'#2563eb':'#fff')+';color:'+(curVal===p.v&&p.t?'#fff':'#333')+';cursor:pointer;font-size:10px;padding:0;';
+          btn.addEventListener('click',function(){ setTheme(vDef.key,p.v); buildControls(); });
+          grid.appendChild(btn);
+        });
+        row.appendChild(lbl);
+        row.appendChild(grid);
+      }
+      else if(vDef.type==='slider') {
+        var range=document.createElement('input');
+        range.type='range';
+        range.min=vDef.min; range.max=vDef.max; range.step=vDef.step;
+        var numVal=parseFloat(curVal);
+        if(isNaN(numVal)) numVal=0;
+        range.value=numVal;
+        range.style.cssText='flex:1;';
+        var disp=document.createElement('span');
+        disp.style.cssText='font-size:11px;font-family:monospace;min-width:44px;text-align:right;';
+        disp.textContent=numVal+(vDef.unit||'');
+        range.addEventListener('input',function(){
+          setTheme(vDef.key,range.value+(vDef.unit||''));
+          disp.textContent=range.value+(vDef.unit||'');
+        });
+        row.appendChild(lbl);
+        row.appendChild(range);
+        row.appendChild(disp);
+      }
+      else if(vDef.type==='text') {
+        var input=document.createElement('input');
+        input.type='text';
+        input.value=curVal;
+        input.placeholder=vDef.placeholder||vDef.def;
+        input.style.cssText='flex:1;padding:3px 6px;border:1px solid #ddd;border-radius:3px;font-size:11px;';
+        input.addEventListener('change',function(){ setTheme(vDef.key,input.value.trim()); });
+        row.appendChild(lbl);
+        row.appendChild(input);
+      }
+
+      var resetBtn=document.createElement('button');
+      resetBtn.className='btn btn-sm';
+      resetBtn.textContent='↺';
+      resetBtn.title='恢复默认';
+      resetBtn.addEventListener('click',function(){
+        setTheme(vDef.key,vDef.def);
+        buildControls();
+      });
+      row.appendChild(resetBtn);
+
+      return row;
+    }
+
+    function buildUI() {
+      // 重建除 tabBar 外的内容
+      // tabBar 已存在，移除后面的
+      while(body.children.length>1) body.removeChild(body.lastChild);
+      body.appendChild(mainArea);
+      buildControls();
+    }
+
+    buildUI();
+
+    // ── 底部按钮 ──
+    var actions=document.createElement('div');
+    actions.style.cssText='display:flex;gap:8px;padding:12px 16px;border-top:1px solid #e0e0e0;background:#fafafa;';
+    var btnReset=document.createElement('button');
+    btnReset.className='btn btn-danger';
+    btnReset.textContent='🔄 恢复默认';
+    btnReset.addEventListener('click',function(){
+      state.theme={};
+      toast('主题已恢复默认 ✓（请点击 💾 保存后刷新网站）');
+      renderAllSections();
+    });
+    actions.appendChild(btnReset);
+    var hint=document.createElement('span');
+    hint.style.cssText='font-size:11px;color:#999;margin-left:auto;align-self:center;';
+    hint.textContent='调整后点顶部 💾 保存 → 刷新网站生效';
+    actions.appendChild(hint);
+    body.appendChild(actions);
+
+    $content.appendChild(card);
+  }
+
+  // ══════════════════════════════════════════════════════════
+  // 文字样式编辑器 — 逐元素字体/颜色/间距/位置
+  // ══════════════════════════════════════════════════════════
+  function renderTextStylesSection() {
+    var obj = createSectionCard('sec-textstyles', '📝 文字样式编辑器');
+    var card = obj.card;
+    var body = obj.body;
+    body.style.padding = '0';
+
+    if (!state.textStyles) state.textStyles = {};
+
+    // ── 元素定义（data-ts-key → 标签 + 分组）──
+    var ELEMENTS = {
+      'cover': [
+        { key: 'cover.title', label: '封面大标题' },
+        { key: 'cover.button', label: '封面按钮' },
+        { key: 'cover.navBtn.0', label: '封面导航按钮 #1' },
+        { key: 'cover.navBtn.1', label: '封面导航按钮 #2' },
+        { key: 'cover.navBtn.2', label: '封面导航按钮 #3' },
+        { key: 'cover.navBtn.3', label: '封面导航按钮 #4' },
+        { key: 'cover.navBtn.4', label: '封面导航按钮 #5' },
+      ],
+      'nav': [
+        { key: 'nav.logo', label: '导航栏 Logo' },
+        { key: 'nav.link.0', label: '导航链接 #1' },
+        { key: 'nav.link.1', label: '导航链接 #2' },
+        { key: 'nav.link.2', label: '导航链接 #3' },
+        { key: 'nav.link.3', label: '导航链接 #4' },
+        { key: 'nav.link.4', label: '导航链接 #5' },
+        { key: 'nav.link.5', label: '导航链接 #6' },
+        { key: 'nav.link.6', label: '导航链接 #7' },
+        { key: 'nav.link.7', label: '导航链接 #8' },
+      ],
+      'personal': [
+        { key: 'personalInfo.title', label: '个人信息 - 区块标题' },
+        { key: 'personalInfo.card.title.0', label: '联系方式 卡片标题' },
+        { key: 'personalInfo.card.title.1', label: '教育背景 卡片标题' },
+        { key: 'personalInfo.card.title.2', label: '获奖及证书 卡片标题' },
+        { key: 'personalInfo.card.title.3', label: '爱好 卡片标题' },
+        { key: 'personalInfo.contact.email.label', label: '邮箱 标签' },
+        { key: 'personalInfo.contact.email.value', label: '邮箱 值' },
+        { key: 'personalInfo.contact.phone.label', label: '电话 标签' },
+        { key: 'personalInfo.contact.phone.value', label: '电话 值' },
+        { key: 'personalInfo.contact.wechat.label', label: '微信 标签' },
+        { key: 'personalInfo.contact.wechat.value', label: '微信 值' },
+        { key: 'personalInfo.education.0', label: '教育 #1' },
+        { key: 'personalInfo.education.1', label: '教育 #2' },
+        { key: 'personalInfo.education.2', label: '教育 #3' },
+        { key: 'personalInfo.awards.0', label: '获奖 #1' },
+        { key: 'personalInfo.awards.1', label: '获奖 #2' },
+        { key: 'personalInfo.awards.2', label: '获奖 #3' },
+        { key: 'personalInfo.awards.3', label: '获奖 #4' },
+        { key: 'personalInfo.awards.4', label: '获奖 #5' },
+        { key: 'personalInfo.hobbies.0', label: '爱好 #1' },
+        { key: 'personalInfo.hobbies.1', label: '爱好 #2' },
+        { key: 'personalInfo.hobbies.2', label: '爱好 #3' },
+        { key: 'personalInfo.hobbies.3', label: '爱好 #4' },
+        { key: 'personalInfo.hobbies.4', label: '爱好 #5' },
+        { key: 'personalInfo.hobbies.5', label: '爱好 #6' },
+        { key: 'personalInfo.hobbies.6', label: '爱好 #7' },
+      ],
+      'work': [
+        { key: 'workExperience.title', label: '工作经验 - 区块标题' },
+        { key: 'workExperience.items.0.company', label: '工作 #1 公司' },
+        { key: 'workExperience.items.0.position', label: '工作 #1 职位' },
+        { key: 'workExperience.items.0.period', label: '工作 #1 时间段' },
+        { key: 'workExperience.items.0.details.0', label: '工作 #1 详情 #1' },
+        { key: 'workExperience.items.0.details.1', label: '工作 #1 详情 #2' },
+        { key: 'workExperience.items.0.details.2', label: '工作 #1 详情 #3' },
+        { key: 'workExperience.items.0.details.3', label: '工作 #1 详情 #4' },
+        { key: 'workExperience.items.1.company', label: '工作 #2 公司' },
+        { key: 'workExperience.items.1.position', label: '工作 #2 职位' },
+        { key: 'workExperience.items.1.period', label: '工作 #2 时间段' },
+        { key: 'workExperience.items.1.details.0', label: '工作 #2 详情 #1' },
+        { key: 'workExperience.items.1.details.1', label: '工作 #2 详情 #2' },
+        { key: 'workExperience.items.1.details.2', label: '工作 #2 详情 #3' },
+        { key: 'workExperience.items.1.details.3', label: '工作 #2 详情 #4' },
+        { key: 'workExperience.items.2.company', label: '工作 #3 公司' },
+        { key: 'workExperience.items.2.position', label: '工作 #3 职位' },
+        { key: 'workExperience.items.2.period', label: '工作 #3 时间段' },
+        { key: 'workExperience.items.2.details.0', label: '工作 #3 详情 #1' },
+        { key: 'workExperience.items.2.details.1', label: '工作 #3 详情 #2' },
+        { key: 'workExperience.items.2.details.2', label: '工作 #3 详情 #3' },
+        { key: 'workExperience.items.2.details.3', label: '工作 #3 详情 #4' },
+      ],
+      'project': [
+        { key: 'projectExperience.title', label: '项目经验 - 区块标题' },
+        { key: 'projectExperience.items.0.name', label: '项目 #1 名称' },
+        { key: 'projectExperience.items.0.role', label: '项目 #1 角色' },
+        { key: 'projectExperience.items.0.details.0', label: '项目 #1 详情 #1' },
+        { key: 'projectExperience.items.0.details.1', label: '项目 #1 详情 #2' },
+        { key: 'projectExperience.items.0.details.2', label: '项目 #1 详情 #3' },
+        { key: 'projectExperience.items.0.details.3', label: '项目 #1 详情 #4' },
+        { key: 'projectExperience.items.0.details.4', label: '项目 #1 详情 #5' },
+        { key: 'projectExperience.items.1.name', label: '项目 #2 名称' },
+        { key: 'projectExperience.items.1.role', label: '项目 #2 角色' },
+        { key: 'projectExperience.items.1.details.0', label: '项目 #2 详情 #1' },
+        { key: 'projectExperience.items.1.details.1', label: '项目 #2 详情 #2' },
+        { key: 'projectExperience.items.1.details.2', label: '项目 #2 详情 #3' },
+        { key: 'projectExperience.items.1.details.3', label: '项目 #2 详情 #4' },
+        { key: 'projectExperience.items.2.name', label: '项目 #3 名称' },
+        { key: 'projectExperience.items.2.role', label: '项目 #3 角色' },
+        { key: 'projectExperience.items.2.details.0', label: '项目 #3 详情 #1' },
+        { key: 'projectExperience.items.2.details.1', label: '项目 #3 详情 #2' },
+        { key: 'projectExperience.items.2.details.2', label: '项目 #3 详情 #3' },
+        { key: 'projectExperience.items.2.details.3', label: '项目 #3 详情 #4' },
+        { key: 'projectExperience.items.3.name', label: '项目 #4 名称' },
+        { key: 'projectExperience.items.3.role', label: '项目 #4 角色' },
+        { key: 'projectExperience.items.3.details.0', label: '项目 #4 详情 #1' },
+        { key: 'projectExperience.items.3.details.1', label: '项目 #4 详情 #2' },
+        { key: 'projectExperience.items.3.details.2', label: '项目 #4 详情 #3' },
+        { key: 'projectExperience.items.3.details.3', label: '项目 #4 详情 #4' },
+        { key: 'projectExperience.items.3.details.4', label: '项目 #4 详情 #5' },
+      ],
+      'research': [
+        { key: 'researchExperience.title', label: '科研经历 - 区块标题' },
+        { key: 'researchExperience.items.0.title', label: '科研 #1 标题' },
+        { key: 'researchExperience.items.0.date', label: '科研 #1 日期' },
+        { key: 'researchExperience.items.0.category', label: '科研 #1 分类' },
+        { key: 'researchExperience.items.0.description', label: '科研 #1 描述' },
+        { key: 'researchExperience.items.1.title', label: '科研 #2 标题' },
+        { key: 'researchExperience.items.1.description', label: '科研 #2 描述' },
+        { key: 'researchExperience.items.2.title', label: '科研 #3 标题' },
+        { key: 'researchExperience.items.2.description', label: '科研 #3 描述' },
+      ],
+      'skills': [
+        { key: 'mySkills.title', label: '我的技能 - 区块标题' },
+        { key: 'mySkills.description', label: '技能描述文字' },
+        { key: 'mySkills.categories.0.name', label: '技能分类名' },
+      ],
+      'portfolio': [
+        { key: 'portfolio.title', label: '作品集 - 区块标题' },
+        { key: 'portfolio.tabs.0.label', label: 'Tab #1 标签' },
+        { key: 'portfolio.tabs.1.label', label: 'Tab #2 标签' },
+        { key: 'portfolio.tabs.2.label', label: 'Tab #3 标签' },
+        { key: 'portfolio.xiaohongshu.treeLabel', label: '小红书 树根标签' },
+        { key: 'portfolio.xiaohongshu.sections.0.title', label: '小红书 板块#1 标题' },
+        { key: 'portfolio.xiaohongshu.sections.0.content', label: '小红书 板块#1 内容' },
+        { key: 'portfolio.xiaohongshu.sections.1.title', label: '小红书 板块#2 标题' },
+        { key: 'portfolio.xiaohongshu.sections.1.content', label: '小红书 板块#2 内容' },
+        { key: 'portfolio.xiaohongshu.sections.2.title', label: '小红书 板块#3 标题' },
+        { key: 'portfolio.xiaohongshu.sections.2.content', label: '小红书 板块#3 内容' },
+        { key: 'portfolio.xiaohongshu.sections.3.title', label: '小红书 板块#4 标题' },
+        { key: 'portfolio.xiaohongshu.sections.3.content', label: '小红书 板块#4 内容' },
+        { key: 'portfolio.xiaohongshu.sections.4.title', label: '小红书 板块#5 标题' },
+        { key: 'portfolio.xiaohongshu.sections.4.content', label: '小红书 板块#5 内容' },
+        { key: 'portfolio.photography.quote', label: '摄影引言' },
+        { key: 'portfolio.photography.categories.0.name', label: '摄影分类 #1' },
+        { key: 'portfolio.photography.categories.1.name', label: '摄影分类 #2' },
+        { key: 'portfolio.photography.categories.2.name', label: '摄影分类 #3' },
+        { key: 'portfolio.photography.categories.3.name', label: '摄影分类 #4' },
+        { key: 'portfolio.photography.categories.4.name', label: '摄影分类 #5' },
+        { key: 'portfolio.photography.categories.5.name', label: '摄影分类 #6' },
+        { key: 'portfolio.video.0.title', label: '视频 #1 标题' },
+        { key: 'portfolio.video.0.description', label: '视频 #1 描述' },
+        { key: 'portfolio.video.1.title', label: '视频 #2 标题' },
+        { key: 'portfolio.video.1.description', label: '视频 #2 描述' },
+        { key: 'portfolio.video.2.title', label: '视频 #3 标题' },
+        { key: 'portfolio.video.2.description', label: '视频 #3 描述' },
+        { key: 'portfolio.video.3.title', label: '视频 #4 标题' },
+        { key: 'portfolio.video.3.description', label: '视频 #4 描述' },
+      ],
+      'footer': [
+        { key: 'footer.text', label: '页脚文字' },
+      ],
+      'matcher': [
+        { key: 'aiMatcher.matcherTitle', label: 'AI匹配器 - 页面标题' },
+        { key: 'aiMatcher.matcherSubtitle', label: 'AI匹配器 - 副标题' },
+        { key: 'aiMatcher.buttonText', label: 'AI匹配器 - 主按钮' },
+        { key: 'aiMatcher.loadingText', label: 'AI匹配器 - 加载提示' },
+        { key: 'aiMatcher.panelTitle', label: 'AI匹配器 - 补充面板标题' },
+        { key: 'aiMatcher.resubmitText', label: 'AI匹配器 - 重新提交按钮' },
+        { key: 'aiMatcher.skipText', label: 'AI匹配器 - 跳过按钮' },
+      ]
+    };
+
+    var GROUPS = [
+      { id: 'cover', label: '🎬 封面' },
+      { id: 'nav', label: '🔗 导航栏' },
+      { id: 'personal', label: '👤 个人信息' },
+      { id: 'work', label: '💼 工作经验' },
+      { id: 'project', label: '📋 项目经验' },
+      { id: 'research', label: '🔬 科研经历' },
+      { id: 'skills', label: '🛠 技能' },
+      { id: 'portfolio', label: '🎨 作品集' },
+      { id: 'footer', label: '📌 页脚' },
+      { id: 'matcher', label: '🤖 AI匹配器' },
+    ];
+
+    var currentGroup = 'cover';
+    var currentKey = null;
+    var pickingActive = false;
+
+    // ── 获取/设置样式 ──
+    function getStyle(key) {
+      return (state.textStyles && state.textStyles[key]) ? state.textStyles[key] : {};
+    }
+
+    function setStyle(key, prop, val) {
+      if (!state.textStyles) state.textStyles = {};
+      if (!state.textStyles[key]) state.textStyles[key] = {};
+      if (val === '' || val === null || val === undefined) {
+        delete state.textStyles[key][prop];
+        if (Object.keys(state.textStyles[key]).length === 0) {
+          delete state.textStyles[key];
+        }
+      } else {
+        state.textStyles[key][prop] = val;
+      }
+      updateIframe();
+    }
+
+    function resetStyle(key) {
+      if (state.textStyles && state.textStyles[key]) {
+        delete state.textStyles[key];
+      }
+      updateIframe();
+    }
+
+    // ── iframe 预览更新 ──
+    function updateIframe() {
+      var iframe = document.getElementById('tsPreviewIframe');
+      if (!iframe) return;
+      try {
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc) return;
+        var styles = state.textStyles || {};
+        // 更新所有 data-ts-key 元素
+        Object.keys(styles).forEach(function(key) {
+          var el = doc.querySelector('[data-ts-key="' + key + '"]');
+          if (!el) return;
+          var s = styles[key];
+          if (s.color) el.style.color = s.color; else el.style.color = '';
+          if (s.fontSize) el.style.fontSize = s.fontSize; else el.style.fontSize = '';
+          if (s.letterSpacing) el.style.letterSpacing = s.letterSpacing; else el.style.letterSpacing = '';
+          if (s.lineHeight) el.style.lineHeight = s.lineHeight; else el.style.lineHeight = '';
+          if (s.fontWeight) el.style.fontWeight = s.fontWeight; else el.style.fontWeight = '';
+          if (s.textAlign) el.style.textAlign = s.textAlign; else el.style.textAlign = '';
+          if (s.offsetX || s.offsetY) {
+            el.style.position = 'relative';
+            el.style.top = s.offsetY || '0px';
+            el.style.left = s.offsetX || '0px';
+          } else {
+            el.style.position = '';
+            el.style.top = '';
+            el.style.left = '';
+          }
+        });
+        // 清除不在 styles 里的元素的内联样式
+        var allEls = doc.querySelectorAll('[data-ts-key]');
+        for (var i = 0; i < allEls.length; i++) {
+          var el = allEls[i];
+          var k = el.getAttribute('data-ts-key');
+          if (!styles[k]) {
+            el.style.color = '';
+            el.style.fontSize = '';
+            el.style.letterSpacing = '';
+            el.style.lineHeight = '';
+            el.style.fontWeight = '';
+            el.style.textAlign = '';
+            el.style.position = '';
+            el.style.top = '';
+            el.style.left = '';
+          }
+        }
+      } catch(e) {}
+    }
+
+    // ── 高亮 iframe 中的元素 ──
+    var highlightedEl = null;
+    function highlightInIframe(key) {
+      var iframe = document.getElementById('tsPreviewIframe');
+      if (!iframe) return;
+      try {
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc) return;
+        if (highlightedEl) { highlightedEl.style.outline = ''; highlightedEl = null; }
+        if (!key) return;
+        var el = doc.querySelector('[data-ts-key="' + key + '"]');
+        if (el) { el.style.outline = '3px solid #dc2626'; el.style.outlineOffset = '2px'; highlightedEl = el; }
+      } catch(e) {}
+    }
+
+    // ── iframe 点击选择桥接 ──
+    function injectTSBridge() {
+      var iframe = document.getElementById('tsPreviewIframe');
+      if (!iframe) return;
+      try {
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc || !doc.body) return;
+        if (doc.getElementById('_tsBridge')) return;
+
+        var script = doc.createElement('script');
+        script.id = '_tsBridge';
+        script.textContent = [
+          '(function(){',
+          '  var selectMode=false, overlay=null;',
+          '  function getTarget(x,y){',
+          '    overlay.style.display="none";',
+          '    var el=document.elementFromPoint(x,y);',
+          '    overlay.style.display="";',
+          '    return el;',
+          '  }',
+          '  window._tsEnterSelect=function(){',
+          '    if(selectMode) return; selectMode=true;',
+          '    overlay=document.createElement("div");',
+          '    overlay.id="_tsOverlay";',
+          '    overlay.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;cursor:crosshair;";',
+          '    document.body.appendChild(overlay);',
+          '    overlay.addEventListener("click",function(e){',
+          '      e.preventDefault(); e.stopPropagation();',
+          '      var target=getTarget(e.clientX,e.clientY);',
+          '      if(!target||target===document.body||target===document.documentElement) return;',
+          '      var el=target.closest("[data-ts-key]");',
+          '      if(el){',
+          '        var key=el.getAttribute("data-ts-key");',
+          '        var text=el.textContent.trim().substring(0,60);',
+          '        window.parent.postMessage({type:"tsPick",key:key,text:text},"*");',
+          '      }',
+          '    },true);',
+          '  };',
+          '  window._tsExitSelect=function(){',
+          '    selectMode=false;',
+          '    if(overlay){ overlay.remove(); overlay=null; }',
+          '  };',
+          '  window._tsSelectMode=function(){return selectMode;};',
+          '})();'
+        ].join('\n');
+        (doc.head || doc.body).appendChild(script);
+      } catch(e) {}
+    }
+
+    // 监听 iframe 发来的选中消息
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.type !== 'tsPick') return;
+      var key = e.data.key;
+      currentKey = key;
+      // 找到对应的分组
+      Object.keys(ELEMENTS).forEach(function(gId) {
+        var found = ELEMENTS[gId].filter(function(el) { return el.key === key; });
+        if (found.length > 0) currentGroup = gId;
+      });
+      highlightInIframe(key);
+      buildUI();
+    });
+
+    // ── 构建单个样式控件 ──
+    function buildVarControl(key, prop, label, type, opts) {
+      opts = opts || {};
+      var s = getStyle(key);
+      var curVal = s[prop] !== undefined ? s[prop] : '';
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:6px;';
+
+      var lbl = document.createElement('label');
+      lbl.style.cssText = 'font-size:11px;color:#666;min-width:50px;margin:0;';
+      lbl.textContent = label;
+
+      if (type === 'color') {
+        var colorInput = document.createElement('input');
+        colorInput.type = 'color';
+        colorInput.value = curVal || '#000000';
+        colorInput.style.cssText = 'width:28px;height:24px;border:1px solid #ddd;border-radius:3px;cursor:pointer;padding:0;';
+        var txtInput = document.createElement('input');
+        txtInput.type = 'text';
+        txtInput.value = curVal;
+        txtInput.placeholder = '默认';
+        txtInput.style.cssText = 'flex:1;padding:2px 6px;border:1px solid #ddd;border-radius:3px;font-size:11px;width:70px;';
+        colorInput.addEventListener('input', function() { txtInput.value = colorInput.value; setStyle(key, prop, colorInput.value); });
+        txtInput.addEventListener('change', function() { setStyle(key, prop, txtInput.value.trim()); });
+        row.appendChild(lbl);
+        row.appendChild(colorInput);
+        row.appendChild(txtInput);
+      } else if (type === 'slider') {
+        var range = document.createElement('input');
+        range.type = 'range';
+        range.min = opts.min; range.max = opts.max; range.step = opts.step;
+        var numVal = parseFloat(curVal);
+        if (isNaN(numVal)) numVal = parseFloat(opts.def) || 0;
+        range.value = numVal;
+        range.style.cssText = 'flex:1;';
+        var disp = document.createElement('span');
+        disp.style.cssText = 'font-size:10px;font-family:monospace;min-width:40px;text-align:right;';
+        disp.textContent = numVal + (opts.unit || '');
+        range.addEventListener('input', function() {
+          setStyle(key, prop, range.value + (opts.unit || ''));
+          disp.textContent = range.value + (opts.unit || '');
+        });
+        row.appendChild(lbl);
+        row.appendChild(range);
+        row.appendChild(disp);
+      } else if (type === 'select') {
+        var sel = document.createElement('select');
+        sel.style.cssText = 'flex:1;padding:2px 4px;border:1px solid #ddd;border-radius:3px;font-size:11px;';
+        opts.options.forEach(function(o) {
+          var opt = document.createElement('option');
+          opt.value = o.v; opt.textContent = o.t;
+          if (curVal === o.v) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        sel.addEventListener('change', function() { setStyle(key, prop, sel.value); });
+        row.appendChild(lbl);
+        row.appendChild(sel);
+      } else if (type === 'align') {
+        var grid = document.createElement('div');
+        grid.style.cssText = 'display:inline-grid;grid-template-columns:repeat(3,24px);gap:2px;';
+        [{v:'left',t:'L'},{v:'center',t:'C'},{v:'right',t:'R'}].forEach(function(p){
+          var btn = document.createElement('button');
+          btn.textContent = p.t;
+          btn.style.cssText = 'border:1px solid #ddd;border-radius:2px;background:'+(curVal===p.v?'#2563eb':'#fff')+';color:'+(curVal===p.v?'#fff':'#333')+';cursor:pointer;font-size:10px;padding:2px;';
+          btn.addEventListener('click', function() { setStyle(key, prop, p.v); buildUI(); });
+          grid.appendChild(btn);
+        });
+        row.appendChild(lbl);
+        row.appendChild(grid);
+      }
+
+      var resetBtn = document.createElement('button');
+      resetBtn.className = 'btn btn-sm';
+      resetBtn.textContent = '↺';
+      resetBtn.title = '恢复默认';
+      resetBtn.style.cssText = 'padding:0 4px;font-size:10px;';
+      resetBtn.addEventListener('click', function() {
+        setStyle(key, prop, '');
+        buildUI();
+      });
+      row.appendChild(resetBtn);
+
+      return row;
+    }
+
+    // ── 构建控件面板 ──
+    function buildControls(container) {
+      container.innerHTML = '';
+      if (!currentKey) {
+        var hint = document.createElement('p');
+        hint.style.cssText = 'color:#999;font-size:13px;padding:20px;text-align:center;';
+        hint.textContent = '👆 从左侧列表选择元素，或点击"🎯 点击选择"后在预览中点选文字';
+        container.appendChild(hint);
+        return;
+      }
+
+      var ctrlTitle = document.createElement('div');
+      ctrlTitle.style.cssText = 'font-size:13px;font-weight:700;color:#333;margin-bottom:2px;';
+      ctrlTitle.textContent = '编辑：' + currentKey;
+      container.appendChild(ctrlTitle);
+
+      var selInfo = document.createElement('div');
+      selInfo.style.cssText = 'font-size:10px;color:#999;margin-bottom:10px;font-family:monospace;';
+      var elDefs = ELEMENTS[currentGroup] || [];
+      var found = elDefs.filter(function(d) { return d.key === currentKey; });
+      selInfo.textContent = found.length > 0 ? found[0].label : currentKey;
+      container.appendChild(selInfo);
+
+      // 颜色
+      container.appendChild(buildVarControl(currentKey, 'color', '颜色', 'color'));
+      // 字号
+      container.appendChild(buildVarControl(currentKey, 'fontSize', '字号', 'slider', { min: 0.5, max: 4, step: 0.05, unit: 'rem', def: '1rem' }));
+      // 字重
+      container.appendChild(buildVarControl(currentKey, 'fontWeight', '字重', 'select', { options: [
+        {v:'',t:'默认'},{v:'100',t:'100 Thin'},{v:'200',t:'200'},{v:'300',t:'300 Light'},
+        {v:'400',t:'400 Normal'},{v:'500',t:'500 Medium'},{v:'600',t:'600 Semi'},{v:'700',t:'700 Bold'},
+        {v:'800',t:'800'},{v:'900',t:'900 Black'}
+      ]}));
+      // 对齐
+      container.appendChild(buildVarControl(currentKey, 'textAlign', '对齐', 'align'));
+      // 字距
+      container.appendChild(buildVarControl(currentKey, 'letterSpacing', '字距', 'slider', { min: -0.08, max: 0.15, step: 0.002, unit: 'em', def: '0em' }));
+      // 行高
+      container.appendChild(buildVarControl(currentKey, 'lineHeight', '行高', 'slider', { min: 1, max: 3, step: 0.05, unit: '', def: '1.7' }));
+
+      // 分隔
+      var sep = document.createElement('div');
+      sep.style.cssText = 'border-top:1px solid #e0e0e0;margin:10px 0;padding-top:2px;';
+      var sepLabel = document.createElement('span');
+      sepLabel.style.cssText = 'font-size:10px;color:#999;text-transform:uppercase;';
+      sepLabel.textContent = '📍 位置偏移（不影响文档流）';
+      sep.appendChild(sepLabel);
+      container.appendChild(sep);
+
+      // 水平偏移
+      container.appendChild(buildVarControl(currentKey, 'offsetX', '水平', 'slider', { min: -200, max: 200, step: 2, unit: 'px', def: '0px' }));
+      // 垂直偏移
+      container.appendChild(buildVarControl(currentKey, 'offsetY', '垂直', 'slider', { min: -200, max: 200, step: 2, unit: 'px', def: '0px' }));
+
+      // 重置按钮
+      var resetRow = document.createElement('div');
+      resetRow.style.cssText = 'margin-top:10px;';
+      var resetBtn = document.createElement('button');
+      resetBtn.className = 'btn btn-sm btn-danger';
+      resetBtn.textContent = '🔄 重置此元素';
+      resetBtn.addEventListener('click', function() {
+        resetStyle(currentKey);
+        buildUI();
+      });
+      resetRow.appendChild(resetBtn);
+      container.appendChild(resetRow);
+    }
+
+    // ── 构建 UI ──
+    function buildUI() {
+      // 保留 tabBar 和 mainArea，重建控件面板
+      var controlPane = document.getElementById('tsControlPane');
+      if (controlPane) {
+        buildControls(controlPane);
+        // 更新元素列表高亮
+        var elList = document.getElementById('tsElementList');
+        if (elList) {
+          elList.querySelectorAll('button').forEach(function(b) {
+            b.style.background = (b.dataset.key === currentKey) ? '#fef2f2' : '#fff';
+            b.style.borderColor = (b.dataset.key === currentKey) ? '#dc2626' : '#ddd';
+          });
+        }
+      }
+    }
+
+    // ── Tab 栏 ──
+    var tabBar = document.createElement('div');
+    tabBar.style.cssText = 'display:flex;border-bottom:2px solid #e0e0e0;background:#fafafa;overflow-x:auto;';
+    GROUPS.forEach(function(group) {
+      var btn = document.createElement('button');
+      btn.textContent = group.label;
+      btn.dataset.group = group.id;
+      btn.style.cssText = 'flex:0 0 auto;padding:8px 10px;border:none;background:'+(group.id===currentGroup?'#fff':'transparent')+';cursor:pointer;font-size:11px;font-weight:'+(group.id===currentGroup?'700':'500')+';color:'+(group.id===currentGroup?'#2563eb':'#666')+';border-bottom:'+(group.id===currentGroup?'2px solid #2563eb':'2px solid transparent')+';margin-bottom:-2px;transition:all .15s;white-space:nowrap;';
+      btn.addEventListener('click', function() {
+        currentGroup = group.id;
+        currentKey = null;
+        highlightInIframe(null);
+        buildElementList();
+        buildUI();
+        // 更新 tab 高亮
+        tabBar.querySelectorAll('button').forEach(function(b) {
+          b.style.background = 'transparent'; b.style.color = '#666'; b.style.fontWeight = '500'; b.style.borderBottom = '2px solid transparent';
+        });
+        btn.style.background = '#fff'; btn.style.color = '#2563eb'; btn.style.fontWeight = '700'; btn.style.borderBottom = '2px solid #2563eb';
+      });
+      tabBar.appendChild(btn);
+    });
+    body.appendChild(tabBar);
+
+    // ── 主区域：元素列表 + 预览 + 控件 ──
+    var mainArea = document.createElement('div');
+    mainArea.style.cssText = 'display:grid;grid-template-columns:200px 1fr 280px;gap:0;min-height:400px;';
+
+    // 左侧：元素列表
+    var listPane = document.createElement('div');
+    listPane.style.cssText = 'border-right:1px solid #e0e0e0;overflow-y:auto;max-height:500px;padding:8px;';
+    listPane.id = 'tsElementList';
+
+    function buildElementList() {
+      listPane.innerHTML = '';
+      var elements = ELEMENTS[currentGroup] || [];
+      if (elements.length === 0) {
+        listPane.innerHTML = '<p style="color:#999;font-size:11px;padding:8px;">暂无元素</p>';
+        return;
+      }
+      elements.forEach(function(elDef) {
+        var b = document.createElement('button');
+        b.textContent = elDef.label;
+        b.dataset.key = elDef.key;
+        b.title = elDef.key;
+        var hasStyle = getStyle(elDef.key) && Object.keys(getStyle(elDef.key)).length > 0;
+        b.style.cssText = 'display:block;width:100%;padding:6px 8px;border:1px solid '+(currentKey===elDef.key?'#dc2626':'#ddd')+';border-radius:3px;background:'+(currentKey===elDef.key?'#fef2f2':'#fff')+';cursor:pointer;font-size:11px;text-align:left;margin-bottom:3px;transition:all .15s;'+(hasStyle?'font-weight:700;':'');
+        if (hasStyle) b.textContent = '● ' + b.textContent;
+        b.addEventListener('click', function() {
+          currentKey = elDef.key;
+          highlightInIframe(elDef.key);
+          buildUI();
+        });
+        listPane.appendChild(b);
+      });
+    }
+    buildElementList();
+    mainArea.appendChild(listPane);
+
+    // 中间：预览
+    var previewPane = document.createElement('div');
+    previewPane.style.cssText = 'border-right:1px solid #e0e0e0;display:flex;flex-direction:column;';
+
+    var previewToolbar = document.createElement('div');
+    previewToolbar.style.cssText = 'display:flex;gap:4px;padding:6px 8px;background:#f5f5f5;border-bottom:1px solid #e0e0e0;align-items:center;';
+    var btnPick = document.createElement('button');
+    btnPick.textContent = '🎯 点击选择'; btnPick.className = 'btn btn-sm';
+    btnPick.title = '点击预览中的文字来选中编辑';
+
+    btnPick.addEventListener('click', function() {
+      injectTSBridge();
+      pickingActive = !pickingActive;
+      btnPick.style.background = pickingActive ? '#dc2626' : '';
+      btnPick.style.color = pickingActive ? '#fff' : '';
+      btnPick.textContent = pickingActive ? '🔴 选择中...' : '🎯 点击选择';
+      var iframe = document.getElementById('tsPreviewIframe');
+      if (iframe) {
+        try {
+          var win = iframe.contentWindow;
+          if (win) {
+            if (!win._tsEnterSelect) {
+              setTimeout(function() {
+                injectTSBridge();
+                try { if (win._tsEnterSelect) win._tsEnterSelect(); } catch(e) {}
+              }, 300);
+            } else {
+              if (pickingActive) win._tsEnterSelect();
+              else win._tsExitSelect();
+            }
+          }
+        } catch(e) {}
+      }
+    });
+
+    var btnRefreshPreview = document.createElement('button');
+    btnRefreshPreview.className = 'btn btn-sm';
+    btnRefreshPreview.textContent = '🔄';
+    btnRefreshPreview.title = '刷新预览';
+    btnRefreshPreview.addEventListener('click', function() {
+      var iframe = document.getElementById('tsPreviewIframe');
+      if (iframe) { iframe.src = iframe.src; }
+    });
+
+    previewToolbar.appendChild(btnPick);
+    previewToolbar.appendChild(btnRefreshPreview);
+    previewPane.appendChild(previewToolbar);
+
+    var iframe = document.createElement('iframe');
+    iframe.id = 'tsPreviewIframe';
+    iframe.src = '/';
+    iframe.style.cssText = 'flex:1;width:100%;border:none;min-height:400px;';
+    iframe.addEventListener('load', function() {
+      updateIframe();
+      setTimeout(injectTSBridge, 800);
+    });
+    iframe.addEventListener('mouseenter', function() {
+      setTimeout(injectTSBridge, 200);
+    });
+    previewPane.appendChild(iframe);
+    mainArea.appendChild(previewPane);
+
+    // 右侧：控件面板
+    var controlPane = document.createElement('div');
+    controlPane.style.cssText = 'padding:10px 14px;overflow-y:auto;max-height:500px;';
+    controlPane.id = 'tsControlPane';
+    buildControls(controlPane);
+    mainArea.appendChild(controlPane);
+
+    body.appendChild(mainArea);
+
+    // ── 底部操作栏 ──
+    var actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;gap:8px;padding:10px 14px;border-top:1px solid #e0e0e0;background:#fafafa;align-items:center;';
+
+    // 已修改元素统计
+    var modifiedCount = 0;
+    if (state.textStyles) modifiedCount = Object.keys(state.textStyles).length;
+    var statsLabel = document.createElement('span');
+    statsLabel.style.cssText = 'font-size:11px;color:#666;';
+    statsLabel.textContent = '已修改 ' + modifiedCount + ' 个元素';
+    actions.appendChild(statsLabel);
+
+    var btnResetAll = document.createElement('button');
+    btnResetAll.className = 'btn btn-danger btn-sm';
+    btnResetAll.textContent = '🔄 全部重置';
+    btnResetAll.addEventListener('click', function() {
+      if (confirm('确定要重置所有文字样式吗？此操作不可恢复。')) {
+        state.textStyles = {};
+        currentKey = null;
+        updateIframe();
+        buildUI();
+        toast('所有文字样式已重置 ✓');
+      }
+    });
+    actions.appendChild(btnResetAll);
+
+    var hint = document.createElement('span');
+    hint.style.cssText = 'font-size:10px;color:#999;margin-left:auto;';
+    hint.textContent = '修改后点顶部 💾 保存 → 刷新网站生效';
+    actions.appendChild(hint);
+
+    body.appendChild(actions);
+    $content.appendChild(card);
+  }
+
+  // ---- 联合渲染 ----
+  function renderAllSections() {
+    $content.innerHTML = '';
+    renderSiteSection();
+    renderNavSection();
+    renderCoverSection();
+    renderCoverImagesSection();
+    renderPersonalSection();
+    renderWorkSection();
+    renderProjectSection();
+    renderResearchSection();
+    renderSkillsSection();
+    renderPortfolioSection();
+    renderPDFSection();
+    renderResumeSection();
+    renderMatcherSection();
+    renderFooterSection();
+    renderBackgroundsSection();
+    renderThemeSection();
+    renderTextStylesSection();
+  }
+
+  // ============================================================
+  // 数据加载与保存
+  // ============================================================
+
+  function loadData() {
+    return fetch(API + '/api/data')
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data) {
+        if (data.ok && data.data) {
+          state = JSON.parse(JSON.stringify(data.data));  // deep clone
+          originalData = JSON.parse(JSON.stringify(data.data));
+          renderAllSections();
+          document.getElementById('topbarTitle').textContent = '管理后台 — 数据已加载';
+          toast('数据加载成功 ✓');
+        } else {
+          throw new Error(data.error || 'Unknown error');
+        }
+      })
+      .catch(function(err) {
+        toast('数据加载失败: ' + err.message + '（请确认 admin_server.py 已启动）', 'error');
+        document.getElementById('topbarTitle').textContent = '管理后台 — 加载失败';
+      });
+  }
+
+  function saveData() {
+    if (!state) {
+      toast('没有数据可保存', 'error');
+      return;
+    }
+    $btnSave.textContent = '保存中...';
+    $btnSave.disabled = true;
+
+    fetch(API + '/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        originalData = JSON.parse(JSON.stringify(state));
+        toast('保存成功！刷新主站即可看到更改 ✓');
+        document.getElementById('topbarTitle').textContent = '管理后台 — 已保存';
+      } else {
+        toast('保存失败: ' + (data.error || '未知错误'), 'error');
+      }
+      $btnSave.textContent = '💾 保存';
+      $btnSave.disabled = false;
+    })
+    .catch(function(err) {
+      toast('保存失败: ' + err.message, 'error');
+      $btnSave.textContent = '💾 保存';
+      $btnSave.disabled = false;
+    });
+  }
+
+  // ---- 快捷键 ----
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      saveData();
+    }
+  });
+
+  // ---- 按钮事件 ----
+  $btnSave.addEventListener('click', saveData);
+  $btnRefresh.addEventListener('click', function() {
+    if (state && JSON.stringify(state) !== JSON.stringify(originalData)) {
+      if (!confirm('有未保存的更改，确定刷新？未保存的更改将丢失。')) return;
+    }
+    loadData();
+  });
+
+  // ============================================================
+  // 启动
+  // ============================================================
+  function init() {
+    buildSidebar();
+    loadData();
+
+    // 监听侧边栏滚动高亮
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          $sidebar.querySelectorAll('a').forEach(function(a) {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-10% 0px -80% 0px' });
+
+    // 观察卡片
+    setTimeout(function() {
+      document.querySelectorAll('.section-card').forEach(function(card) {
+        observer.observe(card);
+      });
+    }, 500);
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+
+})();
+</script>
+
+</body>
+</html>

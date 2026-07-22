@@ -84,8 +84,8 @@
     color 0.3s ease,
     box-shadow 0.3s ease;
   box-shadow: 0 0 0.5px 1.5px transparent;
-  color: rgba(255, 255, 255, 0.7);
-  background: var(--text-primary);
+  color: var(--text-secondary);
+  background: transparent;
   padding: 5px 6px;
 }
 
@@ -112,7 +112,7 @@
   position: absolute;
   inset: 0;
   border-radius: 100vw;
-  background: #ffffff;
+  background: transparent;
   opacity: 0;
   transform: scale(0);
   transition: all 0.3s ease;
@@ -120,7 +120,8 @@
 }
 
 .gooey-nav-container nav ul li.active {
-  color: var(--text-primary);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .gooey-nav-container nav ul li.active::after {

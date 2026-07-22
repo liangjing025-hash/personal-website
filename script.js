@@ -124,6 +124,7 @@
     cacheDOM();
     renderNavigation();
     renderCover();
+    renderCoverImages();
     renderPersonalInfo();
     renderExperience();
     renderResearch();
@@ -139,6 +140,357 @@
     initPortfolioTabs();
     initVariableProximityOnCover();
     initTextPressureOnAllTitles();
+    applyTheme();
+    tagResearchElements();
+    tagVideoCardElements();
+    applyTextStyles();
+    applySectionBackgrounds();
+  }
+
+  // 为科研经历动态元素添加 data-ts-key
+  function tagResearchElements() {
+    var container = document.getElementById('researchSection');
+    if (!container) return;
+    // 科研区块标题 (.rr-title)
+    var title = container.querySelector('.rr-title');
+    if (title && !title.getAttribute('data-ts-key')) {
+      title.setAttribute('data-ts-key', 'researchExperience.title');
+    }
+    // 模态框标题和描述
+    var modalTitle = container.querySelector('.rr-modal-title');
+    if (modalTitle && !modalTitle.getAttribute('data-ts-key')) {
+      modalTitle.setAttribute('data-ts-key', 'researchExperience.items.0.title');
+    }
+    var modalDesc = container.querySelector('.rr-modal-desc');
+    if (modalDesc && !modalDesc.getAttribute('data-ts-key')) {
+      modalDesc.setAttribute('data-ts-key', 'researchExperience.items.0.description');
+    }
+    // 科研卡片内的文字（如果有的话）
+    var cards = container.querySelectorAll('.rr-card');
+    cards.forEach(function(card, idx) {
+      var cardText = card.querySelector('[class*="text"], [class*="label"]');
+      if (cardText && !cardText.getAttribute('data-ts-key')) {
+        cardText.setAttribute('data-ts-key', 'researchExperience.items.' + idx + '.category');
+      }
+    });
+  }
+
+  // 为视频卡片动态元素添加 data-ts-key
+  function tagVideoCardElements() {
+    var container = document.getElementById('videoCardsContainer');
+    if (!container) return;
+    setTimeout(function() {
+      var labels = container.querySelectorAll('.video-card-label');
+      labels.forEach(function(label, idx) {
+        if (!label.getAttribute('data-ts-key')) {
+          label.setAttribute('data-ts-key', 'portfolio.video.' + idx + '.title');
+        }
+      });
+    }, 600);
+  }
+
+  // ==========================================
+  // 应用主题（CSS 变量）
+  // ==========================================
+  function applyTheme() {
+    var theme = APP_DATA.theme;
+    if (!theme) return;
+    var root = document.documentElement;
+    Object.keys(theme).forEach(function (key) {
+      if (theme[key]) {
+        root.style.setProperty(key, theme[key]);
+      }
+    });
+  }
+
+  // ==========================================
+  // 逐元素文字样式引擎 (textStyles)
+  // 使用 position:relative + top/left 偏移，不影响文档流和动画
+  // ==========================================
+  function applyTextStyles() {
+    var styles = APP_DATA.textStyles || {};
+    var els = document.querySelectorAll('[data-ts-key]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var key = el.getAttribute('data-ts-key');
+      var s = styles[key];
+      if (!s) continue;
+
+      // 颜色
+      if (s.color) el.style.color = s.color;
+      else el.style.color = '';
+
+      // 字号
+      if (s.fontSize) el.style.fontSize = s.fontSize;
+      else el.style.fontSize = '';
+
+      // 字距
+      if (s.letterSpacing) el.style.letterSpacing = s.letterSpacing;
+      else el.style.letterSpacing = '';
+
+      // 行高
+      if (s.lineHeight) el.style.lineHeight = s.lineHeight;
+      else el.style.lineHeight = '';
+
+      // 字重
+      if (s.fontWeight) el.style.fontWeight = s.fontWeight;
+      else el.style.fontWeight = '';
+
+      // 对齐
+      if (s.textAlign) el.style.textAlign = s.textAlign;
+      else el.style.textAlign = '';
+
+      // 位置偏移 (relative 定位，不影响文档流)
+      if (s.offsetX || s.offsetY) {
+        el.style.position = 'relative';
+        el.style.top = s.offsetY || '0px';
+        el.style.left = s.offsetX || '0px';
+      } else {
+        el.style.position = '';
+        el.style.top = '';
+        el.style.left = '';
+      }
+    }
+  }
+
+  // ==========================================
+  // 分板块背景图片/视频
+  // ==========================================
+  function applySectionBackgrounds() {
+    var bgConfig = APP_DATA.sectionBackgrounds;
+    if (!bgConfig) return;
+
+    // 先清理旧的 group wrapper（恢复被包裹的 section）
+    var oldWrappers = document.querySelectorAll('.bg-group-wrapper');
+    for (var w = 0; w < oldWrappers.length; w++) {
+      var wrapper = oldWrappers[w];
+      var parent = wrapper.parentNode;
+      while (wrapper.firstChild) {
+        parent.insertBefore(wrapper.firstChild, wrapper);
+      }
+      parent.removeChild(wrapper);
+    }
+
+    // 清理旧的探照灯层及残留内联样式（封面）
+    var oldCoverSpots = document.querySelectorAll('.cover-spotlight');
+    for (var cs = 0; cs < oldCoverSpots.length; cs++) {
+      oldCoverSpots[cs].remove();
+    }
+    // 清除之前探照灯设置的内联 z-index
+    var coverSticky = document.querySelector('#cover .cover-sticky');
+    if (coverSticky) {
+      var spotChildren = coverSticky.querySelectorAll('.cover-title, .cover-explore-btn, .cover-nav-buttons, .cover-img-layer');
+      for (var sc = 0; sc < spotChildren.length; sc++) {
+        spotChildren[sc].style.position = '';
+        spotChildren[sc].style.zIndex = '';
+      }
+    }
+
+    // 重置所有 section 的 has-bg-image
+    var allBgSections = document.querySelectorAll('.has-bg-image');
+    for (var s = 0; s < allBgSections.length; s++) {
+      allBgSections[s].classList.remove('has-bg-image');
+      allBgSections[s].style.backgroundImage = '';
+      allBgSections[s].style.backgroundSize = '';
+      allBgSections[s].style.backgroundPosition = '';
+      allBgSections[s].style.backgroundRepeat = '';
+    }
+
+    var ALL_SECTION_IDS = ['cover','personal','matcher','skills','experience','research','portfolio','siteFooter'];
+    var sectionLabels = {
+      cover:'封面', personal:'个人信息', matcher:'AI匹配器', skills:'个人技能',
+      experience:'工作&项目经历', research:'科研经历', portfolio:'作品集', siteFooter:'Lovely to meet u'
+    };
+
+    // ── 处理分组 ──
+    var groups = bgConfig.groups || [];
+    var groupedIds = {};  // 记录哪些 section 已被分组
+
+    groups.forEach(function (group) {
+      if (!group.sections || !group.sections.length) return;
+      if (group.type === 'none' || !group.url) return;
+
+      // 找到分组内的 section 元素，按 DOM 顺序排序
+      var els = [];
+      group.sections.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) { els.push(el); groupedIds[id] = true; }
+      });
+      if (els.length === 0) return;
+
+      // 按 DOM 位置排序
+      els.sort(function (a, b) {
+        return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+      });
+
+      // 创建包裹容器
+      var wrapper = document.createElement('div');
+      wrapper.className = 'bg-group-wrapper';
+      wrapper.style.backgroundImage = 'url("' + group.url + '")';
+      wrapper.style.backgroundSize = group.fillMode || 'cover';
+      wrapper.style.backgroundPosition = 'center center';
+      wrapper.style.backgroundRepeat = 'no-repeat';
+      // 透明变量覆盖
+      wrapper.style.setProperty('--surface', 'transparent');
+      wrapper.style.setProperty('--bg-subtle', 'transparent');
+      wrapper.style.setProperty('--bg', 'transparent');
+      wrapper.style.setProperty('--border-color', 'transparent');
+      wrapper.style.setProperty('--accent-subtle', 'transparent');
+      wrapper.style.setProperty('--info-card-bg', 'transparent');
+      wrapper.style.setProperty('--cb-fadeColor', 'transparent');
+
+      // 将 wrapper 插入到第一个 section 之前
+      var firstEl = els[0];
+      firstEl.parentNode.insertBefore(wrapper, firstEl);
+
+      // 将所有 section 移入 wrapper
+      els.forEach(function (el) {
+        wrapper.appendChild(el);
+        el.classList.add('has-bg-image');
+      });
+
+      // matcher iframe 透明化
+      els.forEach(function (el) {
+        if (el.id === 'matcher') {
+          var iframe = el.querySelector('iframe');
+          if (iframe) makeMatcherTransparent(iframe);
+        }
+      });
+
+      // ── 双层探照灯效果 ──
+      if (group.topUrl !== undefined && group.topUrl !== '') {
+        var topLayer = document.createElement('div');
+        topLayer.className = 'bg-spotlight-top';
+        topLayer.style.backgroundImage = 'url("' + group.topUrl + '")';
+        topLayer.style.backgroundSize = group.fillMode || 'cover';
+        topLayer.style.backgroundPosition = 'center center';
+        wrapper.appendChild(topLayer);
+
+        // 初始位置设在中心
+        topLayer.style.setProperty('--sx', '50%');
+        topLayer.style.setProperty('--sy', '50%');
+
+        wrapper.addEventListener('mousemove', function(e) {
+          var rect = wrapper.getBoundingClientRect();
+          topLayer.style.setProperty('--sx', (e.clientX - rect.left) + 'px');
+          topLayer.style.setProperty('--sy', (e.clientY - rect.top) + 'px');
+        });
+
+        // section 内容置于探照灯上方
+        els.forEach(function(el) {
+          el.style.position = 'relative';
+          el.style.zIndex = '2';
+        });
+      }
+    });
+
+    // ── 处理独立板块 ──
+    var singles = bgConfig.singles || {};
+    Object.keys(singles).forEach(function (key) {
+      if (groupedIds[key]) return;  // 已在分组中，跳过
+      var config = singles[key];
+      if (!config || config.type === 'none' || !config.url) return;
+
+      // 封面特殊处理：背景放在 .cover-sticky 上
+      var el;
+      if (key === 'cover') {
+        el = document.querySelector('#cover .cover-sticky');
+      } else {
+        el = document.getElementById(key);
+      }
+      if (!el) return;
+
+      if (config.type === 'image') {
+        el.style.backgroundImage = 'url("' + config.url + '")';
+        el.style.backgroundSize = config.fillMode || 'cover';
+        el.style.backgroundPosition = 'center center';
+        el.style.backgroundRepeat = 'no-repeat';
+        if (key !== 'cover') {
+          el.classList.add('has-bg-image');
+        }
+
+        // ── 封面双层探照灯 ──
+        if (key === 'cover' && config.topUrl !== undefined && config.topUrl !== '') {
+          // 移除旧探照灯层
+          var oldSpot = el.querySelector('.bg-spotlight-top');
+          if (oldSpot) oldSpot.remove();
+
+          var topLayer = document.createElement('div');
+          topLayer.className = 'bg-spotlight-top cover-spotlight';
+          topLayer.style.backgroundImage = 'url("' + config.topUrl + '")';
+          topLayer.style.backgroundSize = config.fillMode || 'cover';
+          topLayer.style.backgroundPosition = 'center center';
+          // 初始位置
+          topLayer.style.setProperty('--sx', '50%');
+          topLayer.style.setProperty('--sy', '50%');
+          el.appendChild(topLayer);
+
+          el.addEventListener('mousemove', function(e) {
+            var rect = el.getBoundingClientRect();
+            topLayer.style.setProperty('--sx', (e.clientX - rect.left) + 'px');
+            topLayer.style.setProperty('--sy', (e.clientY - rect.top) + 'px');
+          });
+
+          // 封面文字和浮动图片保持在探照灯上方
+          var coverTextEls = el.querySelectorAll('.cover-title, .cover-explore-btn, .cover-nav-buttons');
+          for (var ci2 = 0; ci2 < coverTextEls.length; ci2++) {
+            coverTextEls[ci2].style.position = 'relative';
+            coverTextEls[ci2].style.zIndex = '2';
+          }
+          // .cover-img-layer 保持 absolute 定位不变，只需确保 z-index 高于探照灯
+          var imgLayer = el.querySelector('.cover-img-layer');
+          if (imgLayer) { imgLayer.style.zIndex = '2'; }
+        }
+        // matcher iframe 透明化
+        if (key === 'matcher') {
+          var mIframe = el.querySelector('iframe');
+          if (mIframe) makeMatcherTransparent(mIframe);
+        }
+      } else if (config.type === 'video') {
+        var video = document.createElement('video');
+        video.src = config.url;
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.style.cssText =
+          'position:absolute;top:0;left:0;width:100%;height:100%;' +
+          'object-fit:' + (config.fillMode || 'cover') + ';' +
+          'z-index:0;pointer-events:none;';
+        el.style.position = el.style.position || 'relative';
+        el.style.overflow = 'hidden';
+        el.insertBefore(video, el.firstChild);
+        for (var i = 0; i < el.children.length; i++) {
+          var child = el.children[i];
+          if (child !== video && child.tagName !== 'VIDEO') {
+            child.style.position = 'relative';
+            child.style.zIndex = '1';
+          }
+        }
+      }
+    });
+  }
+
+  function makeMatcherTransparent(iframe) {
+    function inject() {
+      try {
+        var doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc || !doc.head) return;
+        var style = doc.createElement('style');
+        style.textContent =
+          ':root { --bg: transparent !important; --bg2: transparent !important; }' +
+          'body { background: transparent !important; }' +
+          'textarea { background: transparent !important; }' +
+          '.result-card { background: transparent !important; }' +
+          '.container { background: transparent !important; }' +
+          '#questions-panel { background: transparent !important; }';
+        doc.head.appendChild(style);
+      } catch (e) { /* skip */ }
+    }
+    iframe.addEventListener('load', inject);
+    if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+      inject();
+    }
   }
 
   // ==========================================
@@ -165,8 +517,8 @@
   function initTextPressureOnAllTitles() {
     if (typeof initTextPressure !== 'function') return;
 
-    // All section titles and experience titles
-    var titles = document.querySelectorAll('.section-title, .scroll-stack-section-title');
+    // All section titles, work/project/research titles
+    var titles = document.querySelectorAll('.section-title, .scroll-stack-section-title, .proj-cards-title, .rr-title');
     for (var i = 0; i < titles.length; i++) {
       var titleEl = titles[i];
       if (titleEl.dataset.tpInit === 'true') continue;
@@ -190,11 +542,12 @@
     DOM.navLogo.textContent = APP_DATA.site.title || '待填写';
     DOM.navLinks.innerHTML = '';
     var links = APP_DATA.navLinks || [];
-    links.forEach(function (link) {
+    links.forEach(function (link, idx) {
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.href = '#' + link.id;
       a.textContent = link.label;
+      a.setAttribute('data-ts-key', 'nav.link.' + idx);
       a.addEventListener('click', function (e) {
         e.preventDefault();
         var target = document.getElementById(link.id);
@@ -241,10 +594,11 @@
       var navItems = (APP_DATA.navLinks || []).filter(function (item) {
         return item.id !== 'cover';
       });
-      navItems.forEach(function (item) {
+      navItems.forEach(function (item, idx) {
         var btn = document.createElement('button');
         btn.className = 'cover-nav-btn';
         btn.textContent = item.label;
+        btn.setAttribute('data-ts-key', 'cover.navBtn.' + idx);
         btn.addEventListener('click', function () {
           var target = document.getElementById(item.id);
           if (target) {
@@ -282,6 +636,59 @@
   }
 
   // ==========================================
+  // 渲染：封面浮动图片（从 data.js 动态生成）
+  // ==========================================
+  function renderCoverImages() {
+    var layer = document.getElementById('coverImgLayer');
+    if (!layer) return;
+    var ci = APP_DATA.coverImages;
+    if (!ci) return;
+
+    layer.innerHTML = '';
+
+    // 应用 CSS 变量（大小）
+    if (ci.mainSize) layer.style.setProperty('--cover-main-size', ci.mainSize);
+    if (ci.bgSize) layer.style.setProperty('--cover-bg-size', ci.bgSize);
+
+    // 渲染主图
+    (ci.main || []).forEach(function (img) {
+      var div = document.createElement('div');
+      div.className = 'cover-img-item cover-img-main';
+      div.setAttribute('data-img', 'main');
+      var style = '';
+      if (img.top) style += 'top:' + img.top + ';';
+      if (img.bottom) style += 'bottom:' + img.bottom + ';';
+      if (img.left) style += 'left:' + img.left + ';';
+      if (img.right) style += 'right:' + img.right + ';';
+      div.setAttribute('style', style);
+      var imgEl = document.createElement('img');
+      imgEl.src = img.url || '';
+      imgEl.alt = 'Cover';
+      if (img === ci.main[0] || img === ci.main[1]) imgEl.setAttribute('fetchpriority', 'high');
+      div.appendChild(imgEl);
+      layer.appendChild(div);
+    });
+
+    // 渲染背景图
+    (ci.bg || []).forEach(function (img) {
+      var div = document.createElement('div');
+      div.className = 'cover-img-item cover-img-bg';
+      div.setAttribute('data-img', 'bg');
+      var style = '';
+      if (img.top) style += 'top:' + img.top + ';';
+      if (img.bottom) style += 'bottom:' + img.bottom + ';';
+      if (img.left) style += 'left:' + img.left + ';';
+      if (img.right) style += 'right:' + img.right + ';';
+      div.setAttribute('style', style);
+      var imgEl = document.createElement('img');
+      imgEl.src = img.url || '';
+      imgEl.alt = 'Cover BG';
+      div.appendChild(imgEl);
+      layer.appendChild(div);
+    });
+  }
+
+  // ==========================================
   // 渲染：个人信息（CircularGallery 照片 + 横行四卡片）
   // ==========================================
   function renderPersonalInfo() {
@@ -293,7 +700,7 @@
 
     // 标题
     html += '  <div class="section-header fade-up">';
-    html += '    <h2 class="section-title">' + esc(info.title || '个人信息') + '</h2>';
+    html += '    <h2 class="section-title" data-ts-key="personalInfo.title">' + esc(info.title || '个人信息') + '</h2>';
     html += '  </div>';
 
     // ── CircularGallery 照片区 ──
@@ -306,13 +713,13 @@
 
     // 联系方式
     html += '    <div class="info-card">';
-    html += '      <h4><span class="info-card-title-text">联系方式</span><span class="info-card-indicator">+</span></h4>';
+    html += '      <h4><span class="info-card-title-text" data-ts-key="personalInfo.card.title.0">联系方式</span><span class="info-card-indicator">+</span></h4>';
     html += '      <div class="info-card-body">';
     if (info.contact) {
       html += '        <ul>';
-      html += '          <li><span class="info-lbl">邮箱</span>' + esc(info.contact.email || '待填写') + '</li>';
-      html += '          <li><span class="info-lbl">电话</span>' + esc(info.contact.phone || '待填写') + '</li>';
-      html += '          <li><span class="info-lbl">微信</span>' + esc(info.contact.wechat || '待填写') + '</li>';
+      html += '          <li><span class="info-lbl" data-ts-key="personalInfo.contact.email.label">邮箱</span><span data-ts-key="personalInfo.contact.email.value">' + esc(info.contact.email || '待填写') + '</span></li>';
+      html += '          <li><span class="info-lbl" data-ts-key="personalInfo.contact.phone.label">电话</span><span data-ts-key="personalInfo.contact.phone.value">' + esc(info.contact.phone || '待填写') + '</span></li>';
+      html += '          <li><span class="info-lbl" data-ts-key="personalInfo.contact.wechat.label">微信</span><span data-ts-key="personalInfo.contact.wechat.value">' + esc(info.contact.wechat || '待填写') + '</span></li>';
       html += '        </ul>';
     }
     html += '      </div>';
@@ -320,11 +727,11 @@
 
     // 教育背景
     html += '    <div class="info-card">';
-    html += '      <h4><span class="info-card-title-text">教育背景</span><span class="info-card-indicator">+</span></h4>';
+    html += '      <h4><span class="info-card-title-text" data-ts-key="personalInfo.card.title.1">教育背景</span><span class="info-card-indicator">+</span></h4>';
     html += '      <div class="info-card-body">';
     html += '        <ul>';
     if (info.education && info.education.length > 0) {
-      info.education.forEach(function (edu) { html += '<li>' + esc(String(edu)) + '</li>'; });
+      info.education.forEach(function (edu, eduIdx) { html += '<li data-ts-key="personalInfo.education.' + eduIdx + '">' + esc(String(edu)) + '</li>'; });
     } else { html += '          <li class="placeholder-text">待填写</li>'; }
     html += '        </ul>';
     html += '      </div>';
@@ -332,11 +739,11 @@
 
     // 获奖及证书
     html += '    <div class="info-card">';
-    html += '      <h4><span class="info-card-title-text">获奖及证书</span><span class="info-card-indicator">+</span></h4>';
+    html += '      <h4><span class="info-card-title-text" data-ts-key="personalInfo.card.title.2">获奖及证书</span><span class="info-card-indicator">+</span></h4>';
     html += '      <div class="info-card-body">';
     html += '        <ul>';
     if (info.awards && info.awards.length > 0) {
-      info.awards.forEach(function (award) { html += '<li>' + esc(String(award)) + '</li>'; });
+      info.awards.forEach(function (award, awIdx) { html += '<li data-ts-key="personalInfo.awards.' + awIdx + '">' + esc(String(award)) + '</li>'; });
     } else { html += '          <li class="placeholder-text">待填写</li>'; }
     html += '        </ul>';
     html += '      </div>';
@@ -344,11 +751,11 @@
 
     // 爱好
     html += '    <div class="info-card">';
-    html += '      <h4><span class="info-card-title-text">爱好</span><span class="info-card-indicator">+</span></h4>';
+    html += '      <h4><span class="info-card-title-text" data-ts-key="personalInfo.card.title.3">爱好</span><span class="info-card-indicator">+</span></h4>';
     html += '      <div class="info-card-body">';
     html += '        <ul>';
     if (info.hobbies && info.hobbies.length > 0) {
-      info.hobbies.forEach(function (hobby) { html += '<li>' + esc(String(hobby)) + '</li>'; });
+      info.hobbies.forEach(function (hobby, hIdx) { html += '<li data-ts-key="personalInfo.hobbies.' + hIdx + '">' + esc(String(hobby)) + '</li>'; });
     } else { html += '          <li class="placeholder-text">待填写</li>'; }
     html += '        </ul>';
     html += '      </div>';
@@ -365,7 +772,7 @@
    }
 
   // ==========================================
-  // 渲染：科研经历 (Research Browser)
+  // 渲染：科研经历 (Research Reel — 双排反向滑动)
   // ==========================================
   function renderResearch() {
     var researchSection = APP_DATA.researchExperience || {};
@@ -373,83 +780,14 @@
     var researchContainer = document.getElementById('researchSection');
     if (!researchContainer || researchItems.length === 0) return;
 
-    var h = '';
-    h += '<div class="research-section">';
-    h += '  <div class="research-title">' + esc(researchSection.title || '科研经验') + '</div>';
-    h += '  <div class="research-browser">';
-
-    // 左侧预览
-    h += '    <div class="research-preview" id="researchPreview">';
-    h += '      <div class="research-preview-inner">';
-    h += '        <div class="research-preview-image" id="researchPreviewImage">';
-    var firstItem = researchItems[0];
-    if (firstItem && firstItem.photo) {
-      h += '          <img src="' + urlSafe(firstItem.photo) + '" alt="" loading="lazy">';
+    researchContainer.innerHTML = '';
+    window._researchReel = createResearchReel(researchContainer, researchItems);
+    // 覆盖 bundle.js 中硬编码的标题
+    var rrTitle = researchContainer.querySelector('.rr-title');
+    if (rrTitle) {
+      rrTitle.textContent = researchSection.title || '科研经历';
+      rrTitle.setAttribute('data-ts-key', 'researchExperience.title');
     }
-    h += '        </div>';
-    h += '        <div class="research-preview-info">';
-    if (firstItem && firstItem.category) {
-      h += '          <span class="research-preview-category">' + esc(firstItem.category) + '</span>';
-    }
-    h += '          <div class="research-preview-title" id="researchPreviewTitle">' + esc((firstItem && firstItem.title) || '') + '</div>';
-    var dateEl = '';
-    if (firstItem && firstItem.date) dateEl = firstItem.date;
-    h += '          <div class="research-preview-date" id="researchPreviewDate">' + esc(dateEl) + '</div>';
-    h += '          <div class="research-preview-desc" id="researchPreviewDesc">' + esc((firstItem && firstItem.description) || '').replace(/\n/g, '<br>') + '</div>';
-    h += '        </div>';
-    h += '      </div>';
-    h += '    </div>';
-
-    // 右侧文件列表
-    h += '    <div class="research-file-list" id="researchFileList">';
-    h += '      <div class="research-file-list-header">文件列表</div>';
-    researchItems.forEach(function(item, i) {
-      h += '      <div class="research-file-item' + (i === 0 ? ' active' : '') + '" data-research-index="' + i + '">';
-      h += '        <span class="research-file-title">' + esc(item.title || '未命名') + '</span>';
-      if (item.date) {
-        h += '        <span class="research-file-meta">' + esc(item.date) + '</span>';
-      }
-      h += '      </div>';
-      if (i < researchItems.length - 1) {
-        h += '      <div class="research-file-divider"></div>';
-      }
-    });
-    h += '    </div>';
-    h += '  </div>';
-    h += '</div>';
-
-    researchContainer.innerHTML = h;
-
-    // 交互
-    var fileItems = researchContainer.querySelectorAll('.research-file-item');
-    var previewImage = document.getElementById('researchPreviewImage');
-    var previewTitle = document.getElementById('researchPreviewTitle');
-    var previewDate = document.getElementById('researchPreviewDate');
-    var previewDesc = document.getElementById('researchPreviewDesc');
-
-    fileItems.forEach(function(fi) {
-      fi.addEventListener('click', function() {
-        var idx = parseInt(fi.getAttribute('data-research-index'));
-        var item = researchItems[idx];
-        if (!item) return;
-
-        fileItems.forEach(function(f) { f.classList.remove('active'); });
-        fi.classList.add('active');
-
-        if (previewImage && item.photo) {
-          previewImage.innerHTML = '<img src="' + urlSafe(item.photo) + '" alt="" loading="lazy">';
-        }
-        if (previewTitle) previewTitle.textContent = item.title || '';
-        if (previewDate) previewDate.textContent = item.date || '';
-        if (previewDesc) previewDesc.innerHTML = (item.description || '').replace(/\n/g, '<br>');
-      });
-    });
-
-    // 标题动画
-    setTimeout(function() {
-      var title = researchContainer.querySelector('.research-title');
-      if (title) title.classList.add('visible');
-    }, 100);
   }
 
 
@@ -470,15 +808,15 @@
     // ═══ 工作经历 ═══
     h += '<div class="stack-section" data-stack-id="experience-work">';
     h += '  <div class="stack-titles">';
-    h += '    <h2 class="scroll-stack-section-title">' + esc(workSection.title || '工作经验') + '</h2>';
+    h += '    <h2 class="scroll-stack-section-title" data-ts-key="workExperience.title">' + esc(workSection.title || '工作经验') + '</h2>';
     h += '  </div>';
     h += '  <div class="stack-stage">';
     h +=    renderStackCards(workItems, 'work', workItems.length);
     h += '  </div>';
     h += '</div>';
 
-    // ═══ 项目经验 — 小猫滑滑梯 ═══
-    h += renderProjectSlide(projItems);
+    // ═══ 项目经验 — 四图横排 hover 展开 ═══
+    h += renderProjectCards(projItems, projSection.title);
 
     DOM.experienceSection.innerHTML = h;
 
@@ -486,209 +824,50 @@
     setTimeout(function () {
       initScrollJacking('experience-work');
       initStackTitleObserver();
-      initProjectSlide();
     }, 200);
   }
 
 
   // ==========================================
-  // 小猫滑滑梯 — 项目经历滑动动画
+  // 项目经验 — 四图横排 hover 展开卡片
   // ==========================================
-  function renderProjectSlide(items) {
+  function renderProjectCards(items, sectionTitle) {
     if (!items || items.length === 0) return '';
-    var total = items.length;
     var h = '';
-    h += '<div class="slide-section" id="projectSlide">';
-    h += '  <div class="slide-sticky">';
-    h += '    <div class="slide-section-title">' + esc('项目经验') + '</div>';
-
-    // SVG 滑梯轨道
-    h += '    <svg class="slide-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid meet">';
-    // 滑梯曲线：从左上(100,100) 经控制点 到右下(1050,650)
-    h += '      <path d="M 200 100 C 420 -40, 700 840, 1000 700" class="slide-track-edge"/>';
-    h += '      <path d="M 200 100 C 420 -40, 700 840, 1000 700" class="slide-track-inner"/>';
-    // 支架柱
-    h += '      <line x1="200" y1="100" x2="200" y2="800" class="slide-posts"/>';
-    h += '      <line x1="1000" y1="700" x2="1000" y2="800" class="slide-posts"/>';
-    h += '    </svg>';
-
-    // 小猫
-    h += '    <div class="slide-cat" id="slideCat"><span class="slide-cat-body">🐱</span><div class="slide-cat-sled"></div></div>';
-
-    // 节点
-    items.forEach(function(item, i) {
-      h += '    <div class="slide-node" data-slide-index="' + i + '"></div>';
-    });
-
-    // 卡片
-    items.forEach(function(item, i) {
-      var side = (i % 2 === 0) ? 'side-left' : 'side-right';
-      h += '    <div class="slide-card ' + side + '" data-slide-index="' + i + '" data-card="true">';
-      h += '      <div class="slide-card-role">' + esc(item.role || '') + '</div>';
-      h += '      <div class="slide-card-name">' + esc(item.name || '') + '</div>';
-      if (item.period) {
-        h += '      <div class="slide-card-period"><span class="slide-card-dot"></span>' + esc(item.period) + '</div>';
+    h += '<div class="proj-cards-section">';
+    h += '  <h2 class="proj-cards-title" data-ts-key="projectExperience.title">' + esc(sectionTitle || '项目经验') + '</h2>';
+    h += '  <div class="proj-cards-grid">';
+    items.forEach(function(item, pIdx) {
+      h += '    <div class="proj-card">';
+      h += '      <div class="proj-card-img">';
+      if (item.photo && item.photo !== '待填写') {
+        h += '        <img src="' + urlSafe(item.photo) + '" alt="' + esc(item.name || '') + '" loading="lazy">';
+      } else {
+        h += '        <div class="proj-card-placeholder">📋</div>';
       }
+      h += '      </div>';
+      h += '      <div class="proj-card-body">';
+      h += '        <div class="proj-card-body-inner">';
+      h += '          <div class="proj-card-name" data-ts-key="projectExperience.items.' + pIdx + '.name">' + esc(item.name || '') + '</div>';
+      h += '          <div class="proj-card-role" data-ts-key="projectExperience.items.' + pIdx + '.role">' + esc(item.role || '') + '</div>';
+      if (item.details && Array.isArray(item.details)) {
+        h += '          <ul class="proj-card-list">';
+        item.details.forEach(function(d, dIdx) { h += '            <li data-ts-key="projectExperience.items.' + pIdx + '.details.' + dIdx + '">' + esc(d) + '</li>'; });
+        h += '          </ul>';
+      }
+      h += '        </div>';
+      h += '      </div>';
       h += '    </div>';
     });
-
-    // 详情弹窗
-    h += '    <div class="slide-detail-overlay" id="slideDetailOverlay">';
-    h += '      <div class="slide-detail-card">';
-    h += '        <button class="slide-detail-close" id="slideDetailClose">&times;</button>';
-    h += '        <div class="slide-detail-left" id="slideDetailImage"></div>';
-    h += '        <div class="slide-detail-right">';
-    h += '          <div class="slide-detail-role" id="slideDetailRole"></div>';
-    h += '          <h4 id="slideDetailName"></h4>';
-    h += '          <div class="slide-detail-period" id="slideDetailPeriod"></div>';
-    h += '          <ul class="slide-detail-list" id="slideDetailList"></ul>';
-    h += '        </div>';
-    h += '      </div>';
-    h += '    </div>';
-
     h += '  </div>';
     h += '</div>';
     return h;
-  }
-
-  function initProjectSlide() {
-    var slideSection = document.getElementById('projectSlide');
-    if (!slideSection) return;
-
-    var sticky = slideSection.querySelector('.slide-sticky');
-    var cat = document.getElementById('slideCat');
-    var nodes = slideSection.querySelectorAll('.slide-node');
-    var cards = slideSection.querySelectorAll('.slide-card[data-card]');
-    var overlay = document.getElementById('slideDetailOverlay');
-    var closeBtn = document.getElementById('slideDetailClose');
-
-    if (!sticky || !cat || nodes.length === 0 || cards.length === 0) return;
-
-    var total = nodes.length;
-
-    // SVG 路径采样点（与 viewBox 中的曲线对应）
-    var path = document.querySelector('.slide-track-edge');
-    var pathLength = path ? path.getTotalLength() : 0;
-    var pathPoints = [];
-    var sampleCount = 200;
-    for (var i = 0; i <= sampleCount; i++) {
-      var pt = path.getPointAtLength(pathLength * i / sampleCount);
-      pathPoints.push({ x: pt.x / 1200, y: pt.y / 800 });
-    }
-
-    // 更新位置
-    function updatePositions(progress) {
-      progress = Math.max(0, Math.min(1, progress));
-
-      // 小猫位置（沿曲线）
-      var catIdx = Math.floor(progress * (sampleCount - 1));
-      var catPt = pathPoints[catIdx];
-      var stickyRect = sticky.getBoundingClientRect();
-      cat.style.left = (catPt.x * 100) + '%';
-      cat.style.top = (catPt.y * 100) + '%';
-
-      // 旋转猫朝向（面朝右下）
-      var nextPt = pathPoints[Math.min(catIdx + 3, sampleCount - 1)];
-      var angle = Math.atan2(nextPt.y - catPt.y, nextPt.x - catPt.x) * 180 / Math.PI;
-      cat.style.transform = 'translate(-50%, -50%) rotate(' + angle + 'deg)';
-
-      // 节点和卡片位置（均匀分布在曲线上）
-      for (var i = 0; i < total; i++) {
-        var t = (i + 0.5) / total;
-        var idx = Math.floor(t * (sampleCount - 1));
-        var pt = pathPoints[idx];
-
-        if (nodes[i]) {
-          nodes[i].style.left = (pt.x * 100) + '%';
-          nodes[i].style.top = (pt.y * 100) + '%';
-        }
-
-        if (cards[i]) {
-          var isRight = cards[i].classList.contains('side-right');
-          if (isRight) {
-            cards[i].style.left = (pt.x * 100) + '%';
-            cards[i].style.top = (pt.y * 100) + '%';
-            cards[i].style.transform = 'translateY(-50%)';
-          } else {
-            cards[i].style.left = (pt.x * 100) + '%';
-            cards[i].style.top = (pt.y * 100) + '%';
-            cards[i].style.transform = 'translate(-100%, -50%)';
-          }
-
-          // 高亮最近的卡片
-          var cardT = (i + 0.5) / total;
-          var dist = Math.abs(progress - cardT);
-          if (dist < 0.08) {
-            cards[i].classList.add('active');
-          } else {
-            cards[i].classList.remove('active');
-          }
-        }
-      }
-    }
-
-    // 滚动驱动
-    function onScroll() {
-      var sectionRect = slideSection.getBoundingClientRect();
-      var sectionTop = sectionRect.top;
-      var sectionHeight = sectionRect.height;
-      var viewportHeight = window.innerHeight;
-
-      // Progress: 0 when section enters, 1 when it leaves
-      var progress = (-sectionTop) / (sectionHeight - viewportHeight);
-      updatePositions(progress);
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    // 卡片点击 → 弹窗
-    cards.forEach(function(card) {
-      card.addEventListener('click', function() {
-        var index = parseInt(card.getAttribute('data-slide-index'));
-        var items = (APP_DATA.projectExperience || {}).items || [];
-        var item = items[index];
-        if (!item || !overlay) return;
-
-        document.getElementById('slideDetailRole').textContent = item.role || '';
-        document.getElementById('slideDetailName').textContent = item.name || '';
-        document.getElementById('slideDetailPeriod').textContent = item.period || '';
-
-        var detailLeft = document.getElementById('slideDetailImage');
-        if (item.photo && item.photo !== '待填写') {
-          detailLeft.innerHTML = '<img src="' + urlSafe(item.photo) + '" alt="">';
-        } else {
-          detailLeft.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);">📋</div>';
-        }
-
-        var listEl = document.getElementById('slideDetailList');
-        listEl.innerHTML = '';
-        if (item.details && Array.isArray(item.details)) {
-          item.details.forEach(function(d) { listEl.innerHTML += '<li>' + d + '</li>'; });
-        }
-
-        overlay.classList.add('active');
-      });
-    });
-
-    // 关闭弹窗
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() { overlay.classList.remove('active'); });
-    }
-    if (overlay) {
-      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('active'); });
-    }
-
-    // 存储清理引用
-    window._slideProject = { onScroll: onScroll };
   }
 
 
   // ── 渲染卡片列表 ──
   function renderStackCards(items, type, total) {
     var isWork = (type === 'work');
-    var badgeLabel = isWork ? 'WORK' : 'PROJECT';
-    var badgeClass = isWork ? 'work' : 'project';
     var h = '';
 
     for (var i = 0; i < items.length; i++) {
@@ -710,15 +889,14 @@
 
       // 右侧文字
       h += '      <div class="scroll-stack-card-right">';
-      h += '        <span class="scroll-stack-card-badge ' + badgeClass + '">' + badgeLabel + '</span>';
       h += '        <div class="scroll-stack-card-info">';
       if (isWork) {
-        h += '          <h3>' + esc(item.company || '待填写') + '</h3>';
-        h += '          <div class="scroll-stack-card-role">' + esc(item.position || '待填写') + '</div>';
-        h += '          <div class="scroll-stack-card-period">' + esc(item.period || '待填写') + '</div>';
+        h += '          <h3 data-ts-key="workExperience.items.' + i + '.company">' + esc(item.company || '待填写') + '</h3>';
+        h += '          <div class="scroll-stack-card-role" data-ts-key="workExperience.items.' + i + '.position">' + esc(item.position || '待填写') + '</div>';
+        h += '          <div class="scroll-stack-card-period" data-ts-key="workExperience.items.' + i + '.period">' + esc(item.period || '待填写') + '</div>';
       } else {
-        h += '          <h3>' + esc(item.name || '待填写') + '</h3>';
-        h += '          <div class="scroll-stack-card-role">' + esc(item.role || '待填写') + '</div>';
+        h += '          <h3 data-ts-key="projectExperience.items.' + i + '.name">' + esc(item.name || '待填写') + '</h3>';
+        h += '          <div class="scroll-stack-card-role" data-ts-key="projectExperience.items.' + i + '.role">' + esc(item.role || '待填写') + '</div>';
       }
       h += '        </div>';
 
@@ -728,11 +906,12 @@
         if (Array.isArray(item.details)) {
           if (item.details.length > 0) {
             h += '          <ul>';
-            item.details.forEach(function (d) { h += '<li>' + esc(String(d)) + '</li>'; });
+            var prefix = isWork ? 'workExperience' : 'projectExperience';
+            item.details.forEach(function (d, dIdx) { h += '<li data-ts-key="' + prefix + '.items.' + i + '.details.' + dIdx + '">' + esc(String(d)) + '</li>'; });
             h += '          </ul>';
           } else { h += '          <p class="placeholder-text">待填写</p>'; }
         } else if (item.details !== '待填写') {
-          h += '          <p>' + esc(String(item.details)) + '</p>';
+          h += '          <p data-ts-key="' + prefix + '.items.' + i + '.details.0">' + esc(String(item.details)) + '</p>';
         } else { h += '            <p class="placeholder-text">待填写</p>'; }
       } else { h += '            <p class="placeholder-text">待填写</p>'; }
       h += '        </div>';
@@ -904,9 +1083,9 @@
     var html = '';
     html += '<div class="skills-container">';
     html += '  <div class="section-header fade-up">';
-    html += '    <h2 class="section-title">' + esc(skills.title || '我的技能') + '</h2>';
+    html += '    <h2 class="section-title" data-ts-key="mySkills.title">' + esc(skills.title || '我的技能') + '</h2>';
     if (skills.description) {
-      html += '    <p class="skills-description">' + esc(skills.description) + '</p>';
+      html += '    <p class="skills-description" data-ts-key="mySkills.description">' + esc(skills.description) + '</p>';
     }
     html += '    <div class="section-underline"></div>';
     html += '  </div>';
@@ -920,7 +1099,7 @@
 
       html += '    <div class="skills-category-row fade-up">';
       if (catName) {
-        html += '      <div class="skills-category-name">' + esc(catName) + '</div>';
+        html += '      <div class="skills-category-name" data-ts-key="mySkills.categories.' + catIdx + '.name">' + esc(catName) + '</div>';
       }
       html += '      <div class="skills-loop-wrapper" id="skillsLoop' + catIdx + '"></div>';
       html += '    </div>';
@@ -978,7 +1157,7 @@
 
     var html = '';
     html += '<div class="section-header fade-up">';
-    html += '  <h2 class="section-title">' + esc(pf.title || '作品集') + '</h2>';
+    html += '  <h2 class="section-title" data-ts-key="portfolio.title">' + esc(pf.title || '作品集') + '</h2>';
     html += '  <div class="section-underline"></div>';
     html += '</div>';
     html += '<div class="portfolio-container">';
@@ -986,7 +1165,7 @@
     html += '  <div class="gooey-nav-container fade-up" id="portfolioTabs">';
     html += '    <nav><ul>';
     tabs.forEach(function (tab, i) {
-      html += '      <li><a href="#" data-tab="' + tab.id + '">' + esc(tab.label) + '</a></li>';
+      html += '      <li><a href="#" data-tab="' + tab.id + '" data-ts-key="portfolio.tabs.' + i + '.label">' + esc(tab.label) + '</a></li>';
     });
     html += '    </ul></nav>';
     html += '    <span class="effect filter"></span>';
@@ -995,32 +1174,50 @@
     // Content area
     html += '  <div class="portfolio-content-area" id="portfolioContentArea">';
 
-            // Xiaohongshu panel — 左图右树杂志布局
+            // Xiaohongshu panel — 左图右树杂志布局（2×2 爆款IP网格）
     html += '    <div class="portfolio-panel" data-panel="xiaohongshu" id="panel-xiaohongshu">';
     var xhsData = pf.xiaohongshu || {};
+    // ── 新版 featuredIPs 优先，旧版 photos 做 fallback ──
+    var featuredIPs = xhsData.featuredIPs || [];
     var xhsPhotos = xhsData.photos || [];
     var xhsSections = xhsData.sections || [];
-    if (xhsSections.length > 0 || xhsPhotos.length > 0) {
+    // 兼容旧数据：如果没有 featuredIPs 但有 photos，自动转为单 IP
+    if (featuredIPs.length === 0 && xhsPhotos.length > 0) {
+      featuredIPs = [{ name: '运营配图', photos: xhsPhotos }];
+    }
+    // 补齐到 4 个占位
+    while (featuredIPs.length < 4) {
+      featuredIPs.push({ name: '爆款IP ' + (featuredIPs.length + 1), photos: [] });
+    }
+    if (xhsSections.length > 0 || featuredIPs.some(function(ip) { return ip.photos && ip.photos.length > 0; })) {
       html += '      <div class="xhs-magazine" id="xhsMagazine">';
-      // ── 左栏：轮播图（sticky）──
+      // ── 左栏：2×2 IP 轮播网格（sticky）──
       html += '        <div class="xhs-magazine-left">';
-      html += '          <div class="xhs-magazine-stage" id="xhsMagazineStage">';
-      if (xhsPhotos.length > 0) {
-        xhsPhotos.forEach(function(src, i) {
-          html += '<img class="xhs-magazine-photo' + (i === 0 ? ' active' : '') + '" src="' + urlSafe(src) + '" alt="运营配图 ' + (i + 1) + '" data-index="' + i + '">';
-        });
-      } else {
-        html += '            <div class="xhs-magazine-placeholder">封面图</div>';
-      }
+      html += '          <div class="xhs-magazine-ip-grid">';
+      featuredIPs.forEach(function(ip, i) {
+        var ipPhotos = ip.photos || [];
+        html += '            <div class="xhs-magazine-ip-card">';
+        html += '              <div class="xhs-magazine-ip-label">' + esc(ip.name) + '</div>';
+        html += '              <div class="xhs-magazine-stage" id="xhsMagazineStage-' + i + '">';
+        if (ipPhotos.length > 0) {
+          ipPhotos.forEach(function(src, j) {
+            html += '<img class="xhs-magazine-photo' + (j === 0 ? ' active' : '') + '" src="' + urlSafe(src) + '" alt="' + esc(ip.name) + ' ' + (j + 1) + '" data-index="' + j + '">';
+          });
+        } else {
+          html += '                <div class="xhs-magazine-placeholder">待上传</div>';
+        }
+        html += '              </div>';
+        html += '              <div class="xhs-magazine-counter" id="xhsMagazineCounter-' + i + '">' + (ipPhotos.length > 0 ? '1 / ' + ipPhotos.length : '0 / 0') + '</div>';
+        html += '            </div>';
+      });
       html += '          </div>';
-      html += '          <div class="xhs-magazine-counter" id="xhsMagazineCounter">1 / ' + (xhsPhotos.length || 0) + '</div>';
       html += '        </div>';
       // ── 右栏：树形内容 ──
       html += '        <div class="xhs-magazine-right">';
       html += '          <div class="xhs-tree">';
       // 树根
       html += '            <div class="xhs-tree-root">';
-            html += '              <span class="xhs-tree-label">运营作品集</span>';
+            html += '              <span class="xhs-tree-label" data-ts-key="portfolio.xiaohongshu.treeLabel">运营作品集</span>';
       html += '            </div>';
             var sectionSubItems = [
         null,
@@ -1033,20 +1230,25 @@
         html += '        <div class="xhs-tree-branch">';
         html += '          <div class="xhs-tree-connector"></div>';
         html += '          <div class="xhs-tree-node">';
-                        html += '            <span class="xhs-tree-label">' + esc(sec.title || '') + '</span>';
+        html += '            <span class="xhs-tree-label" data-ts-key="portfolio.xiaohongshu.sections.' + i + '.title">' + esc(sec.title || '') + '</span>';
         html += '          </div>';
         // 内容默认展开
         html += '          <div class="xhs-tree-content" style="display:block">';
-        html += '            <p>' + esc(sec.content || '') + '</p>';
+        html += '            <p data-ts-key="portfolio.xiaohongshu.sections.' + i + '.content">' + esc(sec.content || '') + '</p>';
         if (sec.url) {
           html += '            <a class="xhs-link" href="' + esc(sec.url) + '" target="_blank" rel="noopener noreferrer">查看详情 →</a>';
         }
         // 图片网格
         if (sec.images && sec.images.length > 0) {
           html += '            <div class="xhs-image-grid">';
-          sec.images.forEach(function(imgSrc) {
+          sec.images.forEach(function(imgItem) {
+            var imgUrl = typeof imgItem === 'string' ? imgItem : (imgItem.url || '');
+            var imgTitle = (typeof imgItem === 'object' && imgItem.title) ? imgItem.title : '';
             html += '              <div class="xhs-image-grid-item">';
-            html += '                <img src="' + urlSafe(imgSrc) + '" alt="" loading="lazy">';
+            html += '                <img src="' + urlSafe(imgUrl) + '" alt="' + esc(imgTitle) + '" loading="lazy">';
+            if (imgTitle) {
+              html += '                <span class="xhs-image-grid-title">' + esc(imgTitle) + '</span>';
+            }
             html += '              </div>';
           });
           html += '            </div>';
@@ -1085,11 +1287,11 @@
 	    html += '    <div class="portfolio-panel" data-panel="photography" id="panel-photography">';
 	    var photoCategories = (pf.photography && pf.photography.categories) || [];
 	    if (photoCategories.length > 0) {
-	      html += '      <div class="photo-quote">More daily scenes today. Nothing unusual, just worth keeping.</div>';
+	      html += '      <div class="photo-quote" data-ts-key="portfolio.photography.quote">More daily scenes today. Nothing unusual, just worth keeping.</div>';
 	      html += '      <div class="photo-sections">';
-	      photoCategories.forEach(function(cat) {
+	      photoCategories.forEach(function(cat, catIdx) {
 	        html += '        <div class="photo-section">';
-	        html += '          <h3 class="photo-section-title">' + esc(cat.name) + '</h3>';
+	        html += '          <h3 class="photo-section-title" data-ts-key="portfolio.photography.categories." + catIdx + ".name">' + esc(cat.name) + '</h3>';
 	        html += '          <div class="photo-grid">';
 	        cat.photos.forEach(function(photo) {
 	          html += '            <div class="photo-card">';
@@ -1177,6 +1379,7 @@
   function renderFooter() {
     var footer = document.getElementById('siteFooter');
     if (!footer) return;
+    footer.setAttribute('data-ts-key', 'footer.text');
     footer.textContent = APP_DATA.footer && APP_DATA.footer.text ? APP_DATA.footer.text : '待填写';
   }
 
@@ -1288,6 +1491,139 @@
 
 
 
+    // ── 小红书左侧 JS sticky 滚动（仅桌面端）──
+    function initXhsStickyScroll() {
+      var left = document.querySelector('.xhs-magazine-left');
+      var magazine = document.getElementById('xhsMagazine');
+      if (!left || !magazine) return;
+
+      // 移除旧监听
+      if (window._xhsStickyHandler) {
+        window.removeEventListener('scroll', window._xhsStickyHandler);
+        window._xhsStickyHandler = null;
+      }
+
+      // 移动端不启用 sticky（网格已堆叠为单列）
+      if (window.innerWidth <= 768) {
+        left.style.transform = '';
+        return;
+      }
+
+      function stickyLoop() {
+        // 窗口大小变化时重新检查
+        if (window.innerWidth <= 768) {
+          left.style.transform = '';
+          return;
+        }
+
+        var magazineRect = magazine.getBoundingClientRect();
+        var leftHeight = left.offsetHeight;
+        var offset = 100; // top offset (navbar + breathing room)
+
+        // 左栏能滚动的最大距离 = 杂志总高 - 左栏自身高
+        var maxScroll = magazineRect.height - leftHeight;
+        if (maxScroll < 0) maxScroll = 0;
+
+        // 杂志顶部相对于视口：当 magazineRect.top < offset 时开始跟随
+        var scrolled = offset - magazineRect.top;
+
+        if (scrolled <= 0) {
+          left.style.transform = 'translateY(0px)';
+        } else if (scrolled >= maxScroll) {
+          left.style.transform = 'translateY(' + maxScroll + 'px)';
+        } else {
+          left.style.transform = 'translateY(' + scrolled + 'px)';
+        }
+      }
+
+      window._xhsStickyHandler = stickyLoop;
+      window.addEventListener('scroll', window._xhsStickyHandler, { passive: true });
+      stickyLoop();
+    }
+
+    // ── 杂志轮播（多实例：2×2 IP 网格）──
+    function initXhsMagazineCarousel() {
+      // 销毁旧实例
+      if (window._xhsMagazineIntervals) {
+        window._xhsMagazineIntervals.forEach(function(id) { clearInterval(id); });
+      }
+      window._xhsMagazineIntervals = [];
+
+      // 查找所有 stage
+      var stages = document.querySelectorAll('[id^="xhsMagazineStage-"]');
+      if (stages.length === 0) {
+        var oldStage = document.getElementById('xhsMagazineStage');
+        if (oldStage) stages = [oldStage];
+      }
+      if (stages.length === 0) return;
+
+      // 将 NodeList 转数组，避免 live-collection 问题
+      var stageList = [];
+      for (var si = 0; si < stages.length; si++) {
+        stageList.push(stages[si]);
+      }
+
+      stageList.forEach(function(stage) {
+        var suffix = stage.id.replace('xhsMagazineStage', '');
+        var counter = document.getElementById('xhsMagazineCounter' + suffix);
+        // 转静态数组
+        var photoList = [];
+        var rawPhotos = stage.querySelectorAll('.xhs-magazine-photo');
+        for (var pi = 0; pi < rawPhotos.length; pi++) {
+          photoList.push(rawPhotos[pi]);
+        }
+
+        if (photoList.length < 2) {
+          if (counter && photoList.length === 1) counter.textContent = '1 / 1';
+          return;
+        }
+
+        // 全部重置为不可见
+        for (var p = 0; p < photoList.length; p++) {
+          photoList[p].classList.remove('active');
+          photoList[p].style.zIndex = '1';
+        }
+
+        // 状态对象（挂在 stage 上，避免闭包陷阱）
+        var state = { idx: 0, len: photoList.length, timer: null };
+
+        // 展示第一张
+        photoList[0].classList.add('active');
+        photoList[0].style.zIndex = '3';
+        if (counter) counter.textContent = '1 / ' + state.len;
+
+        function advance() {
+          var oldIdx = state.idx;
+          var newIdx = (state.idx + 1) % state.len;
+
+          // 新图上浮到顶层再激活
+          photoList[newIdx].style.zIndex = '4';
+          photoList[newIdx].classList.add('active');
+
+          // 旧图下沉
+          photoList[oldIdx].classList.remove('active');
+          photoList[oldIdx].style.zIndex = '2';
+
+          state.idx = newIdx;
+
+          // 把所有非当前图归位到 z-index:1（500ms 后，等过渡完成）
+          var cur = newIdx;
+          setTimeout(function() {
+            for (var i = 0; i < photoList.length; i++) {
+              if (i !== cur) photoList[i].style.zIndex = '1';
+            }
+            photoList[cur].style.zIndex = '3';
+          }, 550);
+
+          if (counter) counter.textContent = (state.idx + 1) + ' / ' + state.len;
+        }
+
+        var intervalId = setInterval(advance, 2000);
+        window._xhsMagazineIntervals.push(intervalId);
+        stage._xhsState = state;
+      });
+    }
+
     // Store the GooeyNav instance for potential later use
     window._portfolioGooeyNav = initGooeyNav(container, {
       initialActiveIndex: 1,
@@ -1311,6 +1647,12 @@
         });
 
 
+        // Init xiaohongshu magazine carousel on tab switch
+        if (tabId === 'xiaohongshu') {
+          setTimeout(initXhsMagazineCarousel, 150);
+          setTimeout(initXhsStickyScroll, 200);
+        }
+
         // Init 3D video carousel
         if (tabId === 'video') {
           var vc = document.getElementById('videoCardsContainer');
@@ -1330,34 +1672,14 @@
     // Activate default panel (photography = index 1)
     var defaultPanel = document.getElementById('panel-photography');
     if (defaultPanel) defaultPanel.classList.add('active');
-    // ── 杂志轮播 ──
-    function initXhsMagazineCarousel() {
-      var stage = document.getElementById('xhsMagazineStage');
-      var counter = document.getElementById('xhsMagazineCounter');
-      if (!stage || !counter) return;
-      if (stage.dataset.carouselInit === 'true') return;
-      stage.dataset.carouselInit = 'true';
 
-      var photos = stage.querySelectorAll('.xhs-magazine-photo');
-      if (photos.length < 2) return;
-
-      var current = 0;
-      var total = photos.length;
-
-      function show(index) {
-        photos[current].classList.remove('active');
-        current = ((index % total) + total) % total;
-        photos[current].classList.add('active');
-        counter.textContent = (current + 1) + ' / ' + total;
-      }
-
-      // Auto-advance every 1 second
-      window._xhsMagazineInterval = setInterval(function () {
-        show(current + 1);
-      }, 1000);
+    // ── 小红书 JS sticky 兜底（绕过 CSS transform containing-block 陷阱）──
+    initXhsStickyScroll();
+    // ── 轮播仅当 panel 可见时初始化 ──
+    var xhsPanel = document.getElementById('panel-xiaohongshu');
+    if (xhsPanel && xhsPanel.classList.contains('active')) {
+      setTimeout(initXhsMagazineCarousel, 100);
     }
-
-    initXhsMagazineCarousel();
     initCarousels();
   }
 
@@ -1551,6 +1873,11 @@
     var btn = document.getElementById('coverExploreBtn');
     if (!items.length || !wrapper) return;
 
+    // 从 data 读取透明度
+    var ci = APP_DATA.coverImages || {};
+    var mainOpacity = (ci.mainOpacity !== undefined) ? ci.mainOpacity : 1;
+    var bgOpacity = (ci.bgOpacity !== undefined) ? ci.bgOpacity : 0.45;
+
     // Fallback: show everything if GSAP is missing
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
       items.forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
@@ -1569,24 +1896,20 @@
     });
 
     // Set initial states (below target, invisible)
-    // Main images: larger offset, final full opacity
     mainItems.forEach(function (el, i) {
       var startY = 130 + i * 25;
       gsap.set(el, { y: startY, opacity: 0 });
     });
 
-    // Background images: smaller offset, final muted opacity
     bgItems.forEach(function (el, i) {
       var startY = 80 + i * 15;
       gsap.set(el, { y: startY, opacity: 0 });
     });
 
-    // Explore button
     if (btn) {
       gsap.set(btn, { y: 50, opacity: 0 });
     }
 
-    // Single timeline driven by wrapper scroll
     var tl = gsap.timeline({
       scrollTrigger: {
         trigger: wrapper,
@@ -1597,17 +1920,16 @@
       }
     });
 
-    // Main images — each slightly staggered
+    // Main images — data-driven opacity
     mainItems.forEach(function (el, i) {
-      tl.to(el, { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }, i * 0.06);
+      tl.to(el, { y: 0, opacity: mainOpacity, duration: 0.4, ease: 'power2.out' }, i * 0.06);
     });
 
-    // Background images — same timeline, different opacity target
+    // Background images — data-driven opacity
     bgItems.forEach(function (el, i) {
-      tl.to(el, { y: 0, opacity: 0.45, duration: 0.4, ease: 'power2.out' }, 0.05 + i * 0.04);
+      tl.to(el, { y: 0, opacity: bgOpacity, duration: 0.4, ease: 'power2.out' }, 0.05 + i * 0.04);
     });
 
-    // Explore button
     if (btn) {
       tl.to(btn, { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }, 0.1);
     }

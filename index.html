@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="bundle.css?v=3">
+  <link rel="stylesheet" href="bundle.css?v=32">
 </head>
 <body>
 
@@ -21,7 +21,7 @@
     <!-- ======== 导航栏 ======== -->
     <nav class="navbar" id="navbar">
       <div class="nav-container">
-        <a href="#" class="nav-logo" id="navLogo">梁婧</a>
+        <a href="#" class="nav-logo" id="navLogo" data-ts-key="nav.logo">梁婧</a>
         <ul class="nav-links" id="navLinks">
           <!-- JS 动态生成 -->
         </ul>
@@ -33,21 +33,13 @@
     <section class="cover-section" id="cover">
       <div class="cover-wrapper" id="coverWrapper">
         <div class="cover-sticky">
-          <h1 class="cover-title" id="coverTitle">welcome me, i'm 梁婧</h1>
-          <button class="cover-explore-btn" id="coverExploreBtn">let's explore more</button>
+          <h1 class="cover-title" id="coverTitle" data-ts-key="cover.title">welcome me, i'm 梁婧</h1>
+          <button class="cover-explore-btn" id="coverExploreBtn" data-ts-key="cover.button">let's explore more</button>
           <div class="cover-nav-buttons" id="coverNavButtons">
             <!-- JS -->
           </div>
           <div class="cover-img-layer" id="coverImgLayer">
-            <div class="cover-img-item cover-img-main" data-img="main" style="top:6%;left:4%"><img fetchpriority="high" src="images/cover/cover_20260614155720.webp" alt="Cover 01"></div>
-            <div class="cover-img-item cover-img-main" data-img="main" style="top:6%;right:4%"><img fetchpriority="high" src="images/cover/cover_20260614155721.webp" alt="Cover 02"></div>
-            <div class="cover-img-item cover-img-main" data-img="main" style="top:72%;left:5%"><img fetchpriority="high" src="images/cover/cover_20260612210956.webp" alt="Cover 03"></div>
-            <div class="cover-img-item cover-img-main" data-img="main" style="top:72%;right:5%"><img fetchpriority="high" src="images/cover/cover_202606122109561.webp" alt="Cover 04"></div>
-            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:5%;left:28%"><img src="images/cover/cover_202606122109562.webp" alt="Cover 05"></div>
-            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:5%;right:26%"><img src="images/cover/cover_202606122109563.webp" alt="Cover 06"></div>
-            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:35%;left:2%"><img src="images/cover/cover_202606122109564.webp" alt="Cover 07"></div>
-            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:50%;right:2%"><img src="images/cover/cover_202606122109565.webp" alt="Cover 08"></div>
-            <div class="cover-img-item cover-img-bg" data-img="bg" style="top:84%;left:42%"><img src="images/cover/cover_202606122109566.webp" alt="Cover 09"></div>
+            <!-- 由 JS 动态渲染，数据来自 data.js coverImages -->
           </div>
           </div>
         </div>
@@ -112,9 +104,9 @@
   <!-- ======== 脚本 ======== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="data.js?v=6"></script>
-  <script src="bundle.js?v=2"></script>
-  <script src="script.js?v=12"></script>
+  <script src="data.js?v=12"></script>
+  <script src="bundle.js?v=16"></script>
+  <script src="script.js?v=23"></script>
 
 </body>
 </html>

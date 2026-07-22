@@ -1464,14 +1464,15 @@ var Video3DCards = (function () {
     }
 
     // ====== Card click ======
+    // 单击任意卡片：先旋转到正面（如需要），然后直接打开视频详情
     cards.forEach(function (card) {
       card.addEventListener('click', function () {
         var idx = parseInt(card.getAttribute('data-index'), 10);
-        if (idx === currentIndex) {
-          openDetail(idx);
-        } else {
+        if (idx !== currentIndex) {
           rotateTo(idx);
         }
+        // 立即打开详情面板查看视频
+        openDetail(idx);
       });
     });
 
@@ -1696,6 +1697,340 @@ var Video3DCards = (function () {
 
   window.createConveyorBelt = createConveyorBelt;
 })();
+
+
+// ============================================
+// Research Reel — 双排反向滑动
+// 上排向右 → 下排向左 ←
+// 鼠标滚轮驱动横滑，点击弹出详情
+// ============================================
+(function () {
+  'use strict';
+
+  function createResearchReel(container, items) {
+    if (!container || !items || items.length === 0) return null;
+
+    var cardWidth = 140;
+    var cardHeight = 190;
+    var gap = 47;
+
+    // Responsive sizing
+    if (window.innerWidth <= 480) {
+      cardWidth = 85; cardHeight = 120; gap = 28;
+    } else if (window.innerWidth <= 860) {
+      cardWidth = 105; cardHeight = 145; gap = 35;
+    }
+
+    // Split items: first half → top, second half → bottom
+    var mid = Math.ceil(items.length / 2);
+    var topItems = items.slice(0, mid);
+    var bottomItems = items.slice(mid);
+
+    // ── Build DOM ──
+    container.innerHTML = '';
+
+    var section = document.createElement('div');
+    section.className = 'rr-section';
+
+    // Top track wrapper
+    var topWrapper = document.createElement('div');
+    topWrapper.className = 'rr-track-wrapper';
+
+    var topTrack = document.createElement('div');
+    topTrack.className = 'rr-track';
+    topTrack.id = 'rrTrackTop';
+
+    topItems.forEach(function (item, i) {
+      var card = createCard(item, i);
+      topTrack.appendChild(card);
+    });
+    topWrapper.appendChild(topTrack);
+
+    // Title
+    var title = document.createElement('div');
+    title.className = 'rr-title';
+    title.textContent = '科研经历';
+
+    // Bottom track wrapper
+    var bottomWrapper = document.createElement('div');
+    bottomWrapper.className = 'rr-track-wrapper';
+
+    var bottomTrack = document.createElement('div');
+    bottomTrack.className = 'rr-track rr-track--bottom';
+    bottomTrack.id = 'rrTrackBottom';
+
+    bottomItems.forEach(function (item, i) {
+      var card = createCard(item, mid + i);
+      card.setAttribute('data-index', mid + i);
+      bottomTrack.appendChild(card);
+    });
+    bottomWrapper.appendChild(bottomTrack);
+
+    // Hint
+    var hint = document.createElement('div');
+    hint.className = 'rr-hint';
+    hint.textContent = '⟵ 滚动查看更多 ⟶';
+
+    section.appendChild(topWrapper);
+    section.appendChild(title);
+    section.appendChild(bottomWrapper);
+    section.appendChild(hint);
+    container.appendChild(section);
+
+    // ── Modal ──
+    var modal = document.createElement('div');
+    modal.className = 'rr-modal';
+    modal.id = 'rrModal';
+    modal.innerHTML =
+      '<div class="rr-modal-card">' +
+      '  <button class="rr-modal-close">&times;</button>' +
+      '  <img class="rr-modal-img" src="" alt="">' +
+      '  <div class="rr-modal-body">' +
+      '    <h2 class="rr-modal-title"></h2>' +
+      '    <p class="rr-modal-desc"></p>' +
+      '  </div>' +
+      '</div>';
+    container.appendChild(modal);
+
+    // ── Helper: create card ──
+    function createCard(item, index) {
+      var card = document.createElement('div');
+      card.className = 'rr-card';
+      card.setAttribute('data-index', index);
+      card.style.width = cardWidth + 'px';
+      card.style.height = cardHeight + 'px';
+
+      var img = document.createElement('img');
+      img.src = item.photo || '';
+      img.alt = item.title || '';
+      img.loading = 'lazy';
+      img.draggable = false;
+      card.appendChild(img);
+
+      return card;
+    }
+
+    // ── Scroll-jacking state ──
+    var progress = 0;         // 0: 图全在屏外；1: 全展示，两排居中对齐
+    var maxScroll = 0;        // 图片从屏外滑入的偏移距离
+    var scrollDist = 0;       // 滚轮需要滚动的像素数（控制速度）
+    var locked = false;
+    var unlockAt = 0;         // 0=无, 1=上次下滑解锁, -1=上次上滑解锁
+    var sectionEl = document.getElementById('research');
+    var titleEl = section.querySelector('.rr-title');
+
+    function recalc() {
+      var totalW = topItems.length * cardWidth + (topItems.length - 1) * gap;
+      var vw = window.innerWidth;
+      // 初始偏移：足够把所有图推到屏外 + 一张卡的余量
+      maxScroll = (vw + totalW) / 2 + cardWidth;
+      // 滚动速度：调慢（系数越大越慢）
+      scrollDist = totalW * 1.8;
+    }
+
+    // 标题离开视口中央足够远时，重置状态
+    function resetIfOffScreen() {
+      if (!titleEl) return;
+      var rect = titleEl.getBoundingClientRect();
+      var titleCenter = rect.top + rect.height / 2;
+      var viewCenter = window.innerHeight / 2;
+      var vh = window.innerHeight;
+      if (Math.abs(titleCenter - viewCenter) > vh * 0.5) {
+        if (progress !== 0) {
+          progress = 0;
+          applyTransform();
+        }
+        locked = false;
+        unlockAt = 0;
+      }
+    }
+
+    setTimeout(recalc, 150);
+    setTimeout(recalc, 500);
+    window.addEventListener('resize', function () {
+      if (window.innerWidth <= 480) {
+        cardWidth = 85; cardHeight = 120; gap = 28;
+      } else if (window.innerWidth <= 860) {
+        cardWidth = 105; cardHeight = 145; gap = 35;
+      } else {
+        cardWidth = 140; cardHeight = 190; gap = 47;
+      }
+      [topTrack, bottomTrack].forEach(function (track) {
+        var cards = track.querySelectorAll('.rr-card');
+        cards.forEach(function (c) {
+          c.style.width = cardWidth + 'px';
+          c.style.height = cardHeight + 'px';
+        });
+      });
+      topTrack.style.gap = gap + 'px';
+      bottomTrack.style.gap = gap + 'px';
+      recalc();
+      progress = Math.min(progress, 1);
+      applyTransform();
+    });
+
+    function applyTransform() {
+      if (scrollDist <= 0) {
+        topTrack.style.transform = '';
+        bottomTrack.style.transform = '';
+        hint.classList.remove('visible');
+        return;
+      }
+      // progress 0: 上排极左(tx=-maxScroll) 下排极右(tx=+maxScroll)，全在屏外
+      // progress 1: tx=0，两排居中，卡片一一对齐
+      var txTop = -(1 - progress) * maxScroll;
+      var txBottom = (1 - progress) * maxScroll;
+      topTrack.style.transform = 'translate3d(' + txTop.toFixed(1) + 'px, 0, 0)';
+      bottomTrack.style.transform = 'translate3d(' + txBottom.toFixed(1) + 'px, 0, 0)';
+
+      if (progress > 0.02 && progress < 0.98) {
+        hint.classList.add('visible');
+      } else {
+        hint.classList.remove('visible');
+      }
+    }
+
+    // ── Lock: 「科研经历」标题到达视口中央 ──
+    function shouldLock() {
+      if (!titleEl || scrollDist <= 0) return false;
+      var rect = titleEl.getBoundingClientRect();
+      var titleCenter = rect.top + rect.height / 2;
+      var viewCenter = window.innerHeight / 2;
+      return Math.abs(titleCenter - viewCenter) < window.innerHeight * 0.18;
+    }
+
+    function onWheel(e) {
+      if (!locked) {
+        resetIfOffScreen();
+        if (!shouldLock() || scrollDist <= 0) return;
+        // 解锁后禁止同方向立即重锁
+        if (e.deltaY > 0 && unlockAt === 1) return;
+        if (e.deltaY < 0 && unlockAt === -1) return;
+        locked = true;
+        unlockAt = 0;
+      }
+
+      e.preventDefault();
+
+      if (e.deltaY > 0) {
+        // 下滑 → 图片从两侧滑入
+        if (progress >= 1) { locked = false; unlockAt = 1; return; }
+        progress = Math.min(1, progress + Math.abs(e.deltaY) / scrollDist);
+        if (progress >= 1) { locked = false; unlockAt = 1; }
+      } else if (e.deltaY < 0) {
+        // 上滑 → 图片反向滚出
+        if (progress <= 0) { locked = false; unlockAt = -1; return; }
+        progress = Math.max(0, progress - Math.abs(e.deltaY) / scrollDist);
+        if (progress <= 0) { locked = false; unlockAt = -1; }
+      }
+
+      applyTransform();
+    }
+
+    // 兜底：scroll 事件补锁（仅下滑场景）
+    function onScroll() {
+      resetIfOffScreen();
+      if (!locked && shouldLock() && scrollDist > 0 && unlockAt !== 1 && progress < 1) {
+        locked = true;
+        unlockAt = 0;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ── Click → Modal ──
+    section.addEventListener('click', function (e) {
+      var card = e.target.closest('.rr-card');
+      if (!card) return;
+
+      var index = parseInt(card.getAttribute('data-index'));
+      var item = items[index];
+      if (!item) return;
+
+      var modalImg = modal.querySelector('.rr-modal-img');
+      var modalTitle = modal.querySelector('.rr-modal-title');
+      var modalDesc = modal.querySelector('.rr-modal-desc');
+
+      if (item.photo) {
+        modalImg.src = '';
+        modalImg.style.display = 'none';
+      } else {
+        modalImg.style.display = 'none';
+      }
+      modalTitle.textContent = item.title || '';
+      modalDesc.textContent = item.description || '';
+
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    modal.querySelector('.rr-modal-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+
+    // ── Touch support ──
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchProgressStart = 0;
+    var touchLocked = false;
+
+    section.addEventListener('touchstart', function (e) {
+      if (scrollDist <= 0) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchProgressStart = progress;
+      touchLocked = true;
+    }, { passive: true });
+
+    section.addEventListener('touchmove', function (e) {
+      if (!touchLocked || scrollDist <= 0) return;
+      var dx = touchStartX - e.touches[0].clientX;
+      var dy = touchStartY - e.touches[0].clientY;
+
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
+        e.preventDefault();
+        // 手指左滑(dx>0) → 推进；手指右滑(dx<0) → 回退
+        var deltaProgress = dx / scrollDist;
+        progress = Math.max(0, Math.min(1, touchProgressStart + deltaProgress));
+        applyTransform();
+      }
+    }, { passive: false });
+
+    section.addEventListener('touchend', function () {
+      touchLocked = false;
+    });
+
+    // ── Attach wheel listener ──
+    window.addEventListener('wheel', onWheel, { passive: false });
+
+    // ── Initial apply ──
+    recalc();
+    applyTransform();
+
+    // ── Return API ──
+    return {
+      destroy: function () {
+        window.removeEventListener('wheel', onWheel, { passive: false });
+        window.removeEventListener('scroll', onScroll, { passive: true });
+        container.innerHTML = '';
+      },
+      recalc: recalc
+    };
+  }
+
+  window.createResearchReel = createResearchReel;
+})();
+
 
 // ============================================
 // Auto-init: attach to #personal-gallery when DOM ready

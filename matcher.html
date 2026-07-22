@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI岗位匹配器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
 <style>
 /* ===== Reset & Variables ===== */
 :root {
@@ -40,10 +43,12 @@ body {
   margin-bottom: 28px;
 }
 .header h1 {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-family: 'Roboto Flex', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 100;
+  font-stretch: 100%;
+  letter-spacing: -0.025em;
   color: var(--ink);
-  letter-spacing: -0.02em;
   margin-bottom: 6px;
 }
 .header .sub {
@@ -74,7 +79,7 @@ textarea:focus {
 textarea::placeholder { color: #bbb; }
 
 /* ── Buttons ── */
-.btn-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.btn-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
 
 button {
   padding: 11px 32px;
@@ -382,27 +387,27 @@ button {
 
   <div class="header">
     <h1>
-      AI岗位匹配器
+      <span data-ts-key="aiMatcher.matcherTitle">AI岗位匹配器</span>
       <span class="api-badge" id="apiStatus">检测中…</span>
     </h1>
-    <p class="sub">粘贴岗位JD，AI将分析岗位需求并与候选人经历进行匹配评分</p>
+    <p class="sub" data-ts-key="aiMatcher.matcherSubtitle">粘贴岗位JD，AI将分析岗位需求并与候选人经历进行匹配评分</p>
   </div>
 
-  <textarea id="jd" placeholder="请粘贴岗位JD描述（例如：岗位职责、任职要求等）..."></textarea>
+  <textarea id="jd" data-ts-key="aiMatcher.placeholder" placeholder="请粘贴岗位JD描述（例如：岗位职责、任职要求等）..."></textarea>
   <div class="btn-row">
-    <button class="btn-primary" id="btn" onclick="startMatch()">生成匹配报告</button>
+    <button class="btn-primary" id="btn" data-ts-key="aiMatcher.buttonText" onclick="startMatch()">生成匹配报告</button>
   </div>
 
-  <div id="loading"><span class="spinner"></span>AI分析中，请稍候…</div>
+  <div id="loading"><span class="spinner"></span><span data-ts-key="aiMatcher.loadingText">AI分析中，请稍候…</span></div>
 
   <!-- JD不足时的补充面板 -->
   <div id="questions-panel">
-    <h4>📋 JD 信息不足，请补充以下信息以提升匹配准确性</h4>
+    <h4 data-ts-key="aiMatcher.panelTitle">📋 JD 信息不足，请补充以下信息以提升匹配准确性</h4>
     <ol id="q-list"></ol>
-    <textarea id="supplement" placeholder="请在此回答以上问题，补充岗位相关信息..."></textarea>
+    <textarea id="supplement" data-ts-key="aiMatcher.supplementPlaceholder" placeholder="请在此回答以上问题，补充岗位相关信息..."></textarea>
     <div class="btn-row">
-      <button class="btn-primary" id="btn-resubmit" onclick="resubmitWithSupplement()">补充信息并重新匹配</button>
-      <button class="btn-secondary" onclick="forceMatch()">跳过补充，直接匹配</button>
+      <button class="btn-primary" id="btn-resubmit" data-ts-key="aiMatcher.resubmitText" onclick="resubmitWithSupplement()">补充信息并重新匹配</button>
+      <button class="btn-secondary" data-ts-key="aiMatcher.skipText" onclick="forceMatch()">跳过补充，直接匹配</button>
     </div>
     <p id="round-info"></p>
   </div>
@@ -848,6 +853,111 @@ function showInfo(m) {
 // Init
 // ============================================================
 checkAPI();
+
+	// ============================================================
+	// 读取父页面 APP_DATA 中的 aiMatcher 配置和 textStyles
+	// ============================================================
+	(function applyMatcherConfig() {
+	  try {
+	    var APP = window.parent.APP_DATA || {};
+	    var cfg = APP.aiMatcher || {};
+	    var styles = APP.textStyles || {};
+
+	    // 更新文字内容
+	    function setText(key, text) {
+	      if (!text) return;
+	      var el = document.querySelector('[data-ts-key="' + key + '"]');
+	      if (el) el.textContent = text;
+	    }
+	    setText('aiMatcher.matcherTitle', cfg.matcherTitle);
+	    setText('aiMatcher.matcherSubtitle', cfg.matcherSubtitle);
+	    if (cfg.placeholder) document.getElementById('jd').placeholder = cfg.placeholder;
+	    setText('aiMatcher.buttonText', cfg.buttonText);
+	    setText('aiMatcher.loadingText', cfg.loadingText);
+	    setText('aiMatcher.panelTitle', cfg.panelTitle);
+	    if (cfg.supplementPlaceholder) document.getElementById('supplement').placeholder = cfg.supplementPlaceholder;
+	    setText('aiMatcher.resubmitText', cfg.resubmitText);
+	    setText('aiMatcher.skipText', cfg.skipText);
+
+	    // 应用文字样式（与主页 applyTextStyles 逻辑一致）
+	    var els = document.querySelectorAll('[data-ts-key]');
+	    for (var i = 0; i < els.length; i++) {
+	      var el = els[i];
+	      var key = el.getAttribute('data-ts-key');
+	      var s = styles[key];
+	      if (!s) continue;
+	      if (s.color) el.style.color = s.color; else el.style.color = '';
+	      if (s.fontSize) el.style.fontSize = s.fontSize; else el.style.fontSize = '';
+	      if (s.letterSpacing) el.style.letterSpacing = s.letterSpacing; else el.style.letterSpacing = '';
+	      if (s.lineHeight) el.style.lineHeight = s.lineHeight; else el.style.lineHeight = '';
+	      if (s.fontWeight) el.style.fontWeight = s.fontWeight; else el.style.fontWeight = '';
+	      if (s.textAlign) el.style.textAlign = s.textAlign; else el.style.textAlign = '';
+	      if (s.offsetX || s.offsetY) {
+	        el.style.position = 'relative';
+	        el.style.top = s.offsetY || '0px';
+	        el.style.left = s.offsetX || '0px';
+	      } else {
+	        el.style.position = '';
+	        el.style.top = '';
+	        el.style.left = '';
+	      }
+	    }
+
+	    // 初始化文字互动效果（内嵌版 TextPressure）
+	    (function initTP() {
+	      var headerEl = document.querySelector('.header');
+	      var titleEl = document.querySelector('[data-ts-key="aiMatcher.matcherTitle"]');
+	      if (!headerEl || !titleEl) return;
+
+	      // 拆分为逐字 span
+	      var text = titleEl.textContent || '';
+	      var chars = text.split('');
+	      var html = '';
+	      for (var i = 0; i < chars.length; i++) {
+	        if (chars[i] === ' ') {
+	          html += '<span class="tp-char tp-space" style="width:0.35em;">&nbsp;</span>';
+	        } else {
+	          html += '<span class="tp-char">' + chars[i] + '</span>';
+	        }
+	      }
+	      titleEl.innerHTML = html;
+
+	      var spans = titleEl.querySelectorAll('.tp-char');
+	      if (spans.length === 0) return;
+	      var spansArr = [];
+	      for (var j = 0; j < spans.length; j++) spansArr.push(spans[j]);
+
+	      var cursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+	      var mouse = { x: cursor.x, y: cursor.y };
+	      var rafId = null;
+
+	      function dist(a, b) { var dx = b.x - a.x, dy = b.y - a.y; return Math.sqrt(dx*dx + dy*dy); }
+	      function getAttr(d, maxD, minV, maxV) { var v = maxV - Math.abs((maxV * d) / maxD); return Math.max(minV, v + minV); }
+
+	      window.addEventListener('mousemove', function(e) { cursor.x = e.clientX; cursor.y = e.clientY; });
+	      window.addEventListener('touchmove', function(e) { var t = e.touches[0]; cursor.x = t.clientX; cursor.y = t.clientY; }, { passive: true });
+
+	      function animate() {
+	        mouse.x += (cursor.x - mouse.x) / 15;
+	        mouse.y += (cursor.y - mouse.y) / 15;
+	        var titleRect = titleEl.getBoundingClientRect();
+	        var maxDist = titleRect.width / 2;
+	        for (var i = 0; i < spansArr.length; i++) {
+	          var span = spansArr[i];
+	          if (!span || span.classList.contains('tp-space')) continue;
+	          var rect = span.getBoundingClientRect();
+	          var cx = rect.x + rect.width / 2, cy = rect.y + rect.height / 2;
+	          var d = dist(mouse, { x: cx, y: cy });
+	          var wdth = Math.floor(getAttr(d, maxDist, 5, 200));
+	          var wght = Math.floor(getAttr(d, maxDist, 100, 900));
+	          span.style.fontVariationSettings = "'wght' " + wght + ", 'wdth' " + wdth;
+	        }
+	        rafId = requestAnimationFrame(animate);
+	      }
+	      rafId = requestAnimationFrame(animate);
+	    })();
+	  } catch(e) {}
+	})();
 // Re-check every 30s
 setInterval(checkAPI, 30000);
 </script>
